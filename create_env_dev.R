@@ -1,14 +1,13 @@
 required_packages <- c(
   "easystats", "tidyverse", "knitr", "cowplot", "ggeffects", "here", 
   "data.table", "ggrepel", "brms", "ggdist", "emmeans", "tidylog", 
-  "tidybayes", "hypr", "colorspace", "ragg", "ggtext", "MetBrewer", 
-  "modelbased", "flextable", "posterior", "tinytable", "ggokabeito",
+  "tidybayes", "hypr", "colorspace", "ragg", "ggtext", "flextable", "posterior", "tinytable", "ggokabeito",
   "patchwork"
 )
 
-rix(date = "2025-03-03",
+rix(date = "2025-03-10",
     r_pkgs = required_packages, 
-    system_pkgs = c("quarto", "git", "pandoc", "cmdstan", "nix"),
+    system_pkgs = c("quarto", "git", "pandoc", "cmdstan"),
     git_pkgs = list(
       list(
         package_name = "cmdstanr",
