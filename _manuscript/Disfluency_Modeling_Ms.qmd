@@ -70,7 +70,6 @@ abstract: "Perceptual disfluency, induced by blurring or difficult-to-read typef
 keywords: [disfluency, LDT, DDM, ex-Gaussian, distributional analyses, word recognition]
 floatsintext: true
 numbered-lines: true
-csl: apa.csl
 bibliography: references.bib
 suppress-title-page: false
 link-citations: false
@@ -103,6 +102,7 @@ format:
           \setstretch{1.2} % Slightly stretch lines for better readability
 
 execute: 
+  freeze: auto
   echo: false
   warning: false
   message: false
@@ -120,21 +120,14 @@ execute:
 required_packages <- c(
   "easystats", "tidyverse", "knitr", "cowplot", "ggeffects", "here", 
   "data.table", "ggrepel", "brms", "ggdist", "emmeans", "tidylog", 
-  "tidybayes", "hypr", "colorspace", "ragg", "ggtext", "MetBrewer", 
-  "modelbased", "flextable", "posterior", "tinytable", "ggokabeito",
+  "tidybayes", "hypr", "colorspace", "ragg", "ggtext", "flextable", "posterior", "tinytable", "ggokabeito",
   "patchwork"
 )
-
-# Install missing packages
-missing_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
-if (length(missing_packages) > 0) {
-  install.packages(missing_packages, dependencies = TRUE)
-}
 
 # Load packages
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-options(timeout = 2000)
+options(timeout = 1000)
 
 ```
 
@@ -154,12 +147,10 @@ process_ER_column <- function(x) {
 #| label: ggplot theme
 #| echo: false
 
-library(ggplot2)
-library(ggokabeito)
 
 # Set up your theme
 bold <- element_text(face = "bold", color = "black", size = 16) #axis bold
-theme_set(theme_minimal(base_size = 16, base_family = "Arial"))
+theme_set(theme_minimal(base_size = 16, base_family = "Times New Roman"))
 theme_update(
   panel.grid.major = element_line(color = "grey92", size = .4),
   panel.grid.minor = element_blank(),
@@ -170,14 +161,14 @@ theme_update(
   axis.ticks.length = unit(.6, "lines"),
   legend.position = "top",
   plot.title = element_text(hjust = 0, color = "black", 
-                            family = "Arial",
+                            family = "Times New Roman",
                             size = 21, margin = margin(t = 10, b = 35)),
   plot.subtitle = element_text(hjust = 0, face = "bold", color = "grey30",
                                family = "Arial", 
                                size = 14, margin = margin(0, 0, 25, 0)),
   plot.title.position = "plot",
   plot.caption = element_text(color = "grey50", size = 10, hjust = 1,
-                              family = "Arial", 
+                              family = "Times New Roman", 
                               lineheight = 1.05, margin = margin(30, 0, 0, 0)),
   plot.caption.position = "plot", 
   plot.margin = margin(rep(20, 4))
@@ -284,8 +275,6 @@ Typically, there are four observable patterns. No observable difference occurs w
 ```{r}
 #| label: tbl-predictions
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
-#| eval: false
-
 
 # Create the data frame
 data <- data.frame(
@@ -299,17 +288,17 @@ data <- data.frame(
   Contrast = c("High blur vs. Low blur/Clear", "Low blur vs. Clear",
                "High blur vs. Low blur/Clear", "Low blur vs. Clear",
                "High blur vs. Low blur/Clear", "Low blur vs. Clear"),
-  Ex_Gaussian_Predictions = c(
+  ExGaussianPredictions = c(
     "$\\mu$: No difference<br>$\\tau$: Increase", "$\\mu$: No difference<br>$\\tau$: Increase",
     "$\\mu$: Increase<br>$\\tau$: No difference", "$\\mu$: Increase<br>$\\tau$: No difference",
     "$\\mu$: Increase<br>$\\tau$: Increase", "$\\mu$: Increase<br>$\\tau$: Increase"
   ),
-  DDM_Predictions = c(
+  DDMPredictions = c(
     "$v$: No difference<br>$T_{er}$: Increase", "$v$: No difference<br>$T_{er}$: Increase",
     "$v$: Increase<br>$T_{er}$: No difference", "$v$: Increase<br>$T_{er}$: No difference",
     "$v$: Increase<br>$T_{er}$: Increase", "$v$: No Increase<br>$T_{er}$: Increase"
   ),
-  Quantile_Plots = c(
+  QuantilePlots = c(
     "Late Difference",
     "Late Difference", 
     "Complete Shift", 
@@ -317,7 +306,7 @@ data <- data.frame(
     "Complete Shift + Late Differences", 
     "Early difference"
   ), 
-  Recognition_Memory_Predictions = c(
+  RecognitionMemoryPredictions = c(
     "No difference", "No difference",
     "High blurred > Low blurred/Clear", "Low blurred > Clear",
     "High blurred > Low blurred/Clear", "Low blurred = Clear"
@@ -327,8 +316,28 @@ data <- data.frame(
     Account = ifelse(duplicated(Account), "", Account),
     Description = ifelse(duplicated(Description), "", Description),
     Loci = ifelse(duplicated(Loci), "", Loci)
-  ) %>% 
-  tt()
+  )
+
+# Create the flextable
+ft <- flextable(data) %>%
+  set_header_labels(
+    Account = "Account",
+    Description = "Description",
+    Loci = "Loci",
+    Contrast = "Contrast",
+    ExGaussianPredictions = "Ex-Gaussian Predictions",
+    DDMPredictions = "Drift Diffusion Predictions",
+    QuantilePlots = "Quantile Plots",
+    RecognitionMemoryPredictions = "Recognition Memory Predictions"
+  ) %>%
+  merge_v(j = c("Account", "Description", "Loci")) %>%  # Merge duplicate cells for readability
+  align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") %>%
+  align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), align = "center", part = "body") %>%
+  bold(part = "header") %>%
+  autofit()
+
+# Print the table
+ft
 
 ```
 
@@ -546,8 +555,9 @@ acc_exp1a <- tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
+    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% 
+  flextable() %>%
+  theme_apa()
 
 acc_exp1a
 
@@ -678,8 +688,9 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
+    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%
+  flextable() %>%
+  theme_apa()
 
 ```
 
@@ -734,8 +745,8 @@ v$blur<- factor(v$blur, level=c("High blur", "Low blur", "Clear"))
 
 p <- ggplot(v, aes(x = q, y = MRT*1000, colour = blur, group=blur))+
   geom_line(size = 1) +
-  geom_point(size = 3) +
-  scale_colour_manual(values=met.brewer("Cassatt2", 3)) +  scale_y_continuous(breaks=seq(500,1600,100)) +
+  geom_point(size = 3)  +  
+  scale_y_continuous(breaks=seq(500,1600,100)) +
   theme(legend.title=element_blank())+
     coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks=seq(.1,.9, .2))+
@@ -967,9 +978,9 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
-  
+    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%  
+  flextable() %>%
+  theme_apa()
 ```
 
 A summary of the diffusion model results can be found in @tbl-diffexpt1a. High-blurred words had a lower drift rate than clear words, *b* = `r a$hypothesis$Estimate`, 90% Cr.I \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r b$hypothesis$Estimate`, 90% Cr.I \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was no difference in drift rate between low-blurred words and clear words, *b* = `r c$hypothesis$Estimate`, 90% Cr.I \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
@@ -1338,8 +1349,9 @@ acc_exp1b <- tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
+    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% 
+  flextable() %>%
+  theme_apa()
 
 acc_exp1b
 
@@ -1466,8 +1478,9 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
+    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% 
+   flextable() %>%
+  theme_apa()
 
 ```
 
@@ -1599,8 +1612,9 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
+    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%  
+  flextable() %>%
+  theme_apa()
 
 ```
 
@@ -1652,7 +1666,7 @@ v$blur<- factor(v$blur, level=c("High blur", "Low blur", "Clear"))
 p <- ggplot(v, aes(x = q, y = MRT*1000, colour = blur, group=blur))+
   geom_line(size = 1) +
   geom_point(size = 3) +
-  scale_colour_manual(values=met.brewer("Cassatt2", 3)) +  scale_y_continuous(breaks=seq(500,1600,100)) +
+  scale_y_continuous(breaks=seq(500,1600,100)) +
   theme(legend.title=element_blank())+
     coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks=seq(.1,.9, .2))+
@@ -1950,6 +1964,8 @@ This study was preregistered https://osf.io/kjq3t. All raw and summary data, mat
 
 ## Participants
 
+We preregistered a sample size of 432, which is twice the size of Experiments 1a and 1b. This sample size was chosen based on the interaction effect we aimed to test. All participants were recruited through SONA and Prolific. Participants recruited via Prolific were compensated $12 per hour. On Prolific, we applied built-in filters to include only monolingual, native English-speaking Americans currently residing in the United States, with normal or corrected-to-normal vision. Participants recruited via SONA were given course credit for their participation. 
+
 ## Materials
 
 Non-animal and animal words were adapted from @fernández-lópez2022. To make the experiment more feasible for online participants and to evenly split our conditions, we winnowed their non-animal words and presented 90 (1/2 HF and 1/2 LF) non-animal words and 45 animal words during study. This kept the 2:1 ratio used in previous experiments (e.g. [@fernández-lópez2022; @perea2018]. At test, 90 non-animal words we did not use during the semantic categorization task were used as new words for the recognition test. We created six counterbalanced lists to ensure that each non-animal word was presented as both old and new and as clear, high blurred, and low blurred across participants. Similar to non-words from Experiments 1a and 1b, we excluded animal words from analysis.
@@ -2108,8 +2124,9 @@ acc_exp2 <- tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% tt() %>%
-    format_tt(escape=TRUE)
+    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%  
+  flextable() %>%
+  theme_apa()
 
 acc_exp2
 
@@ -2143,8 +2160,9 @@ p_rt <- p_rt_filter %>%
 # table for the effect
 p_rt %>% group_by(blur) %>%
   pivot_wider(names_from=frequency, values_from=rt_ms) %>%
-  mutate(Freq_Effect=round(LOW-HIGH)) %>%
-  tt()
+  mutate(`Frequency Effect`=round(LOW-HIGH)) %>%
+   flextable() %>%
+  theme_apa()
 
 ```
 
@@ -2243,7 +2261,8 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) 
 
 # Format and display the table
 tab %>%
-  tt(escape=FALSE)
+  flextable() %>%
+  theme_apa()
 
 ```
 
@@ -2337,8 +2356,6 @@ p1 <- ggplot(v, aes(x = q, y = MRT, colour=frequency)) +
   facet_grid(~blur) + 
   geom_line(size = 1) +
   geom_point(size = 3) +
-  scale_colour_manual(values=met.brewer("Cassatt2", 3)) +
-  theme_bw() + 
   theme(axis.title = element_text(size = 16, face = "bold"), 
         axis.text = element_text(size = 16),
         plot.title = element_text(face = "bold", size = 20)) +
@@ -2358,8 +2375,7 @@ p1 <- ggplot(v, aes(x = q, y = MRT, colour=frequency)) +
 
 p2 <- ggplot(data=v,aes(y=MRT, x=frequency, color=q)) + facet_grid(~blur)+
   geom_line()+
-  geom_point(size=4) + 
-  ggeasy::easy_add_legend_title("Quantiles")
+  geom_point(size=4) 
 
 ```
 
@@ -2370,15 +2386,16 @@ p2 <- ggplot(data=v,aes(y=MRT, x=frequency, color=q)) + facet_grid(~blur)+
 v_wf <- v %>%
   dplyr::group_by(blur, q)%>%
   tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") %>%
-  mutate(diff=LOW-HIGH) %>%
+  mutate(Diff=LOW-HIGH) %>%
   rename("Blur" = "blur") %>%
   mutate(Blur = ifelse(Blur=="C", "Clear", ifelse(Blur=="HB", "High Blur", "Low Blur")))%>% 
   ungroup()
 
 v_wf %>% select(Blur, q, diff) %>% 
-  pivot_wider(names_from="q", values_from="diff") %>% 
+  pivot_wider(names_from="q", values_from="Diff") %>% 
   mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
-  tt()
+   flextable() %>%
+  theme_apa()
 
 ```
 
