@@ -102,7 +102,6 @@ format:
           \setstretch{1.2} % Slightly stretch lines for better readability
 
 execute: 
-  freeze: auto
   echo: false
   warning: false
   message: false
@@ -117,17 +116,34 @@ execute:
 ```{r}
 #| label: load packages
 
-required_packages <- c(
-  "easystats", "tidyverse", "knitr", "cowplot", "ggeffects", "here", 
-  "data.table", "ggrepel", "brms", "ggdist", "emmeans", "tidylog", 
-  "tidybayes", "hypr", "colorspace", "ragg", "ggtext", "flextable", "posterior", "tinytable", "ggokabeito",
-  "patchwork"
-)
 
-# Load packages
-invisible(lapply(required_packages, library, character.only = TRUE))
+library(easystats)
+library(tidyverse)
+library(knitr)
+library(cowplot)
+library(ggeffects)
+library(here)
+library(data.table)
+library(ggrepel)
+library(brms)
+library(ggdist)
+library(emmeans)
+library(tidylog)
+library(tidybayes)
+library(hypr)
+library(cowplot)
+library(tidyverse)
+library(colorspace)
+library(ragg)
+library(cowplot)
+library(ggtext)
+library(ggdist)
+library(modelbased)
+library(flextable)
+library(cmdstanr)
 
-options(timeout = 1000)
+
+options(timeout = 3000)
 
 ```
 
@@ -515,8 +531,7 @@ acc_lb <- read_rds("https://osf.io/wt3ry/download")
 
 ```{r}
 
-acc_means <- emmeans(acc_c, specs="blur", type="response") %>%
-  as.data.frame()
+acc_means <- emmeans(acc_c, specs="blur", type="response")
 
 ```
 
@@ -544,6 +559,7 @@ c$hypothesis <- c$hypothesis %>%
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis) %>%
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+  rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -555,7 +571,7 @@ acc_exp1a <- tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% 
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
   flextable() %>%
   theme_apa()
 
@@ -677,6 +693,7 @@ i$hypothesis <- i$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis, h$hypothesis, i$hypothesis) %>% 
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+   rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -688,7 +705,7 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%
+    select(Hypothesis, Parameter,Mean, SE, `90% CrI`,ER, Post.Prob)%>%
   flextable() %>%
   theme_apa()
 
@@ -967,6 +984,7 @@ f$hypothesis <- f$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) %>% 
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+   rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -978,7 +996,7 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%  
+    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
   flextable() %>%
   theme_apa()
 ```
@@ -1169,44 +1187,6 @@ ggsave("expt1a-dprime.png", width=19, height=8, dpi=300)
 
 ```
 
-```{r}
-#classic SDT
-sdt <- mem_c %>%
-dplyr::mutate(type = "hit",
-type = ifelse(isold==1 & sayold==0, "miss", type),
-type = ifelse(isold==0 & sayold==0, "cr", type), # Correct rejection
-type = ifelse(isold==0 & sayold==1, "fa", type))
-
-sdt <- sdt %>%
-dplyr::group_by(participant, blur, type) %>%
-dplyr::summarise(count = n()) %>%
-tidyr::spread(type, count) # Format data to one row per person
-
-sdt2 <- sdt %>%
-dplyr::group_by(participant, blur)%>%
-dplyr::mutate(hr = hit / (hit+miss),
-fa = fa / (fa+cr)) %>%
-dplyr::mutate(hr=case_when(
-is.na(hr) ~ 0.99,
-TRUE ~ hr),
-fa=case_when(
-is.na(fa) ~ 0.01,
-TRUE ~ fa),
-zhr=qnorm(hr),
-zfa=qnorm(fa),
-dprime = zhr-zfa, 
-crit = -0.5 * (zhr + zfa))%>%
-ungroup()
-
-
-top_mean <- sdt2  %>%  #get means for plot
-   dplyr::group_by(blur)%>%
-   dplyr::summarise(mean1=mean(dprime))
-
-p_mean <-sdt2 %>%  #get means for plot
-    dplyr::group_by(participant, blur)%>%
-     dplyr::summarise(mean1=mean(dprime))
-```
 
 Experiment 1A successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory.
 
@@ -1338,6 +1318,7 @@ c$hypothesis <- c$hypothesis %>%
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis) %>%
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+   rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -1349,7 +1330,7 @@ acc_exp1b <- tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% 
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
   flextable() %>%
   theme_apa()
 
@@ -1467,6 +1448,7 @@ i$hypothesis <- i$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis, h$hypothesis, i$hypothesis) %>% 
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+   rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -1478,7 +1460,7 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>% 
+    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
    flextable() %>%
   theme_apa()
 
@@ -1601,6 +1583,7 @@ f$hypothesis <- f$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) %>% 
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+   rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -1612,7 +1595,7 @@ tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%  
+    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
   flextable() %>%
   theme_apa()
 
@@ -2114,6 +2097,7 @@ g$hypothesis <- g$hypothesis %>%
 
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) %>%
     mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+   rename("Mean" = "Estimate") %>%
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
@@ -2124,7 +2108,7 @@ acc_exp2 <- tab %>%
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Estimate, SE, `90% CrI`,ER, Post.Prob)%>%  
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
   flextable() %>%
   theme_apa()
 
@@ -2257,7 +2241,8 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) 
   select(-Star) %>%
   mutate(`90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
   rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-  select(Hypothesis, Parameter, Estimate, SE, `90% CrI`, ER, Post.Prob)
+   rename("Mean" = "Estimate") %>%
+  select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, Post.Prob)
 
 # Format and display the table
 tab %>%
@@ -2391,7 +2376,7 @@ v_wf <- v %>%
   mutate(Blur = ifelse(Blur=="C", "Clear", ifelse(Blur=="HB", "High Blur", "Low Blur")))%>% 
   ungroup()
 
-v_wf %>% select(Blur, q, diff) %>% 
+v_wf %>% select(Blur, q, Diff) %>% 
   pivot_wider(names_from="q", values_from="Diff") %>% 
   mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
    flextable() %>%
