@@ -73,7 +73,7 @@ cd Disfluency_Ms
 ```
 - You can also clone the repository from Github using the SSH and opeining a project in RStudio/Positron. 
   
-<img width="947" alt="Screenshot 2025-01-04 at 5 03 10 PM" src="https://github.com/user-attachments/assets/ffc9afd1-0d42-40e0-84b5-a62b95927791" />
+<img width="2083" alt="Screenshot 2025-03-18 at 1 57 14 PM" src="https://github.com/user-attachments/assets/003c7cfa-393b-408d-8aa6-99bb25f0adfe" />
  
 #### 2. Open the Project
 Open the R project file `Disfluency_Ms.Rproj` in RStudio or Positron.
