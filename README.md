@@ -92,7 +92,7 @@ Once in the shell, You can:
 1. Reproduce the manuscript
 
 ```
-quarto render "~/_manuscript/Disfluency_Ms.qmd"
+quarto render "~/_manuscript/Disfluency_Modeling_Ms.qmd"
 ```
 
 
@@ -123,32 +123,30 @@ Finally, it’s also possible to forget {rix} and instead run everything using R
 
 ```
 # these are the packages nix uses to build the manuscript 
-r_pkgs = c(
-    "svglite",
-    "tidyverse",
-    "formatR", 
-    "flextable", 
-    "knitr",
-    "webshot2", 
-    "webshot", 
-    "networkD3",
-    "buildmer",
-    "tinytable",
-    "quarto",
-    "remotes",
-    "janitor",
-    "readxl",
-    "here",
-    "gtsummary",
-    "geomtextpath",
-    "permutes",
-    "permuco",
-    "cowplot",
-    "foreach",
-    "doParallel", 
-    "ggokabeito"
-  ),
+
 ```
+library(easystats)
+library(tidyverse)
+library(knitr)
+library(cowplot)
+library(here)
+library(data.table)
+library(ggrepel)
+library(brms)
+library(ggdist)
+library(emmeans)
+library(tidylog)
+library(tidybayes)
+library(hypr)
+library(cowplot)
+library(tidyverse)
+library(colorspace)
+library(ragg)
+library(cowplot)
+library(ggtext)
+library(ggdist)
+library(flextable)
+library(cmdstanr) # install from github
 
 ```
 remotes::install_github("jgeller112/webgazeR")
@@ -156,11 +154,13 @@ library(webgazeR)
 ```
 
 1. Download the repository from Github
-   <img width="961" alt="Screenshot 2025-01-04 at 5 00 54 PM" src="https://github.com/user-attachments/assets/09523d6c-1a7a-435f-9dce-bb099df7adcd" />
 
-2.  Open `L2_VWP_Webcam.Rproj` to open a new RStudio project.
+<img width="2083" alt="Screenshot 2025-03-18 at 1 57 14 PM" src="https://github.com/user-attachments/assets/003c7cfa-393b-408d-8aa6-99bb25f0adfe" />
 
-2.  Open `/_manuscript/L2_VWP_Webcam_ET.qmd`
+
+2.  Open `Disfluency_Ms.Rproj` to open a new RStudio project.
+
+3.  Open `/_manuscript/Disfluency_Modeling_Ms.qmd`
 
 4.  Run each chunk in the manuscript
 
