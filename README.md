@@ -120,10 +120,24 @@ Finally, it’s also possible to forget {rix} and instead run everything using R
   - R 4.4.1 (or later) and RStudio.
 
   - Quarto 1.6.1 (or later)
+  
+  - A C++ compiler and GNU Make. Complete instructions for macOS, Windows, and Linux are available at CmdStan’s documentation. In short, do this:
+
+    - macOS: Run this terminal command and follow the dialog that pops up after to install macOS’s Command Line Tools:
 
 ```
-# these are the packages nix uses to build the manuscript 
+  xcode-select --install
+```
 
+Windows: Download and install Rtools from CRAN
+
+Linux: Run this terminal command (depending on your distribution; this assumes Ubuntu/Debian):
+```
+sudo apt install g++ make
+(macOS only): Download and install XQuartz
+```
+
+# these are the packages nix uses to build the manuscript 
 ```
 library(easystats)
 library(tidyverse)
@@ -146,11 +160,15 @@ library(cowplot)
 library(ggtext)
 library(ggdist)
 library(flextable)
-library(cmdstanr) # install from github
+```
 
 ```
-remotes::install_github("jgeller112/webgazeR")
-library(webgazeR)
+install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev", "https://packagemanager.posit.co/cran/latest"))
+```
+
+```
+# install cmdstan 
+cmdstanr::install_cmdstan()
 ```
 
 1. Download the repository from Github
