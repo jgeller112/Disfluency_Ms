@@ -537,7 +537,7 @@ acc_means <- emmeans(acc_c, specs="blur", type="response")
 
 ```{r}
 #| label: tbl-acc1a
-#| tbl-cap: Posterior accuracy estimates in Experiment 1a for each hypothesis.
+#| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1a 
 
 a <- hypothesis(acc_c, "blur1 <  0") 
 
@@ -667,7 +667,7 @@ fit_c <- read_rds("https://osf.io/82nre/download")
 
 ```{r}
 #| label: tbl-exgauss1a
-#| tbl-cap: "Posterior Ex-Guassian estimates for each hypothesis in Experiment 1a"
+#| tbl-cap: "Summary of posterior fixed effect estimates for Ex-Gaussian parameter hypotheses in Experiment 1a"
 
 # Compute hypothesis tests
 a <- hypothesis(fit_c, "blurHB - blurC > 0", dpar="mu") 
@@ -964,7 +964,7 @@ fit_wiener <- read_rds("https://osf.io/hqauz/download")
 
 ```{r}
 #| label: tbl-diffexpt1a
-#| tbl-cap: "Posterior DDM estimates for each hypothesis in Experiment 1a"
+#| tbl-cap: "Summary of posterior fixed effect estimates for DDM parameter hypotheses in Experiment 1a"
 
 # Compute hypothesis tests
 a <- hypothesis(fit_wiener, "blurHB - blurC < 0", dpar="mu")
@@ -1295,7 +1295,7 @@ acc_means <- emmeans(fit_acc_noc, specs="blur", type="response") %>%
 
 ```{r}
 #| label: tbl-acc1b
-#| tbl-cap: Posterior accuracy estimates in Experiment 1b for each hypothesis.
+#| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1b 
 #| 
 
 a <- hypothesis(fit_acc_noc, "blur1 <  0") 
@@ -1422,7 +1422,7 @@ fit_exg1 <- read_rds("https://osf.io/egqyt/download")
 
 ```{r}
 #| label: tbl-exgauss1b
-#| tbl-cap: "Posterior Ex-Guassian estimates for each hypotheiss in Experiment 1b"
+#| tbl-cap: "Summary of posterior fixed effect estimates for  Ex-Guassian parmater hypotheses in Experiment 1b"
 #| 
 # Compute hypothesis tests
 a <- hypothesis(fit_exg1, "blurHB - blurC > 0", dpar="mu") 
@@ -1563,7 +1563,7 @@ fit_wiener <- read_rds("https://osf.io/3j98t/download")
 
 ```{r}
 #| label: tbl-diffexpt1b
-#| tbl-cap: "Posterior DDM estimates for each hypothesis in Experiment 1b"
+#| tbl-cap: "Summary of posterior fixed effect estimates for DDM parameter hypotheses in Experiment 1b"
 
 # Compute hypothesis tests
 a <- hypothesis(fit_wiener, "blurHB - blurC < 0", dpar="mu")
@@ -2045,7 +2045,7 @@ emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") %>%
 
 ```{r}
 #| label: tbl-acc2
-#| tbl-cap: "Posterior accuracy estimates for each hypothesis in Experiment 2"
+#| tbl-cap: "Summary of posterior fixed effect for accuracy hypothses in Experiment 2"
 
 a = hypothesis(fit_acc_sc , "blur1 < 0")
 
@@ -2208,7 +2208,8 @@ fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
 
 ```{r}
 #| label: tbl-expt2summary
-#| tbl-cap: "Posterior Ex-Guassian estimates for each hypothesis in Experiment 2"
+#| tbl-cap: "Summary of posterior fixed effect estimates for Posterior Ex-Guassian parameter hypothses  in Experiment 2"
+#| 
 # Run hypothesis tests and ensure consistent formatting
 a = hypothesis(fit_sc , "blur1 > 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 b = hypothesis(fit_sc , "blur2 > 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
