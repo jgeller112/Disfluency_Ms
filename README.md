@@ -17,7 +17,7 @@ Authors:
 - **`.gitignore`**: Specifies files and directories for Git to ignore.
 - **`Disfluency_ms.Rproj`**: RStudio project file.
 - **`README.md`**: Provides an overview of the project.
-- **`create_env_dev.R`**: Script to set up the nix environment
+- **`create_dev_env.R`**: Script to set up the nix environment
 - **`default.nix`**: Configuration file for the Nix package manager.
 - **`.project`**: Project configuration file.
 
