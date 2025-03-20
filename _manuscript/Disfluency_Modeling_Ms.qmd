@@ -52,6 +52,15 @@ author:
      - id: id3
        name: "Harrisburg University of Science and Technology"
        department: Department of Cognitive Analytics (Analytics)
+  - name: Dominique Makowski
+    orcid: 0000-0002-9689-4189
+    roles: 
+      - editing
+      - formal analysis
+    affiliations:
+     - id: id3
+       name: "Harrisburg University of Science and Technology"
+       department: Department of Cognitive Analytics (Analytics)
 author-note:
   status-changes: 
     affiliation-change: ~
