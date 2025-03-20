@@ -9,7 +9,7 @@ Authors:
 - Jason Geller (drjasongeller@gmail.com)
 - Pablo Gomez
 - Erin Buchanan
-- Dominique 
+- Dominique Makowski
 
 ## Overview
 
