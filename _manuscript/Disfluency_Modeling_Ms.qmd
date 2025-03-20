@@ -141,6 +141,7 @@ library(ggdist)
 library(modelbased)
 library(flextable)
 library(cmdstanr)
+library(ggokabeito)
 
 
 options(timeout = 3000)
