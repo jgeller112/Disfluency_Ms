@@ -31,7 +31,7 @@ Authors:
 
 ## Data
 
-- All data for this manuscript can be found in the OSF repo. The size of is much too large to store on Github. 
+- All data for this manuscript can be found in the OSF repo. Large amounts of data and size of model obects is far too large to store on Github. 
  
 # Reproducing the Manuscript
 
