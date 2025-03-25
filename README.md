@@ -137,30 +137,32 @@ sudo apt install g++ make
 (macOS only): Download and install XQuartz
 ```
 
-# these are the packages nix uses to build the manuscript 
-```
-library(easystats)
-library(tidyverse)
-library(knitr)
-library(cowplot)
-library(here)
-library(data.table)
-library(ggrepel)
-library(brms)
-library(ggdist)
-library(emmeans)
-library(tidylog)
-library(tidybayes)
-library(hypr)
-library(cowplot)
-library(tidyverse)
-library(colorspace)
-library(ragg)
-library(cowplot)
-library(ggtext)
-library(ggdist)
-library(flextable)
-```
+# Packages Used
+| Package      | Version | Citation                                                                 |
+|--------------|---------|--------------------------------------------------------------------------|
+| base         | 4.4.3   | R Core Team (2025)                                                       |
+| brms         | 2.21.0  | Bürkner (2017); Bürkner (2018); Bürkner (2021)                          |
+| cmdstanr     | 0.8.1   | Gabry et al. (2024)                                                      |
+| colorspace   | 2.1.1   | Zeileis, Hornik, and Murrell (2009); Stauffer et al. (2009); Zeileis et al. (2020) |
+| cowplot      | 1.1.3   | Wilke (2024)                                                             |
+| data.table   | 1.17.0  | T. Barrett et al. (2025)                                                 |
+| easystats    | 0.7.4   | Lüdecke et al. (2022)                                                    |
+| emmeans      | 1.10.4  | Lenth (2024)                                                             |
+| flextable    | 0.9.6   | Gohel and Skintzos (2024)                                                |
+| ggdist       | 3.3.2   | Kay (2024b); Kay (2024a)                                                 |
+| ggeffects    | 1.7.0   | Lüdecke (2018)                                                           |
+| ggokabeito   | 0.1.0   | M. Barrett (2021)                                                        |
+| ggrepel      | 0.9.6   | Slowikowski (2024)                                                       |
+| ggtext       | 0.1.2   | Wilke and Wiernik (2022)                                                 |
+| here         | 1.0.1   | Müller (2020)                                                            |
+| hypr         | 0.2.8   | Schad et al. (2019); Rabe et al. (2020)                                 |
+| knitr        | 1.50    | Xie (2014); Xie (2015); Xie (2025)                                       |
+| modelbased   | 0.10.0  | Makowski et al. (2020)                                                   |
+| parameters   | 0.24.2  | Lüdecke et al. (2020)                                                    |
+| rmarkdown    | 2.29    | Xie, Allaire, and Grolemund (2018); Xie, Dervieux, and Riederer (2020); Allaire et al. (2024) |
+| tidybayes    | 3.0.7   | Kay (2024c)                                                              |
+| tidylog      | 1.1.0   | Elbers (2024)                                                            |
+| tidyverse    | 2.0.0   | Wickham et al. (2019)                                                    |
 
 ```
 install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev", "https://packagemanager.posit.co/cran/latest"))
