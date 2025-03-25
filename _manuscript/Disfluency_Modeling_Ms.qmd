@@ -302,12 +302,12 @@ Typically, there are four observable patterns. No observable difference occurs w
 #| label: tbl-predictions
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
 
-# Create the data frame
+# Create the data frame using Unicode symbols
 data <- data.frame(
   Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
   Description = rep(c(
-    "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing", 
-    "Perceptual disfluency affects the word recognition process", 
+    "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing",
+    "Perceptual disfluency affects the word recognition process",
     "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
   ), each = 2),
   Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
@@ -315,28 +315,29 @@ data <- data.frame(
                "High blur vs. Low blur/Clear", "Low blur vs. Clear",
                "High blur vs. Low blur/Clear", "Low blur vs. Clear"),
   ExGaussianPredictions = c(
-    "$\\mu$: No difference<br>$\\tau$: Increase", "$\\mu$: No difference<br>$\\tau$: Increase",
-    "$\\mu$: Increase<br>$\\tau$: No difference", "$\\mu$: Increase<br>$\\tau$: No difference",
-    "$\\mu$: Increase<br>$\\tau$: Increase", "$\\mu$: Increase<br>$\\tau$: Increase"
+    "μ: No difference\nτ: Increase", "μ: No difference\nτ: Increase",
+    "μ: Increase\nτ: No difference", "μ: Increase\nτ: No difference",
+    "μ: Increase\nτ: Increase", "μ: Increase\nτ: Increase"
   ),
   DDMPredictions = c(
-    "$v$: No difference<br>$T_{er}$: Increase", "$v$: No difference<br>$T_{er}$: Increase",
-    "$v$: Increase<br>$T_{er}$: No difference", "$v$: Increase<br>$T_{er}$: No difference",
-    "$v$: Increase<br>$T_{er}$: Increase", "$v$: No Increase<br>$T_{er}$: Increase"
+    "v: No difference\nTₑᵣ: Increase", "v: No difference\nTₑᵣ: Increase",
+    "v: Increase\nTₑᵣ: No difference", "v: Increase\nTₑᵣ: No difference",
+    "v: Increase\nTₑᵣ: Increase", "v: No Increase\nTₑᵣ: Increase"
   ),
   QuantilePlots = c(
     "Late Difference",
-    "Late Difference", 
-    "Complete Shift", 
-    "No Difference", 
-    "Complete Shift + Late Differences", 
-    "Early difference"
-  ), 
+    "Late Difference",
+    "Complete Shift",
+    "No Difference",
+    "Complete Shift + Late Differences",
+    "Early Difference"
+  ),
   RecognitionMemoryPredictions = c(
     "No difference", "No difference",
     "High blurred > Low blurred/Clear", "Low blurred > Clear",
     "High blurred > Low blurred/Clear", "Low blurred = Clear"
-  )
+  ),
+  stringsAsFactors = FALSE
 ) %>%
   mutate(
     Account = ifelse(duplicated(Account), "", Account),
@@ -344,7 +345,7 @@ data <- data.frame(
     Loci = ifelse(duplicated(Loci), "", Loci)
   )
 
-# Create the flextable
+# Create flextable
 ft <- flextable(data) %>%
   set_header_labels(
     Account = "Account",
@@ -356,9 +357,11 @@ ft <- flextable(data) %>%
     QuantilePlots = "Quantile Plots",
     RecognitionMemoryPredictions = "Recognition Memory Predictions"
   ) %>%
-  merge_v(j = c("Account", "Description", "Loci")) %>%  # Merge duplicate cells for readability
+  merge_v(j = c("Account", "Description", "Loci")) %>%
   align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") %>%
-  align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), align = "center", part = "body") %>%
+  align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"),
+        align = "center", part = "body") %>%
+  line_break(j = c("ExGaussianPredictions", "DDMPredictions")) %>%
   bold(part = "header") %>%
   autofit()
 
