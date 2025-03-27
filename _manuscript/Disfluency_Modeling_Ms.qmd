@@ -52,15 +52,6 @@ author:
      - id: id3
        name: "Harrisburg University of Science and Technology"
        department: Department of Cognitive Analytics (Analytics)
-  - name: Dominique Makowski
-    orcid: 0000-0002-9689-4189
-    roles: 
-      - editing
-      - formal analysis
-    affiliations:
-     - id: id3
-       name: "Harrisburg University of Science and Technology"
-       department: Department of Cognitive Analytics (Analytics)
 author-note:
   status-changes: 
     affiliation-change: ~
@@ -150,7 +141,6 @@ library(ggdist)
 library(modelbased)
 library(flextable)
 library(cmdstanr)
-library(ggokabeito)
 
 
 options(timeout = 3000)
@@ -304,66 +294,65 @@ Typically, there are four observable patterns. No observable difference occurs w
 
 # Create the data frame using Unicode symbols
 data <- data.frame(
-  Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
-  Description = rep(c(
-    "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing",
-    "Perceptual disfluency affects the word recognition process",
-    "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
-  ), each = 2),
-  Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
-  Contrast = c("High blur vs. Low blur/Clear", "Low blur vs. Clear",
-               "High blur vs. Low blur/Clear", "Low blur vs. Clear",
-               "High blur vs. Low blur/Clear", "Low blur vs. Clear"),
-  ExGaussianPredictions = c(
-    "μ: No difference\nτ: Increase", "μ: No difference\nτ: Increase",
-    "μ: Increase\nτ: No difference", "μ: Increase\nτ: No difference",
-    "μ: Increase\nτ: Increase", "μ: Increase\nτ: Increase"
-  ),
-  DDMPredictions = c(
-    "v: No difference\nTₑᵣ: Increase", "v: No difference\nTₑᵣ: Increase",
-    "v: Increase\nTₑᵣ: No difference", "v: Increase\nTₑᵣ: No difference",
-    "v: Increase\nTₑᵣ: Increase", "v: No Increase\nTₑᵣ: Increase"
-  ),
-  QuantilePlots = c(
-    "Late Difference",
-    "Late Difference",
-    "Complete Shift",
-    "No Difference",
-    "Complete Shift + Late Differences",
-    "Early Difference"
-  ),
-  RecognitionMemoryPredictions = c(
-    "No difference", "No difference",
-    "High blurred > Low blurred/Clear", "Low blurred > Clear",
-    "High blurred > Low blurred/Clear", "Low blurred = Clear"
-  ),
-  stringsAsFactors = FALSE
+    Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
+    Description = rep(c(
+        "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing", 
+        "Perceptual disfluency affects the word recognition process", 
+        "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
+    ), each = 2),
+    Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
+    Contrast = c("High blur vs. Low blur/Clear", "Low blur vs. Clear",
+                 "High blur vs. Low blur/Clear", "Low blur vs. Clear",
+                 "High blur vs. Low blur/Clear", "Low blur vs. Clear"),
+    ExGaussianPredictions = c(
+        "μ: No difference\nτ: Increase", "μ: No difference\nτ: Increase",
+        "μ: Increase\nτ: No difference", "μ: Increase\nτ: No difference",
+        "μ: Increase\nτ: Increase", "μ: Increase\nτ: Increase"
+    ),
+    DDMPredictions = c(
+        "v: No difference\nTₑᵣ: Increase", "v: No difference\nTₑᵣ: Increase",
+        "v: Increase\nTₑᵣ: No difference", "v: Increase\nTₑᵣ: No difference",
+        "v: Increase\nTₑᵣ: Increase", "v: No Increase\nTₑᵣ: Increase"
+    ),
+    QuantilePlots = c(
+        "Late Difference",
+        "Late Difference", 
+        "Complete Shift", 
+        "No Difference", 
+        "Complete Shift + Late Differences", 
+        "Early Difference"
+    ), 
+    RecognitionMemoryPredictions = c(
+        "No difference", "No difference",
+        "High blurred > Low blurred/Clear", "Low blurred > Clear",
+        "High blurred > Low blurred/Clear", "Low blurred = Clear"
+    ),
+    stringsAsFactors = FALSE
 ) %>%
-  mutate(
-    Account = ifelse(duplicated(Account), "", Account),
-    Description = ifelse(duplicated(Description), "", Description),
-    Loci = ifelse(duplicated(Loci), "", Loci)
-  )
+    mutate(
+        Account = ifelse(duplicated(Account), "", Account),
+        Description = ifelse(duplicated(Description), "", Description),
+        Loci = ifelse(duplicated(Loci), "", Loci)
+    )
 
 # Create flextable
 ft <- flextable(data) %>%
-  set_header_labels(
-    Account = "Account",
-    Description = "Description",
-    Loci = "Loci",
-    Contrast = "Contrast",
-    ExGaussianPredictions = "Ex-Gaussian Predictions",
-    DDMPredictions = "Drift Diffusion Predictions",
-    QuantilePlots = "Quantile Plots",
-    RecognitionMemoryPredictions = "Recognition Memory Predictions"
-  ) %>%
-  merge_v(j = c("Account", "Description", "Loci")) %>%
-  align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") %>%
-  align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"),
-        align = "center", part = "body") %>%
-  line_break(j = c("ExGaussianPredictions", "DDMPredictions")) %>%
-  bold(part = "header") %>%
-  autofit()
+    set_header_labels(
+        Account = "Account",
+        Description = "Description",
+        Loci = "Loci",
+        Contrast = "Contrast",
+        ExGaussianPredictions = "Ex-Gaussian Predictions",
+        DDMPredictions = "Drift Diffusion Predictions",
+        QuantilePlots = "Quantile Plots",
+        RecognitionMemoryPredictions = "Recognition Memory Predictions"
+    ) %>%
+    merge_v(j = c("Account", "Description", "Loci")) %>%
+    align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") %>%
+    align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), 
+          align = "center", part = "body") %>%
+    bold(part = "header") %>%
+    autofit()
 
 # Print the table
 ft
@@ -396,7 +385,7 @@ Blurred stimuli were processed through the imager package in R [@imager] and a p
 
 ```{r}
 #| label: fig-blur
-#| fig-cap: Clear (left), high blur (15% blur) (right), and low blur (10%) (left) examples 
+#| fig-cap: Clear (left), low  blur (10% blur) (right), and high blur (15% blur) (center) examples 
 # Combine images in one figure
 include_graphics("figures/blurexp.png")
 
@@ -450,7 +439,7 @@ blur_acc_new<- blur_acc %>%
 
 ```
 
-The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point points (`r 1-dim(blur_acc_new)[1]/dim(blur_acc)[1]` %)
+The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point points `r 1-dim(blur_acc_new)[1]/dim(blur_acc)[1]` %
 
 ```{r}
 #| echo: false
@@ -586,6 +575,7 @@ acc_exp1a <- tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
   flextable() %>%
+  autofit() %>% 
   theme_apa()
 
 acc_exp1a
@@ -720,6 +710,7 @@ tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Parameter,Mean, SE, `90% CrI`,ER, Post.Prob)%>%
   flextable() %>%
+  autofit() %>%
   theme_apa()
 
 ```
@@ -1011,6 +1002,7 @@ tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
   flextable() %>%
+  autofit() %>% 
   theme_apa()
 ```
 
@@ -1200,8 +1192,7 @@ ggsave("expt1a-dprime.png", width=19, height=8, dpi=300)
 
 ```
 
-
-Experiment 1A successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory.
+Experiment 1a successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory.
 
 Adding to this, we utilized cognitive and mathematical modeling to gain further insights into the mechanisms underlying the perceptual disfluency effect. Descriptively, high blurred words induced a more pronounced shift in the RT distribution (μ) and exhibited a higher degree of skew (τ) compared to clear and low blurred words. However, low blurred words did not differ compared to clear words on $\mu$ or $\beta$. These patterns can be clearly seen in our quantile delta plots in Fig. 3.
 
@@ -1345,6 +1336,7 @@ acc_exp1b <- tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
   flextable() %>%
+  autofit() %>% 
   theme_apa()
 
 acc_exp1b
@@ -1352,7 +1344,7 @@ acc_exp1b
 
 ```
 
-A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`. Low blurred words were better identified ($M$ = .$M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`.
+A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`.
 
 ## RTs: Ex-Gaussian
 
@@ -1374,7 +1366,7 @@ blur_rt_new <- blur_rt %>%
 
 ```
 
-The analysis of RTs (correct trials and words) is is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r 1-dim(blur_rt_new)[1]/dim(blur_rt)[1]` %)
+The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r 1-dim(blur_rt_new)[1]/dim(blur_rt)[1]` %)
 
 ```{r}
 #hypothesis
@@ -1435,7 +1427,7 @@ fit_exg1 <- read_rds("https://osf.io/egqyt/download")
 
 ```{r}
 #| label: tbl-exgauss1b
-#| tbl-cap: "Summary of posterior fixed effect estimates for  Ex-Guassian parmater hypotheses in Experiment 1b"
+#| tbl-cap: "Summary of posterior fixed effect estimates for Ex-Guassian parmater hypotheses in Experiment 1b"
 #| 
 # Compute hypothesis tests
 a <- hypothesis(fit_exg1, "blurHB - blurC > 0", dpar="mu") 
@@ -1475,6 +1467,7 @@ tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
    flextable() %>%
+  autofit() %>%
   theme_apa()
 
 ```
@@ -1610,6 +1603,7 @@ tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
   flextable() %>%
+  autofit() %>% 
   theme_apa()
 
 ```
@@ -1960,7 +1954,7 @@ This study was preregistered https://osf.io/kjq3t. All raw and summary data, mat
 
 ## Participants
 
-We preregistered a sample size of 432, which is twice the size of Experiments 1a and 1b. This sample size was chosen based on the interaction effect we aimed to test. All participants were recruited through SONA and Prolific. Participants recruited via Prolific were compensated $12 per hour. On Prolific, we applied built-in filters to include only monolingual, native English-speaking Americans currently residing in the United States, with normal or corrected-to-normal vision. Participants recruited via SONA were given course credit for their participation. 
+We preregistered a sample size of 432, which is twice the size of Experiments 1a and 1b. This sample size was chosen based on the interaction effect we aimed to test. All participants were recruited through SONA and Prolific. Participants recruited via Prolific were compensated \$12 per hour. On Prolific, we applied built-in filters to include only monolingual, native English-speaking Americans currently residing in the United States, with normal or corrected-to-normal vision. Participants recruited via SONA were given course credit for their participation.
 
 ## Materials
 
@@ -2123,6 +2117,7 @@ acc_exp2 <- tab %>%
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
   flextable() %>%
+  autofit() %>%
   theme_apa()
 
 acc_exp2
@@ -2159,6 +2154,7 @@ p_rt %>% group_by(blur) %>%
   pivot_wider(names_from=frequency, values_from=rt_ms) %>%
   mutate(`Frequency Effect`=round(LOW-HIGH)) %>%
    flextable() %>%
+  autofit() %>% 
   theme_apa()
 
 ```
@@ -2261,6 +2257,7 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) 
 # Format and display the table
 tab %>%
   flextable() %>%
+  autofit() %>% 
   theme_apa()
 
 ```
@@ -2394,6 +2391,7 @@ v_wf %>% select(Blur, q, Diff) %>%
   pivot_wider(names_from="q", values_from="Diff") %>% 
   mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
    flextable() %>%
+  autofit() %>% 
   theme_apa()
 
 ```
