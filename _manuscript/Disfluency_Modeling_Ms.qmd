@@ -349,7 +349,6 @@ ft <- flextable(data) |>
 
 # Print the table
 ft
-
 ```
 
 # Experiment 1a: Context Reinstatement
@@ -360,11 +359,11 @@ In Experiment 1a, we collected RTs from a lexical decision task (LDT) during enc
 
 ### Transparency and Openness
 
-This study complies with transparency and openness guidelines. The preregistered analysis plan for this experiment can be found here: https://osf.io/q3fjn. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiments 1 can be found at https://osf.io/6sy7k/. All deviations and changes from the preregsitraion are noted herein.
+This study complies with transparency and openness guidelines. The preregistered analysis plan for this experiment can be found here: https://osf.io/q3fjn. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiments 1 can be found at https://osf.io/6sy7k/. All deviations and changes from the preregistration are noted herein.
 
 ## Participants
 
-We preregistered a sample size of 216. All participants were recruited through the university subject pool (SONA). A design with a sample size of 216 can detect effect sizes of δ≥ 0.2 with a probability of at least 0.90, assuming a one-sided criterion for detection that allows for a maximum Type I error rate of α=0.05. Per our exclusion criteria, we retained participants that were native English speakers, were over the age of 17, had overall accuracy on the LDT greater than 80%, and did not complete the experiment more than once. Due to our exclusion criteria, we oversampled participants. Because of this we randomly chose 36 participants from each list to reach our target sample size.
+We preregistered a sample size of 216. All participants were recruited through the university subject pool (SONA). A design with a sample size of 216 can detect effect sizes of δ ≥ 0.2 with a probability of at least 0.90, assuming a one-sided criterion for detection that allows for a maximum Type I error rate of α = 0.05. Per our exclusion criteria, we retained participants that were native English speakers, were over the age of 17, had overall accuracy on the LDT greater than 80%, and did not complete the experiment more than once. Due to our exclusion criteria, we oversampled participants. Because of this we randomly chose 36 participants from each list to reach our target sample size.
 
 ## Apparatus and stimuli
 
@@ -381,7 +380,6 @@ Blurred stimuli were processed through the imager package in R [@imager] and a p
 #| fig-cap: Clear (left), low  blur (10% blur) (right), and high blur (15% blur) (center) examples 
 # Combine images in one figure
 include_graphics("figures/blurexp.png")
-
 ```
 
 ## Design
@@ -394,7 +392,7 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 ## Analysis Plan
 
-All models were fit using The Stan modeling language [@grant2017] with the `brms` [@brms] package in in R (v.4.4.2; @R). For all reported models, we fit maximal random-effect structures justified by the design (Barr et al., 2013). This included random intercepts for participants and items, and a random slope by blurring level for each varying random intercept. Contrast codes (effects coding) for each variable were created using the `hypr` package in R [@hypr]. We fit the models twice: Once with contrast codes for high blur vs. clear and for high blur vs. Low blur and once with the low blur vs. clear contrast.
+All models were fit using The Stan modeling language [@grant2017] with the `brms` [@brms] package in in R (v.4.4.2; @R). For all reported models, we fit maximal random-effect structures justified by the design (Barr et al., 2013) *[REF should be bibtex]*. This included random intercepts for participants and items, and a random slope by blurring level for each varying random intercept. Contrast codes (effects coding) for each variable were created using the `hypr` package in R [@hypr]. We fit the models twice: Once with contrast codes for high blur vs. clear and for high blur vs. Low blur and once with the low blur vs. clear contrast.
 
 In all experiments reported here, the statistical model was run with four chains of 5,000 Markov chain Monte Carlo iterations (For the DDM we fit a model with 2,000 chains to reduce computational time), with 1,000-iteration warm-ups for 4 chains (16,000 samples in total). Convergence and stability of the Bayesian sampling is quantified by the Rˆ diagnostics below 1.01 and Effective Sample SIze (ESS) greater than 1000 [@brms]. For both the RT data and accuracy data, we report our models with with weakly-informative priors for the population-level parameters. Using a weakly-informative prior as opposed to a default (which is an uniform prior where all effects are equally likely) allows for the calculation of evidence ratio (Bayes Factor) for one-sides tests. For the ex-Gaussian analysis we used a weak prior (i.e., N \~ (0, 100)). For the population-level effects in the accuracy and signal detection analyses, we used a Cauchy distribution with the mean of 0 and scale of 0.35 (cauchy \~ 0, 0.35)) recommended by [@kinoshita2023] for logistic regression.
 
@@ -423,7 +421,7 @@ All models presented no divergences, and all chains mixed well and produced comp
 ```{r}
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
-blur_acc <- read_csv("https://osf.io/xv5bd/download") |>
+blur_acc <- read.csv("https://osf.io/xv5bd/download") |>
     dplyr::filter(lex=="m")
 
 
