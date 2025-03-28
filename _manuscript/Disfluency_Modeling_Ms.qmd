@@ -321,7 +321,7 @@ data <- data.frame(
         "High blurred > Low blurred/Clear", "Low blurred = Clear"
     ),
     stringsAsFactors = FALSE
-) %>%
+) |>
     mutate(
         Account = ifelse(duplicated(Account), "", Account),
         Description = ifelse(duplicated(Description), "", Description),
@@ -329,7 +329,7 @@ data <- data.frame(
     )
 
 # Create flextable
-ft <- flextable(data) %>%
+ft <- flextable(data) |>
     set_header_labels(
         Account = "Account",
         Description = "Description",
@@ -339,12 +339,12 @@ ft <- flextable(data) %>%
         DDMPredictions = "Drift Diffusion Predictions",
         QuantilePlots = "Quantile Plots",
         RecognitionMemoryPredictions = "Recognition Memory Predictions"
-    ) %>%
-    merge_v(j = c("Account", "Description", "Loci")) %>%
-    align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") %>%
+    ) |>
+    merge_v(j = c("Account", "Description", "Loci")) |>
+    align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") |>
     align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), 
-          align = "center", part = "body") %>%
-    bold(part = "header") %>%
+          align = "center", part = "body") |>
+    bold(part = "header") |>
     autofit()
 
 # Print the table
@@ -423,11 +423,11 @@ All models presented no divergences, and all chains mixed well and produced comp
 ```{r}
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
-blur_acc <- read_csv("https://osf.io/xv5bd/download") %>%
+blur_acc <- read_csv("https://osf.io/xv5bd/download") |>
     dplyr::filter(lex=="m")
 
 
-blur_acc_new<- blur_acc %>%
+blur_acc_new<- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 
 ```
@@ -537,38 +537,38 @@ acc_means <- emmeans(acc_c, specs="blur", type="response")
 a <- hypothesis(acc_c, "blur1 <  0") 
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>%
+a$hypothesis <- a$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 b <- hypothesis(acc_c, "blur2 <  0")
 
 # Ensure rounding applies only to numeric columns
-b$hypothesis <- b$hypothesis %>%
+b$hypothesis <- b$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 c<- hypothesis(acc_lb, "blur1 =  0")
 
 # Ensure rounding applies only to numeric columns
-c$hypothesis <- c$hypothesis %>%
+c$hypothesis <- c$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis) %>%
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-  rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+  rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 
-acc_exp1a <- tab %>% 
-    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur - Low Blur < 0", "Low Blur - Clear =  0 ")) %>% 
+acc_exp1a <- tab |> 
+    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur - Low Blur < 0", "Low Blur - Clear =  0 ")) |> 
     mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
-  flextable() %>%
-  autofit() %>% 
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|> 
+  flextable() |>
+  autofit() |> 
   theme_apa()
 
 acc_exp1a
@@ -587,12 +587,12 @@ rts <- read_csv("https://osf.io/xv5bd/download")
 
 ```{r}
 
-blur_rt<- rts %>%
-  group_by(participant) %>%
+blur_rt<- rts |>
+  group_by(participant) |>
    dplyr::filter(corr==1, lex=="m")#only include nonwords
 
-blur_rt_new <- blur_rt %>% 
-  dplyr::filter(rt >= .2 & rt <= 2.5)%>% # remove high and low RTs
+blur_rt_new <- blur_rt |> 
+  dplyr::filter(rt >= .2 & rt <= 2.5)|> # remove high and low RTs
     mutate(rt_ms=rt*1000)
 
 ```
@@ -677,33 +677,33 @@ h <- hypothesis(fit_c, "beta_blurHB - beta_blurLB > 0", dpar="beta")
 i <- hypothesis(fit_c, "beta_blurLB - beta_blurC = 0", dpar="c")
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-d$hypothesis <- d$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-e$hypothesis <- e$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-f$hypothesis <- f$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-g$hypothesis <- g$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-h$hypothesis <- h$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-i$hypothesis <- i$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+d$hypothesis <- d$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+e$hypothesis <- e$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+f$hypothesis <- f$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+g$hypothesis <- g$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+h$hypothesis <- h$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+i$hypothesis <- i$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis, h$hypothesis, i$hypothesis) %>% 
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis, h$hypothesis, i$hypothesis) |> 
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
-tab %>% 
-  mutate(Parameter=c("mu","mu", "mu",  "sigma", "sigma", "sigma", "beta", "beta", "beta"))%>%
-  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear >  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0","High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear = 0  "))%>% 
+tab |> 
+  mutate(Parameter=c("mu","mu", "mu",  "sigma", "sigma", "sigma", "beta", "beta", "beta"))|>
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear >  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0","High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear = 0  "))|> 
   mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter,Mean, SE, `90% CrI`,ER, Post.Prob)%>%
-  flextable() %>%
-  autofit() %>%
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Parameter,Mean, SE, `90% CrI`,ER, Post.Prob)|>
+  flextable() |>
+  autofit() |>
   theme_apa()
 
 ```
@@ -723,33 +723,33 @@ quibble <- function(x, q = seq(.1, .9, .2)) {
   tibble(x = quantile(x, q), q = q)
 }
 
-data.quantiles <- rts %>%
-  dplyr::filter(rt >= .2 | rt <= 2.5) %>% 
-  dplyr::group_by(participant,blur,corr) %>%
-  dplyr::filter(lex=="m")%>%
-  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) %>% 
+data.quantiles <- rts |>
+  dplyr::filter(rt >= .2 | rt <= 2.5) |> 
+  dplyr::group_by(participant,blur,corr) |>
+  dplyr::filter(lex=="m")|>
+  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) |> 
   tidyr::unnest(RT)
 
 
-data.delta <- data.quantiles %>%
-  dplyr::filter(corr==1) %>%
-  dplyr::select(-corr) %>%
-  dplyr::group_by(participant, blur, q) %>%
+data.delta <- data.quantiles |>
+  dplyr::filter(corr==1) |>
+  dplyr::select(-corr) |>
+  dplyr::group_by(participant, blur, q) |>
   dplyr::summarize(RT=mean(x))
 
 
 #Delta plots (based on vincentiles)
-vincentiles <- data.quantiles %>%
-  dplyr::filter(corr==1) %>%
-  dplyr::select(-corr) %>%
-  dplyr::group_by(blur,q) %>%
+vincentiles <- data.quantiles |>
+  dplyr::filter(corr==1) |>
+  dplyr::select(-corr) |>
+  dplyr::group_by(blur,q) |>
   dplyr::summarize(RT=mean(x)) 
 
-v=vincentiles %>%
-  dplyr::group_by(blur,q) %>%
+v=vincentiles |>
+  dplyr::group_by(blur,q) |>
   dplyr::summarise(MRT=mean(RT))
 
-v <- v %>%
+v <- v |>
   mutate(blur=ifelse(blur=="HB", "High blur", ifelse(blur=="LB", "Low blur", "Clear")))
 
 
@@ -774,12 +774,12 @@ p <- ggplot(v, aes(x = q, y = MRT*1000, colour = blur, group=blur))+
 
 ```{r}
 
- v_chb <- v %>%
-    dplyr::filter(blur=="Clear" | blur=="High blur") %>%
-    dplyr::group_by(q)%>%
-     mutate(mean_rt = mean(MRT)*1000) %>%
-     ungroup() %>% select(-q) %>%
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+ v_chb <- v |>
+    dplyr::filter(blur=="Clear" | blur=="High blur") |>
+    dplyr::group_by(q)|>
+     mutate(mean_rt = mean(MRT)*1000) |>
+     ungroup() |> select(-q) |>
+   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
     mutate(diff=`High blur`*1000-Clear*1000)
  
  
@@ -800,13 +800,13 @@ scale_y_continuous(breaks=seq(110,440,50)) +
 ```{r}
 
 
- v_clb <- v %>%
-    dplyr::filter(blur=="Clear" | blur=="Low blur") %>%
-    dplyr::group_by(q)%>%
-     mutate(mean_rt = mean(MRT)*1000) %>%
-     ungroup() %>% 
-   select(-q) %>%
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+ v_clb <- v |>
+    dplyr::filter(blur=="Clear" | blur=="Low blur") |>
+    dplyr::group_by(q)|>
+     mutate(mean_rt = mean(MRT)*1000) |>
+     ungroup() |> 
+   select(-q) |>
+   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
     mutate(diff=`Low blur`*1000-Clear*1000)
  
 
@@ -828,13 +828,13 @@ scale_y_continuous(breaks=seq(-10, 70, 10)) +
 
 ```{r}
 
-v_hlb <- v %>%
-  dplyr::filter(blur=="High blur" | blur=="Low blur") %>%
-  dplyr::group_by(q)%>%
-  mutate(mean_rt = mean(MRT)*1000) %>%
-     ungroup() %>% 
-   select(-q) %>%
-  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+v_hlb <- v |>
+  dplyr::filter(blur=="High blur" | blur=="Low blur") |>
+  dplyr::group_by(q)|>
+  mutate(mean_rt = mean(MRT)*1000) |>
+     ungroup() |> 
+   select(-q) |>
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff=`High blur`*1000-`Low blur`*1000)
 
 
@@ -871,9 +871,9 @@ ggsave(filename='./figures/figure_kde.png',width=10,height=12)
 
 ```{r}
 
-blur_rt_diff<- rts %>%
-  group_by(participant) %>%
-  dplyr::filter(rt >= .2 & rt <= 2.5)%>%
+blur_rt_diff<- rts |>
+  group_by(participant) |>
+  dplyr::filter(rt >= .2 & rt <= 2.5)|>
   dplyr::filter(lex=="m")
 
 ```
@@ -972,30 +972,30 @@ e <- hypothesis(fit_wiener, "ndt_blurHB - ndt_blurLB > 0", dpar="ndt")
 f <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC > 0", dpar="ndt")
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-d$hypothesis <- d$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-e$hypothesis <- e$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-f$hypothesis <- f$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+d$hypothesis <- d$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+e$hypothesis <- e$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+f$hypothesis <- f$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) %>% 
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) |> 
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
-tab %>% 
-  mutate(Parameter=c("v","v", "v",  "T_er", "T_er", "T_er")) %>%
-  mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur - Low Blur < 0", "Low Blur - Clear =  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0"))%>% 
+tab |> 
+  mutate(Parameter=c("v","v", "v",  "T_er", "T_er", "T_er")) |>
+  mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur - Low Blur < 0", "Low Blur - Clear =  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0"))|> 
    mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
-  flextable() %>%
-  autofit() %>% 
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
+  flextable() |>
+  autofit() |> 
   theme_apa()
 ```
 
@@ -1061,9 +1061,9 @@ a <- hypothesis(fit_mem1 , "isold1:blur1 > 0")
 b <- hypothesis(fit_mem1 , "isold1:blur2 > 0")
 c <- hypothesis(sd_lb , "isold1:blur1 = 0")
 
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 ```
 
@@ -1081,9 +1081,9 @@ b <- hypothesis(sd_lb , "blur1 < 0")
 c<-  hypothesis(fit_mem1 , "blur1= 0")
 
 
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 ```
 
@@ -1091,20 +1091,20 @@ Low blurred words had a bias towards more "old" responses compared to clear word
 
 ```{r}
 # (Negative) criteria
-emm_m1_c1 <- emmeans(fit_mem1, ~blur) %>% 
+emm_m1_c1 <- emmeans(fit_mem1, ~blur) |> 
   parameters::parameters(centrality = "mean")
 # Differences in (negative) criteria
-emm_m1_c2 <- emmeans(fit_mem1, ~blur) %>% 
-  contrast("pairwise") %>% 
+emm_m1_c2 <- emmeans(fit_mem1, ~blur) |> 
+  contrast("pairwise") |> 
   parameters::parameters(centrality = "mean")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem1, ~isold + blur) %>% 
-  contrast("revpairwise", by = "blur") %>% 
+emm_m1_d1 <- emmeans(fit_mem1, ~isold + blur) |> 
+  contrast("revpairwise", by = "blur") |> 
   parameters::parameters(centrality = "mean")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) %>% 
-  contrast(interaction = c("revpairwise", "pairwise")) %>% 
+emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) |> 
+  contrast(interaction = c("revpairwise", "pairwise")) |> 
   parameters::parameters(centrality = "mean")
 
 ```
@@ -1119,49 +1119,49 @@ emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) %>%
 emm_m1_c1 <- emmeans(fit_mem1, ~blur) 
 
   
-emm_m1_c2 <- emmeans(fit_mem1, ~blur) %>% 
+emm_m1_c2 <- emmeans(fit_mem1, ~blur) |> 
   contrast("pairwise")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem1, ~isold + blur) %>% 
+emm_m1_d1 <- emmeans(fit_mem1, ~isold + blur) |> 
   contrast("revpairwise", by = "blur")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) %>% 
+emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) |> 
   contrast(interaction = c("revpairwise", "pairwise")) 
 
 
 tmp <- bind_rows(
   bind_rows(
-    gather_emmeans_draws(emm_m1_d1) %>% 
-      group_by(blur) %>% 
+    gather_emmeans_draws(emm_m1_d1) |> 
+      group_by(blur) |> 
       select(-contrast),
-    gather_emmeans_draws(emm_m1_d2) %>% 
+    gather_emmeans_draws(emm_m1_d2) |> 
       rename(
         blur = blur_pairwise
-      ) %>% 
-      group_by(blur) %>% 
+      ) |> 
+      group_by(blur) |> 
       select(-isold_revpairwise)
   ),
   bind_rows(
     gather_emmeans_draws(emm_m1_c1),
-    gather_emmeans_draws(emm_m1_c2) %>% 
+    gather_emmeans_draws(emm_m1_c2) |> 
       rename(
         blur = contrast
       )
   ),
   .id = "Parameter"
-) %>% 
-  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) %>% 
+) |> 
+  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |> 
   mutate(
-    t = if_else(str_detect(blur, " - "), "Differences", "Group means") %>% 
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
       fct_inorder(),
     blur = fct_inorder(blur)
   )
 
-tmp %>%   
-  ungroup() %>% 
-  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) %>% 
-  mutate(Parameter = fct_rev(Parameter)) %>% 
+tmp |>   
+  ungroup() |> 
+  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) |> 
+  mutate(Parameter = fct_rev(Parameter)) |> 
   mutate(blur=case_when(
   blur=="C"~ "Clear", 
   blur=="C - HB" ~ "Clear - High blur", 
@@ -1169,7 +1169,7 @@ tmp %>%
   blur=="LB" ~ "Low blur", 
   blur=="C - LB" ~ "Clear - Low blur", 
   TRUE ~ "High blur - Low blur"
-  )) %>% 
+  )) |> 
   ggplot(aes(blur, .value)) +
   labs(
     x = "Blurring Level (or difference)",
@@ -1222,11 +1222,11 @@ We fit the same statistical models as Experiment 1a.
 ```{r}
 
 # get data from osf
-blur_acc <- read_csv("https://osf.io/excgd/download") %>%
+blur_acc <- read_csv("https://osf.io/excgd/download") |>
     dplyr::filter(lex=="m")
 
 
-blur_acc_new<- blur_acc %>%
+blur_acc_new<- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 
 ```
@@ -1285,7 +1285,7 @@ fit_acc_lbc <- read_rds("https://osf.io/yhz4c/download")
 
 ```{r}
 
-acc_means <- emmeans(fit_acc_noc, specs="blur", type="response") %>%
+acc_means <- emmeans(fit_acc_noc, specs="blur", type="response") |>
   as.data.frame()
 
 ```
@@ -1298,38 +1298,38 @@ acc_means <- emmeans(fit_acc_noc, specs="blur", type="response") %>%
 a <- hypothesis(fit_acc_noc, "blur1 <  0") 
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>%
+a$hypothesis <- a$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 b <- hypothesis(fit_acc_noc, "blur2 <  0")
 
 # Ensure rounding applies only to numeric columns
-b$hypothesis <- b$hypothesis %>%
+b$hypothesis <- b$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 c<- hypothesis(fit_acc_lbc, "blur1 =  0")
 
 # Ensure rounding applies only to numeric columns
-c$hypothesis <- c$hypothesis %>%
+c$hypothesis <- c$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis) %>%
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 
-acc_exp1b <- tab %>% 
-    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur - Low Blur < 0", "Low Blur - Clear =  0 ")) %>% 
+acc_exp1b <- tab |> 
+    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur - Low Blur < 0", "Low Blur - Clear =  0 ")) |> 
     mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
-  flextable() %>%
-  autofit() %>% 
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|> 
+  flextable() |>
+  autofit() |> 
   theme_apa()
 
 acc_exp1b
@@ -1348,12 +1348,12 @@ rts <- read_csv("https://osf.io/excgd/download")
 
 ```{r}
 
-blur_rt<- rts %>%
-  group_by(participant) %>%
+blur_rt<- rts |>
+  group_by(participant) |>
    dplyr::filter(corr==1, lex=="m")#only include nonwords
 
-blur_rt_new <- blur_rt %>% 
-  dplyr::filter(rt >= .2 & rt <= 2.5) %>%
+blur_rt_new <- blur_rt |> 
+  dplyr::filter(rt >= .2 & rt <= 2.5) |>
   mutate(rt_ms=rt*1000)
 
 
@@ -1434,33 +1434,33 @@ h <- hypothesis(fit_exg1, "beta_blurHB - beta_blurLB > 0", dpar="beta")
 i <- hypothesis(fit_exg1, "beta_blurLB - beta_blurC = 0", dpar="beta")
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-d$hypothesis <- d$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-e$hypothesis <- e$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-f$hypothesis <- f$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-g$hypothesis <- g$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-h$hypothesis <- h$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-i$hypothesis <- i$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+d$hypothesis <- d$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+e$hypothesis <- e$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+f$hypothesis <- f$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+g$hypothesis <- g$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+h$hypothesis <- h$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+i$hypothesis <- i$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis, h$hypothesis, i$hypothesis) %>% 
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis, h$hypothesis, i$hypothesis) |> 
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
-tab %>% 
-  mutate(Parameter=c("mu","mu", "mu",  "sigma", "sigma", "sigma", "beta", "beta", "beta"))%>%
-  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear >  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0","High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear = 0  "))%>% 
+tab |> 
+  mutate(Parameter=c("mu","mu", "mu",  "sigma", "sigma", "sigma", "beta", "beta", "beta"))|>
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear >  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0","High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear = 0  "))|> 
   mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>% 
-   flextable() %>%
-  autofit() %>%
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)|> 
+   flextable() |>
+  autofit() |>
   theme_apa()
 
 ```
@@ -1477,9 +1477,9 @@ Low blurred words compared to clear words only differed on the μ parameter, *b*
 
 ```{r}
 
-blur_rt_diff<- rts %>%
-  group_by(participant) %>%
-  dplyr::filter(rt >= .2 & rt <= 2.5)%>%
+blur_rt_diff<- rts |>
+  group_by(participant) |>
+  dplyr::filter(rt >= .2 & rt <= 2.5)|>
   dplyr::filter(lex=="m")
 
 ```
@@ -1573,30 +1573,30 @@ e <- hypothesis(fit_wiener, "ndt_blurHB - ndt_blurLB > 0", dpar="ndt")
 f <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC > 0", dpar="ndt")
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-d$hypothesis <- d$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-e$hypothesis <- e$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-f$hypothesis <- f$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+d$hypothesis <- d$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+e$hypothesis <- e$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+f$hypothesis <- f$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) %>% 
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) |> 
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
-tab %>% 
-  mutate(Parameter=c("v","v", "v",  "T_er", "T_er", "T_er")) %>%
-  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0"))%>% 
+tab |> 
+  mutate(Parameter=c("v","v", "v",  "T_er", "T_er", "T_er")) |>
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0 ", "High Blur - Clear > 0", "High Blur - Low Blur > 0", "Low Blur - Clear =  0"))|> 
    mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
-  flextable() %>%
-  autofit() %>% 
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
+  flextable() |>
+  autofit() |> 
   theme_apa()
 
 ```
@@ -1612,33 +1612,33 @@ quibble <- function(x, q = seq(.1, .9, .2)) {
   tibble(x = quantile(x, q), q = q)
 }
 
-data.quantiles <- rts %>%
-  dplyr::filter(rt >= .2 | rt <= 2.5) %>% 
-  dplyr::group_by(participant,blur,corr) %>%
-  dplyr::filter(lex=="m")%>%
-  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) %>% 
+data.quantiles <- rts |>
+  dplyr::filter(rt >= .2 | rt <= 2.5) |> 
+  dplyr::group_by(participant,blur,corr) |>
+  dplyr::filter(lex=="m")|>
+  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) |> 
   tidyr::unnest(RT)
 
 
-data.delta <- data.quantiles %>%
-  dplyr::filter(corr==1) %>%
-  dplyr::select(-corr) %>%
-  dplyr::group_by(participant, blur, q) %>%
+data.delta <- data.quantiles |>
+  dplyr::filter(corr==1) |>
+  dplyr::select(-corr) |>
+  dplyr::group_by(participant, blur, q) |>
   dplyr::summarize(RT=mean(x))
 
 
 #Delta plots (based on vincentiles)
-vincentiles <- data.quantiles %>%
-  dplyr::filter(corr==1) %>%
-  dplyr::select(-corr) %>%
-  dplyr::group_by(blur,q) %>%
+vincentiles <- data.quantiles |>
+  dplyr::filter(corr==1) |>
+  dplyr::select(-corr) |>
+  dplyr::group_by(blur,q) |>
   dplyr::summarize(RT=mean(x)) 
 
-v=vincentiles %>%
-  dplyr::group_by(blur,q) %>%
+v=vincentiles |>
+  dplyr::group_by(blur,q) |>
   dplyr::summarise(MRT=mean(RT))
 
-v <- v %>%
+v <- v |>
   mutate(blur=ifelse(blur=="HB", "High blur", ifelse(blur=="LB", "Low blur", "Clear")))
 
 
@@ -1663,12 +1663,12 @@ p <- ggplot(v, aes(x = q, y = MRT*1000, colour = blur, group=blur))+
 
 ```{r}
 
- v_chb <- v %>%
-    dplyr::filter(blur=="Clear" | blur=="High blur") %>%
-    dplyr::group_by(q)%>%
-     mutate(mean_rt = mean(MRT)*1000) %>%
-     ungroup() %>% select(-q) %>%
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+ v_chb <- v |>
+    dplyr::filter(blur=="Clear" | blur=="High blur") |>
+    dplyr::group_by(q)|>
+     mutate(mean_rt = mean(MRT)*1000) |>
+     ungroup() |> select(-q) |>
+   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
     mutate(diff=`High blur`*1000-Clear*1000)
  
  
@@ -1689,13 +1689,13 @@ scale_y_continuous(breaks=seq(110,440,50)) +
 ```{r}
 
 
- v_clb <- v %>%
-    dplyr::filter(blur=="Clear" | blur=="Low blur") %>%
-    dplyr::group_by(q)%>%
-     mutate(mean_rt = mean(MRT)*1000) %>%
-     ungroup() %>% 
-   select(-q) %>%
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+ v_clb <- v |>
+    dplyr::filter(blur=="Clear" | blur=="Low blur") |>
+    dplyr::group_by(q)|>
+     mutate(mean_rt = mean(MRT)*1000) |>
+     ungroup() |> 
+   select(-q) |>
+   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
     mutate(diff=`Low blur`*1000-Clear*1000)
  
 
@@ -1717,13 +1717,13 @@ scale_y_continuous(breaks=seq(-10, 70, 10)) +
 
 ```{r}
 
-v_hlb <- v %>%
-  dplyr::filter(blur=="High blur" | blur=="Low blur") %>%
-  dplyr::group_by(q)%>%
-  mutate(mean_rt = mean(MRT)*1000) %>%
-     ungroup() %>% 
-   select(-q) %>%
-  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+v_hlb <- v |>
+  dplyr::filter(blur=="High blur" | blur=="Low blur") |>
+  dplyr::group_by(q)|>
+  mutate(mean_rt = mean(MRT)*1000) |>
+     ungroup() |> 
+   select(-q) |>
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff=`High blur`*1000-`Low blur`*1000)
 
 
@@ -1816,9 +1816,9 @@ a <- hypothesis(fit_mem_noc , "isold1:blur1 > 0")
 b <- hypothesis(fit_mem_noc , "isold1:blur2 > 0")
 c <- hypothesis(fit_mem_lbc , "isold1:blur1 = 0")
 
-a$hypothesis <- a$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 ```
 
@@ -1828,20 +1828,20 @@ c$hypothesis <- c$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)
 
 ```{r}
 # (Negative) criteria
-emm_m1_c1 <- emmeans(fit_mem_noc, ~blur) %>% 
+emm_m1_c1 <- emmeans(fit_mem_noc, ~blur) |> 
   parameters::parameters(centrality = "mean")
 # Differences in (negative) criteria
-emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) %>% 
-  contrast("pairwise") %>% 
+emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |> 
+  contrast("pairwise") |> 
   parameters::parameters(centrality = "mean")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem_noc, ~isold + blur) %>% 
-  contrast("revpairwise", by = "blur") %>% 
+emm_m1_d1 <- emmeans(fit_mem_noc, ~isold + blur) |> 
+  contrast("revpairwise", by = "blur") |> 
   parameters::parameters(centrality = "mean")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) %>% 
-  contrast(interaction = c("revpairwise", "pairwise")) %>% 
+emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) |> 
+  contrast(interaction = c("revpairwise", "pairwise")) |> 
   parameters::parameters(centrality = "mean")
 
 ```
@@ -1856,49 +1856,49 @@ emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) %>%
 emm_m1_c1 <- emmeans(fit_mem_noc, ~blur) 
 
   
-emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) %>% 
+emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |> 
   contrast("pairwise")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem_noc, ~isold + blur) %>% 
+emm_m1_d1 <- emmeans(fit_mem_noc, ~isold + blur) |> 
   contrast("revpairwise", by = "blur")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) %>% 
+emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) |> 
   contrast(interaction = c("revpairwise", "pairwise")) 
 
 
 tmp <- bind_rows(
   bind_rows(
-    gather_emmeans_draws(emm_m1_d1) %>% 
-      group_by(blur) %>% 
+    gather_emmeans_draws(emm_m1_d1) |> 
+      group_by(blur) |> 
       select(-contrast),
-    gather_emmeans_draws(emm_m1_d2) %>% 
+    gather_emmeans_draws(emm_m1_d2) |> 
       rename(
         blur = blur_pairwise
-      ) %>% 
-      group_by(blur) %>% 
+      ) |> 
+      group_by(blur) |> 
       select(-isold_revpairwise)
   ),
   bind_rows(
     gather_emmeans_draws(emm_m1_c1),
-    gather_emmeans_draws(emm_m1_c2) %>% 
+    gather_emmeans_draws(emm_m1_c2) |> 
       rename(
         blur = contrast
       )
   ),
   .id = "Parameter"
-) %>% 
-  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) %>% 
+) |> 
+  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |> 
   mutate(
-    t = if_else(str_detect(blur, " - "), "Differences", "Group means") %>% 
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
       fct_inorder(),
     blur = fct_inorder(blur)
   )
 
-tmp %>%   
-  ungroup() %>% 
-  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) %>% 
-  mutate(Parameter = fct_rev(Parameter)) %>% 
+tmp |>   
+  ungroup() |> 
+  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) |> 
+  mutate(Parameter = fct_rev(Parameter)) |> 
   mutate(blur=case_when(
   blur=="C"~ "Clear", 
   blur=="C - HB" ~ "Clear - High blur", 
@@ -1906,7 +1906,7 @@ tmp %>%
   blur=="LB" ~ "Low blur", 
   blur=="C - LB" ~ "Clear - Low blur", 
   TRUE ~ "High blur - Low blur"
-  )) %>% 
+  )) |> 
   ggplot(aes(blur, .value)) +
   labs(
     x = "Blurring Level (or difference)",
@@ -1969,12 +1969,12 @@ rts_wf <- read_csv("https://osf.io/29hnd/download")
 
 ```{r}
 
-rts_dim <- rts_wf %>%
+rts_dim <- rts_wf |>
   filter(category=="NONAN")
 
-blur_acc_wf<- rts_wf %>%
-  group_by(participant) %>%
-  dplyr::filter(rt >= .2 & rt <= 2.5)%>%
+blur_acc_wf<- rts_wf |>
+  group_by(participant) |>
+  dplyr::filter(rt >= .2 & rt <= 2.5)|>
   dplyr::filter(category=="NONAN")
 
 ```
@@ -2038,7 +2038,7 @@ fit_acc_sc_lb <- read_rds("https://osf.io/ehjxq/download")
 ```
 
 ```{r}
-emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") %>% 
+emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |> 
   parameters::parameters(centrality = "mean")
 
 ```
@@ -2050,20 +2050,20 @@ emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") %>%
 a = hypothesis(fit_acc_sc , "blur1 < 0")
 
 # Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis %>%
+a$hypothesis <- a$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 b = hypothesis(fit_acc_sc , "blur2 < 0")
 
 # Ensure rounding applies only to numeric columns
-b$hypothesis <- b$hypothesis %>%
+b$hypothesis <- b$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 c = hypothesis(fit_acc_sc_lb, "blur1 < 0")
 
 
 # Ensure rounding applies only to numeric columns
-c$hypothesis <- c$hypothesis %>%
+c$hypothesis <- c$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 
@@ -2072,45 +2072,45 @@ d= hypothesis(fit_acc_sc, "frequency1 = 0")
 
 
 # Ensure rounding applies only to numeric columns
-d$hypothesis <- d$hypothesis %>%
+d$hypothesis <- d$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 e = hypothesis(fit_acc_sc, "blur1:frequency1 = 0")
 
 
 # Ensure rounding applies only to numeric columns
-e$hypothesis <- e$hypothesis %>%
+e$hypothesis <- e$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 f = hypothesis(fit_acc_sc , "blur2:frequency1 = 0")
 
 
 # Ensure rounding applies only to numeric columns
-f$hypothesis <- f$hypothesis %>%
+f$hypothesis <- f$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 g = hypothesis(fit_acc_sc_lb, "blur1:frequency1 = 0")
 
 # Ensure rounding applies only to numeric columns
-g$hypothesis <- g$hypothesis %>%
+g$hypothesis <- g$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) %>%
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
-acc_exp2 <- tab %>% 
-    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur-Low Blur < 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0")) %>%
+acc_exp2 <- tab |> 
+    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur-Low Blur < 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0")) |>
    mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)%>%  
-  flextable() %>%
-  autofit() %>%
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
+  flextable() |>
+  autofit() |>
   theme_apa()
 
 acc_exp2
@@ -2127,27 +2127,27 @@ There were no interactions between blurring and word frequency—all Cr.I includ
 #| label: tbl-freqeffect
 #| tbl-cap: "Frequency effect by blurring level"
 
-p_rt_filter <- rts_wf %>%
+p_rt_filter <- rts_wf |>
   filter(corr==1, category=="NONAN")
 
 
-p_rt_out <- p_rt_filter %>% 
- filter(rt >= .2 & rt <= 2.5) %>%
+p_rt_out <- p_rt_filter |> 
+ filter(rt >= .2 & rt <= 2.5) |>
   ungroup()
 
-p_rt <- p_rt_filter %>%
-   filter(rt >= .2 & rt <= 2.5) %>%
-  group_by(frequency, blur) %>%
-  dplyr::summarise(rt=mean(rt)) %>%
-  dplyr::mutate(rt_ms=rt*1000) %>%
+p_rt <- p_rt_filter |>
+   filter(rt >= .2 & rt <= 2.5) |>
+  group_by(frequency, blur) |>
+  dplyr::summarise(rt=mean(rt)) |>
+  dplyr::mutate(rt_ms=rt*1000) |>
   select(-rt)
 
 # table for the effect
-p_rt %>% group_by(blur) %>%
-  pivot_wider(names_from=frequency, values_from=rt_ms) %>%
-  mutate(`Frequency Effect`=round(LOW-HIGH)) %>%
-   flextable() %>%
-  autofit() %>% 
+p_rt |> group_by(blur) |>
+  pivot_wider(names_from=frequency, values_from=rt_ms) |>
+  mutate(`Frequency Effect`=round(LOW-HIGH)) |>
+   flextable() |>
+  autofit() |> 
   theme_apa()
 
 ```
@@ -2213,44 +2213,44 @@ fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
 #| tbl-cap: "Summary of posterior fixed effect estimates for Posterior Ex-Guassian parameter hypothses  in Experiment 2"
 #| 
 # Run hypothesis tests and ensure consistent formatting
-a = hypothesis(fit_sc , "blur1 > 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-b = hypothesis(fit_sc , "blur2 > 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-c = hypothesis(fit_sc_lc, "blur1 = 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-d = hypothesis(fit_sc, "frequency1 > 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-e = hypothesis(fit_sc, "blur1:frequency1 < 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-f = hypothesis(fit_sc, "blur2:frequency1 < 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-g = hypothesis(fit_sc_lc, "blur1:frequency1 = 0", dpar="mu") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+a = hypothesis(fit_sc , "blur1 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+b = hypothesis(fit_sc , "blur2 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+c = hypothesis(fit_sc_lc, "blur1 = 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+d = hypothesis(fit_sc, "frequency1 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+e = hypothesis(fit_sc, "blur1:frequency1 < 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+f = hypothesis(fit_sc, "blur2:frequency1 < 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+g = hypothesis(fit_sc_lc, "blur1:frequency1 = 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 
-h = hypothesis(fit_sc , "sigma_blur1 > 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-i = hypothesis(fit_sc , "sigma_blur2 > 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-j = hypothesis(fit_sc_lc, "sigma_blur1 = 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-k = hypothesis(fit_sc, "sigma_frequency1 < 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-l = hypothesis(fit_sc, "sigma_blur1:frequency1 < 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-m = hypothesis(fit_sc , "sigma_blur2:frequency1 > 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-n = hypothesis(fit_sc_lc, "sigma_blur1:frequency1 > 0") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+h = hypothesis(fit_sc , "sigma_blur1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+i = hypothesis(fit_sc , "sigma_blur2 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+j = hypothesis(fit_sc_lc, "sigma_blur1 = 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+k = hypothesis(fit_sc, "sigma_frequency1 < 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+l = hypothesis(fit_sc, "sigma_blur1:frequency1 < 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+m = hypothesis(fit_sc , "sigma_blur2:frequency1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+n = hypothesis(fit_sc_lc, "sigma_blur1:frequency1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
 
-o = hypothesis(fit_sc , "beta_blur1 > 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-p = hypothesis(fit_sc , "beta_blur2 > 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-q = hypothesis(fit_sc_lc, "beta_blur1 = 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-r = hypothesis(fit_sc, "beta_frequency1 > 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-s = hypothesis(fit_sc, "beta_blur1:frequency1 < 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-t = hypothesis(fit_sc , "beta_blur2:frequency1 < 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 < 0", dpar="beta") %>% .$hypothesis %>% mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+o = hypothesis(fit_sc , "beta_blur1 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+p = hypothesis(fit_sc , "beta_blur2 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+q = hypothesis(fit_sc_lc, "beta_blur1 = 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+r = hypothesis(fit_sc, "beta_frequency1 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+s = hypothesis(fit_sc, "beta_blur1:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+t = hypothesis(fit_sc , "beta_blur2:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
 
 # Combine all results into a single table
-tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) %>%
-  mutate(Evid.Ratio = as.numeric(Evid.Ratio)) %>%
-  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) <  0")) %>% 
-  select(-Star) %>%
-  mutate(`90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) %>%
-  rename("SE" = "Est.Error", "ER" = "Evid.Ratio") %>%
-   rename("Mean" = "Estimate") %>%
+tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) |>
+  mutate(Evid.Ratio = as.numeric(Evid.Ratio)) |>
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) <  0")) |> 
+  select(-Star) |>
+  mutate(`90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+  rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+   rename("Mean" = "Estimate") |>
   select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, Post.Prob)
 
 # Format and display the table
-tab %>%
-  flextable() %>%
-  autofit() %>% 
+tab |>
+  flextable() |>
+  autofit() |> 
   theme_apa()
 
 ```
@@ -2296,17 +2296,17 @@ quibble <- function(x, q = seq(.1, .9, .2)) {
   tibble(x = quantile(x, q), q = q)
 }
 
-data.quantiles <- p_rt_out %>%
-  dplyr::group_by(participant,blur,frequency, corr) %>%
-  dplyr::mutate(rt_ms = rt*1000) %>% 
-  dplyr::summarise(RT = list(quibble(rt_ms, seq(.1, .9, .2)))) %>% 
-  tidyr::unnest(RT) %>%
+data.quantiles <- p_rt_out |>
+  dplyr::group_by(participant,blur,frequency, corr) |>
+  dplyr::mutate(rt_ms = rt*1000) |> 
+  dplyr::summarise(RT = list(quibble(rt_ms, seq(.1, .9, .2)))) |> 
+  tidyr::unnest(RT) |>
   ungroup()
 
 
-data.delta <- data.quantiles %>%
-  dplyr::group_by(participant, blur,frequency,  q) %>%
-  dplyr::summarize(RT=mean(x)) %>%
+data.delta <- data.quantiles |>
+  dplyr::group_by(participant, blur,frequency,  q) |>
+  dplyr::summarize(RT=mean(x)) |>
   ungroup()
 
   
@@ -2314,14 +2314,14 @@ data.delta <- data.quantiles %>%
 
 ```{r}
 #Delta plots (based on vincentiles)
-vincentiles <- data.quantiles %>%
-  dplyr::group_by(blur,frequency, q) %>%
-  dplyr::summarize(RT=mean(x)) %>%
+vincentiles <- data.quantiles |>
+  dplyr::group_by(blur,frequency, q) |>
+  dplyr::summarize(RT=mean(x)) |>
   ungroup()
 
-v=vincentiles %>%
-  dplyr::group_by(blur,frequency, q) %>%
-  dplyr::summarise(MRT=mean(RT)) %>%
+v=vincentiles |>
+  dplyr::group_by(blur,frequency, q) |>
+  dplyr::summarise(MRT=mean(RT)) |>
   ungroup()
 
 
@@ -2372,38 +2372,38 @@ p2 <- ggplot(data=v,aes(y=MRT, x=frequency, color=q)) + facet_grid(~blur)+
 #| label: tbl-freq
 #| tbl-cap: "Word frequency effect across .1, .3, .5, .7, .9 quantiles as a function of blurring"
 #diff
-v_wf <- v %>%
-  dplyr::group_by(blur, q)%>%
-  tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") %>%
-  mutate(Diff=LOW-HIGH) %>%
-  rename("Blur" = "blur") %>%
-  mutate(Blur = ifelse(Blur=="C", "Clear", ifelse(Blur=="HB", "High Blur", "Low Blur")))%>% 
+v_wf <- v |>
+  dplyr::group_by(blur, q)|>
+  tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
+  mutate(Diff=LOW-HIGH) |>
+  rename("Blur" = "blur") |>
+  mutate(Blur = ifelse(Blur=="C", "Clear", ifelse(Blur=="HB", "High Blur", "Low Blur")))|> 
   ungroup()
 
-v_wf %>% select(Blur, q, Diff) %>% 
-  pivot_wider(names_from="q", values_from="Diff") %>% 
-  mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
-   flextable() %>%
-  autofit() %>% 
+v_wf |> select(Blur, q, Diff) |> 
+  pivot_wider(names_from="q", values_from="Diff") |> 
+  mutate(across(where(is.numeric), ~ round(.x, 3))) |>
+   flextable() |>
+  autofit() |> 
   theme_apa()
 
 ```
 
 ```{r}
-v_chb <- v %>%
-  dplyr::filter(blur=="C" | blur=="HB") %>%
-  dplyr::group_by(frequency, q)%>%
-  mutate(mean_rt = mean(MRT)) %>% 
-  ungroup()%>% 
-  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+v_chb <- v |>
+  dplyr::filter(blur=="C" | blur=="HB") |>
+  dplyr::group_by(frequency, q)|>
+  mutate(mean_rt = mean(MRT)) |> 
+  ungroup()|> 
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff=HB-C)
 
 
-v_chb_freq <- v %>%
-  dplyr::group_by(blur, q)%>%
-  mutate(mean_rt = mean(MRT)) %>% 
-  ungroup()%>% 
-  tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") %>%
+v_chb_freq <- v |>
+  dplyr::group_by(blur, q)|>
+  mutate(mean_rt = mean(MRT)) |> 
+  ungroup()|> 
+  tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
   mutate(diff=LOW-HIGH)
 
 
@@ -2426,11 +2426,11 @@ geom_label_repel(data=v_chb, aes(y=diff, label=round(diff,0)), color="black", mi
 ```
 
 ```{r}
-v_clb <- v %>%
-  dplyr::group_by(frequency,q)%>%
-   mutate(mean_rt = mean(MRT)) %>% 
-  ungroup() %>% 
-  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+v_clb <- v |>
+  dplyr::group_by(frequency,q)|>
+   mutate(mean_rt = mean(MRT)) |> 
+  ungroup() |> 
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff=LB-C)
 
 
@@ -2453,12 +2453,12 @@ scale_y_continuous(breaks=seq(0, 100, 20)) +
 
 ```{r}
 
-v_hlb <- v %>%
-  dplyr::filter(blur=="HB" | blur=="LB") %>%
-  dplyr::group_by(frequency,q)%>%
-   mutate(mean_rt = mean(MRT)) %>% 
-  ungroup() %>% 
-  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") %>%
+v_hlb <- v |>
+  dplyr::filter(blur=="HB" | blur=="LB") |>
+  dplyr::group_by(frequency,q)|>
+   mutate(mean_rt = mean(MRT)) |> 
+  ungroup() |> 
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff=HB-LB)
 
 
@@ -2559,15 +2559,15 @@ fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
 ```
 
 ```{r}
-emm_m2_d1 <- emmeans(fit_sc_mem, ~isold | blur * frequency) %>% 
+emm_m2_d1 <- emmeans(fit_sc_mem, ~isold | blur * frequency) |> 
   contrast("revpairwise")
 
-emm_m2_d2 <- emmeans(fit_sc_mem, ~isold + blur * frequency) %>% 
+emm_m2_d2 <- emmeans(fit_sc_mem, ~isold + blur * frequency) |> 
   contrast(interaction = c("revpairwise", "pairwise"), by = "frequency")
 
 # (Negative) criteria
 emm_m2_c1 <- emmeans(fit_sc_mem, ~blur * frequency)
-emm_m2_c2 <- emmeans(fit_sc_mem, ~blur | frequency) %>% 
+emm_m2_c2 <- emmeans(fit_sc_mem, ~blur | frequency) |> 
   contrast("pairwise")
 ```
 
@@ -2582,40 +2582,40 @@ blur_level <- c("Clear", "High blur", "Low blur", "Clear-High blur", "Clear-Low 
 
 tmp <- bind_rows(
   bind_rows(
-    gather_emmeans_draws(emm_m2_d1) %>% 
-      group_by(blur, frequency) %>% 
+    gather_emmeans_draws(emm_m2_d1) |> 
+      group_by(blur, frequency) |> 
       select(-contrast),
-    gather_emmeans_draws(emm_m2_d2) %>% 
+    gather_emmeans_draws(emm_m2_d2) |> 
       rename(
         blur = blur_pairwise
-      ) %>% 
-      group_by(blur, frequency) %>% 
+      ) |> 
+      group_by(blur, frequency) |> 
       select(-isold_revpairwise)
   ),
   bind_rows(
     gather_emmeans_draws(emm_m2_c1),
-    gather_emmeans_draws(emm_m2_c2) %>% 
+    gather_emmeans_draws(emm_m2_c2) |> 
       rename(
         blur = contrast
       )
   ),
   .id = "Parameter"
-) %>% 
-  ungroup() %>% 
-  mutate(Parameter = factor(Parameter, labels = c("dprime", "Criterion"))) %>% 
+) |> 
+  ungroup() |> 
+  mutate(Parameter = factor(Parameter, labels = c("dprime", "Criterion"))) |> 
    mutate(
-    t = if_else(str_detect(blur, " - "), "Differences", "Group means") %>% 
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
       fct_inorder(),
     blur = fct_inorder(blur), 
     frequency=ifelse(frequency=="HIGH", "High", "Low")
   ) 
 # Convert blur to an ordered factor to control spacing
 # Convert blur to a factor with predefined order
-tmp %>%   
+tmp |>   
   mutate(
     .value = if_else(Parameter == "Criterion", .value * -1, .value),
     Parameter = fct_rev(Parameter)
-  ) %>% 
+  ) |> 
   ggplot(aes(x = as.numeric(blur), y = .value, fill = frequency)) +  
   labs(
     x = "Blurring Level (or difference)",
@@ -2667,14 +2667,14 @@ f = hypothesis(fit_sc_mem, "blur2:frequency1 = 0")
 
 g = hypothesis(fit_sc_mem_lb, "blur1:frequency1 = 0")
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) %>%
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 
-tb1 <- tab %>% 
+tb1 <- tab |> 
    mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) > 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) > 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) > 0"))
 ```
 
@@ -2695,14 +2695,14 @@ f = hypothesis(fit_sc_mem, "isold1:blur2:frequency1 > 0")
 
 g = hypothesis(fit_sc_mem_lb, "isold1:blur1:frequency1 > 0")
 
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) %>%
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))%>%
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
   select(-Star)
 
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 
-tb1 <- tab %>% 
+tb1 <- tab |> 
    mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) > 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) > 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) > 0"))
 ```
 
