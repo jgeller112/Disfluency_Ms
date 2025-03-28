@@ -132,13 +132,11 @@ library(tidylog)
 library(tidybayes)
 library(hypr)
 library(cowplot)
-library(tidyverse)
 library(colorspace)
 library(ragg)
 library(cowplot)
 library(ggtext)
 library(ggdist)
-library(modelbased)
 library(flextable)
 library(cmdstanr)
 
@@ -151,12 +149,8 @@ options(timeout = 3000)
 
 # inf does not display correctly
 
-process_ER_column <- function(x) {
-  # Check if ER column value is numeric, if not, replace with Inf
-  x <- ifelse(is.infinite(x), "Inf", x)
-  
-  return(x)
-}
+# Check if ER column value is numeric, if not, replace with Inf
+process_ER_column <- function(x) ifelse(is.infinite(x), "Inf", x)
 ```
 
 ```{r}
@@ -168,12 +162,12 @@ process_ER_column <- function(x) {
 bold <- element_text(face = "bold", color = "black", size = 16) #axis bold
 theme_set(theme_minimal(base_size = 16, base_family = "Times New Roman"))
 theme_update(
-  panel.grid.major = element_line(color = "grey92", size = .4),
+  panel.grid.major = element_line(color = "grey92", linewidth = .4),
   panel.grid.minor = element_blank(),
   axis.title.x = element_text(color = "grey30", margin = margin(t = 7)),
   axis.title.y = element_text(color = "grey30", margin = margin(r = 7)),
   axis.text = element_text(color = "grey50"),
-  axis.ticks =  element_line(color = "grey92", size = .4),
+  axis.ticks =  element_line(color = "grey92", linewidth = .4),
   axis.ticks.length = unit(.6, "lines"),
   legend.position = "top",
   plot.title = element_text(hjust = 0, color = "black", 
@@ -193,7 +187,6 @@ theme_update(
 # Set Okabe-Ito colors as the default scale for all plots
 scale_colour_discrete <- scale_colour_okabe_ito
 scale_fill_discrete <- scale_fill_okabe_ito
-
 ```
 
 ## Introduction
