@@ -122,7 +122,6 @@ library(tidyverse)
 library(knitr)
 library(cowplot)
 library(ggeffects)
-library(here)
 library(data.table)
 library(ggrepel)
 library(brms)
@@ -142,7 +141,6 @@ library(cmdstanr)
 
 
 options(timeout = 3000)
-
 ```
 
 ```{r}
@@ -394,7 +392,7 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 All models were fit using The Stan modeling language [@grant2017] with the `brms` [@brms] package in in R (v.4.4.2; @R). For all reported models, we fit maximal random-effect structures justified by the design (Barr et al., 2013) *[REF should be bibtex]*. This included random intercepts for participants and items, and a random slope by blurring level for each varying random intercept. Contrast codes (effects coding) for each variable were created using the `hypr` package in R [@hypr]. We fit the models twice: Once with contrast codes for high blur vs. clear and for high blur vs. Low blur and once with the low blur vs. clear contrast.
 
-In all experiments reported here, the statistical model was run with four chains of 5,000 Markov chain Monte Carlo iterations (For the DDM we fit a model with 2,000 chains to reduce computational time), with 1,000-iteration warm-ups for 4 chains (16,000 samples in total). Convergence and stability of the Bayesian sampling is quantified by the Rˆ diagnostics below 1.01 and Effective Sample SIze (ESS) greater than 1000 [@brms]. For both the RT data and accuracy data, we report our models with with weakly-informative priors for the population-level parameters. Using a weakly-informative prior as opposed to a default (which is an uniform prior where all effects are equally likely) allows for the calculation of evidence ratio (Bayes Factor) for one-sides tests. For the ex-Gaussian analysis we used a weak prior (i.e., N \~ (0, 100)). For the population-level effects in the accuracy and signal detection analyses, we used a Cauchy distribution with the mean of 0 and scale of 0.35 (cauchy \~ 0, 0.35)) recommended by [@kinoshita2023] for logistic regression.
+In all experiments reported here, the statistical model was run with four chains of 5,000 Markov chain Monte Carlo iterations (For the DDM we fit a model with 2,000 chains to reduce computational time), with 1,000-iteration warm-ups for 4 chains (16,000 samples in total). Convergence and stability of the Bayesian sampling is quantified by the Rˆ diagnostics below 1.01 and Effective Sample Size (ESS) greater than 1000 [@brms]. For both the RT data and accuracy data, we report our models with with weakly-informative priors for the population-level parameters. Using a weakly-informative prior as opposed to a default (which is an uniform prior where all effects are equally likely) allows for the calculation of evidence ratio (Bayes Factor) for one-sides tests. For the ex-Gaussian analysis we used a weak prior (i.e., N \~ (0, 100)). For the population-level effects in the accuracy and signal detection analyses, we used a Cauchy distribution with the mean of 0 and scale of 0.35 (cauchy \~ 0, 0.35)) recommended by [@kinoshita2023] for logistic regression.
 
 For the marginal means and differences, we report the expected values under the posterior distribution and their 90% credible intervals (Cr. I.). For marginal mean differences, we also report the posterior probability that a difference δ is not zero. If a hypothesis states that δ \\\> 0, then it would be considered strong evidence for this hypothesis would be if zero is not included in the 90% Cr. I. of δ and the posterior P(δ \\\> 0) is close to one (by a reasonably clear margin). To extract the estimated marginal means from the posterior distribution of the fitted models we used a combination of `emmeans` R package [@emmeans-2] `bayestestr`[@bayestestR], and `brms` [@brms-2].
 
@@ -427,7 +425,6 @@ blur_acc <- read.csv("https://osf.io/xv5bd/download") |>
 
 blur_acc_new<- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
-
 ```
 
 The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point points `r 1-dim(blur_acc_new)[1]/dim(blur_acc)[1]` %
@@ -437,14 +434,12 @@ The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After 
 
 ## Contrasts
 #hypothesis
-blurC <-hypr(HB~C, HB~LB, levels=c("C", "HB", "LB"))
+blurC <- hypr(HB~C, HB~LB, levels=c("C", "HB", "LB"))
 
 #set contrasts in df 
 blur_acc_new$blur <- as.factor(blur_acc_new$blur)
 
 contrasts(blur_acc_new$blur) <-contr.hypothesis(blurC)
-
-
 ```
 
 ```{r}
@@ -469,7 +464,6 @@ save_pars = save_pars(all=T),
 sample_prior = T, 
 threads = threading(4), 
 file="fit_acc_context")
-
 ```
 
 ```{r}
@@ -513,13 +507,11 @@ file="fit_acc_context_lbc")
 ```
 
 ```{r}
-
 # get file from osf
 acc_c<-read_rds("https://osf.io/xwdzn/download")
 
 # get lowblur-c comparison
 acc_lb <- read_rds("https://osf.io/wt3ry/download")
-
 ```
 
 ```{r}
