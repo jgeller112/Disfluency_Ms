@@ -601,8 +601,8 @@ contrasts(blur_rt$blur) <-contr.hypothesis(blurC)
 
 ```
 
-```{r, eval=FALSE}
-library(cmdstanr)
+```{r}
+#| eval: false
 
 bform_exg1 <- bf(
 rt ~  0 + blur + (1 + blur |p| participant) + (1 + blur|i| string),
@@ -610,9 +610,8 @@ sigma ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string),
 beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 ```
 
-```{r, eval=FALSE}
+```{r}
 #| eval: false
-#| 
 
 prior_exp1 <- c(set_prior("normal(0,100)", class = "b", coef=""))
                 
@@ -1362,7 +1361,7 @@ contrasts(blur_rt$blur) <-contr.hypothesis(blurC)
 
 ```
 
-```{r, eval=FALSE}
+```{r}
 #| eval: false
 
 bform_exg1 <- bf(
@@ -1371,9 +1370,8 @@ sigma ~ 0+ blur + (1 + blur |p|participant) + (1 + blur |i| string),
 beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 ```
 
-```{r, eval=FALSE}
+```{r}
 #| eval: false
-#| 
 
 prior_exp1 <- c(set_prior("normal(0,10)", class = "b"), 
                  set_prior("normal(0,10)", class = "b", dpar="sigma"), 
@@ -1411,7 +1409,7 @@ fit_exg1 <- read_rds("https://osf.io/egqyt/download")
 ```{r}
 #| label: tbl-exgauss1b
 #| tbl-cap: "Summary of posterior fixed effect estimates for Ex-Guassian parmater hypotheses in Experiment 1b"
-#| 
+
 # Compute hypothesis tests
 a <- hypothesis(fit_exg1, "blurHB - blurC > 0", dpar="mu") 
 b <- hypothesis(fit_exg1, "blurHB - blurLB > 0", dpar="mu")
