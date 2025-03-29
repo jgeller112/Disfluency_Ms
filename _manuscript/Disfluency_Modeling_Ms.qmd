@@ -450,20 +450,22 @@ contrasts(blur_acc_new$blur) <-contr.hypothesis(blurC)
 prior_exp1 <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 #fit model
-fit_acc_weak <- brm(corr ~ blur + (1+blur|participant) + (1+blur|string), data=blur_acc_new, 
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4, 
-                    init=0, 
-                    family = bernoulli(),
-     cores = 4,
-prior = prior_exp1, 
-control = list(adapt_delta = 0.9), 
-backend="cmdstanr", 
-save_pars = save_pars(all=T),
-sample_prior = T, 
-threads = threading(4), 
-file="fit_acc_context")
+fit_acc_weak <- brm(corr ~ blur + (1 + blur | participant) + (1 + blur | string),
+  data = blur_acc_new,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  init = 0,
+  family = bernoulli(),
+  cores = 4,
+  prior = prior_exp1,
+  control = list(adapt_delta = 0.9),
+  backend = "cmdstanr",
+  save_pars = save_pars(all = T),
+  sample_prior = T,
+  threads = threading(4),
+  file = "fit_acc_context"
+)
 ```
 
 ```{r}
@@ -489,20 +491,22 @@ contrasts(blur_acc_new$blur) <-contr.hypothesis(blurC)
 prior_exp1 <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 #fit model
-fit_acc_weak_lb <- brm(corr ~ blur + (1+blur|participant) + (1+blur|string), data=blur_acc_new, 
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4, 
-                    init=0, 
-                    family = bernoulli(),
-     cores = 4,
-prior = prior_exp1, 
-control = list(adapt_delta = 0.9), 
-backend="cmdstanr", 
-save_pars = save_pars(all=T),
-sample_prior = T, 
-threads = threading(4), 
-file="fit_acc_context_lbc")
+fit_acc_weak_lb <- brm(corr ~ blur + (1 + blur | participant) + (1 + blur | string),
+  data = blur_acc_new,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  init = 0,
+  family = bernoulli(),
+  cores = 4,
+  prior = prior_exp1,
+  control = list(adapt_delta = 0.9),
+  backend = "cmdstanr",
+  save_pars = save_pars(all = T),
+  sample_prior = T,
+  threads = threading(4),
+  file = "fit_acc_context_lbc"
+)
 
 ```
 
@@ -873,7 +877,7 @@ blur_rt_diff<- rts |>
 formula <- bf(rt | dec(corr) ~ 0 + blur + 
                 (1 + blur|p|participant) + (1+blur|i|string),  
               ndt ~ 0 + blur + (1 + blur|p|participant) + (1+blur|i|string),
-              bias =.5)
+              bias = .5)
 
 
 
@@ -1016,21 +1020,22 @@ contrasts(mem_c$blur) <-contr.hypothesis(blurC)
 
 prior_exp2 <- c(set_prior("cauchy(0,.35)", class = "b"))
 
-fit_mem_c <- brm(sayold ~ 0 + isold*blur + (1+isold*blur|participant) + (1+isold*blur|string), data=mem_c, 
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4, 
-                    init=0, 
-                    family = bernoulli(link = "probit"),
-                    cores = 4, 
-control = list(adapt_delta = 0.9),
-prior=prior_exp2, 
-sample_prior = T, 
-file="blmm_sdt_c_nointercept",
-save_pars = save_pars(all=T),
-backend="cmdstanr",
-
-threads = threading(4))
+fit_mem_c <- brm(sayold ~ 0 + isold * blur + (1 + isold * blur | participant) + (1 + isold * blur | string),
+  data = mem_c,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  init = 0,
+  family = bernoulli(link = "probit"),
+  cores = 4,
+  control = list(adapt_delta = 0.9),
+  prior = prior_exp2,
+  sample_prior = T,
+  file = "blmm_sdt_c_nointercept",
+  save_pars = save_pars(all = T),
+  backend = "cmdstanr",
+  threads = threading(4)
+)
 
 
 ```
