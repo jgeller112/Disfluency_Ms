@@ -1027,7 +1027,7 @@ warmup = 1000,
 control = list(adapt_delta = 0.9),
 prior=prior_exp2, 
 sample_prior = T, 
-file="blmm_sdt_c_nointercept"
+file="blmm_sdt_c_nointercept",
 save_pars = save_pars(all=T),
 backend="cmdstanr",
 
