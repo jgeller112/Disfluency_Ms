@@ -1270,9 +1270,10 @@ file="fit_acc_weak_nocontext")
 
 # get file from osf
 tmp <- tempdir()
-download.file("https://osf.io/ne36z/download", 
-              file.path(tmp, "acc_blmm_expnocontext.RData"))
+download.file("https://osf.io/ne36z/download", file.path(tmp, "acc_blmm_expnocontext.RData"), mode = "wb")
 load(file.path(tmp, "acc_blmm_expnocontext.RData"))
+
+x <- read_rds("https://osf.io/ne36z/download")
 
 fit_acc_lbc <- read_rds("https://osf.io/yhz4c/download")
 
@@ -1953,6 +1954,800 @@ The number of letters of the animal words (M = 5.3; range: 3-9) was similar to t
 
 We used the same procedure as Experiments 1b. The main difference is that instead of making a word/non-word decision, participants made a semantic categorization judgement (i.e., animal/not animal). You can view the task here: https://run.pavlovia.org/Jgeller112/hf_lf_sem_1.
 
+### Results
+
+#### Accuracy
+
+```{r}
+rts_wf <- read_csv("https://osf.io/29hnd/download")
+```
+
+```{r}
+
+rts_dim <- rts_wf |>
+  filter(category=="NONAN")
+
+blur_acc_wf<- rts_wf |>
+  group_by(participant) |>
+  dplyr::filter(rt >= .2 & rt <= 2.5)|>
+  dplyr::filter(category=="NONAN")
+
+```
+
+We started with `r dim(rts_dim)[1]`. After we removed RTs below .2 and above 2.5 (`r round(1-dim(blur_acc_wf)[1]/dim(rts_dim)[1], 3)`)we were left with `r dim(blur_acc_wf)[1]` data points.
+
+```{r}
+
+## Contrasts
+#hypothesis
+blurC <-hypr(HB~C, HB~LB, levels=c("C", "HB", "LB"))
+
+#set contrasts in df 
+blur_acc_wf$blur <- as.factor(blur_acc_wf$blur)
+
+contrasts(blur_acc_wf$blur) <-contr.hypothesis(blurC)
+
+
+freqc <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
+
+
+blur_acc_wf$frequency<- as.factor(blur_acc_wf$frequency)
+
+contrasts(blur_acc_wf$frequency) <-contr.hypothesis(freqc)
+
+
+```
+
+```{r}
+#| eval: false
+#| 
+prior_expsc <- c(set_prior("cauchy(0,.35)", class = "b"))
+
+fit_acc_wf <- brm(corr ~ blur*frequency + (1+blur*frequency|participant) + (1+blur*frequency|target), data=blur_acc_wf, 
+warmup = 1000,
+                    iter = 5000,
+                    chains = 4, 
+                    init=0, 
+                    family = bernoulli(),
+     cores = 4, 
+
+prior=prior_expsc,
+sample_prior = T, 
+save_pars = save_pars(all=T),
+control = list(adapt_delta = 0.9), 
+file="acc_blmm_sc", 
+backend="cmdstanr", 
+threads = threading(4))
+
+
+```
+
+```{r}
+# get file from osf
+tmp <- tempdir()
+download.file("https://osf.io/5u7p8/download", file.path(tmp, "acc_blmm_sc.RData"),  mode = "wb")
+load(file.path(tmp, "acc_blmm_sc.RData"))
+
+fit_acc_sc_lb <- read_rds("https://osf.io/ehjxq/download")
+
+```
+
+```{r}
+emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |> 
+  parameters::parameters(centrality = "mean")
+
+```
+
+```{r}
+#| label: tbl-acc2
+#| tbl-cap: "Summary of posterior fixed effect for accuracy hypothses in Experiment 2"
+
+a = hypothesis(fit_acc_sc , "blur1 < 0")
+
+# Ensure rounding applies only to numeric columns
+a$hypothesis <- a$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+b = hypothesis(fit_acc_sc , "blur2 < 0")
+
+# Ensure rounding applies only to numeric columns
+b$hypothesis <- b$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+c = hypothesis(fit_acc_sc_lb, "blur1 < 0")
+
+
+# Ensure rounding applies only to numeric columns
+c$hypothesis <- c$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+
+
+d= hypothesis(fit_acc_sc, "frequency1 = 0")
+
+
+# Ensure rounding applies only to numeric columns
+d$hypothesis <- d$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+e = hypothesis(fit_acc_sc, "blur1:frequency1 = 0")
+
+
+# Ensure rounding applies only to numeric columns
+e$hypothesis <- e$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+f = hypothesis(fit_acc_sc , "blur2:frequency1 = 0")
+
+
+# Ensure rounding applies only to numeric columns
+f$hypothesis <- f$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+g = hypothesis(fit_acc_sc_lb, "blur1:frequency1 = 0")
+
+# Ensure rounding applies only to numeric columns
+g$hypothesis <- g$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+   rename("Mean" = "Estimate") |>
+  select(-Star)
+
+tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
+
+acc_exp2 <- tab |> 
+    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur-Low Blur < 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0")) |>
+   mutate(
+        mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
+        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+    select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
+  flextable() |>
+  autofit() |>
+  theme_apa()
+
+acc_exp2
+
+```
+
+The model summary can be found in @tbl-acc2. Clear words were better identified than high-blur words ($M$ = .963), $b$ = `r a$hypothesis$Estimate`, 90% Cr.I \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low-blur words were also better identified than high-blur words, $b$ = `r b$hypothesis$Estimate`, 90% Cr.I \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was weak evidence for a difference between clear and low-blur words, $b$ = `r c$hypothesis$Estimate`, 95% Cr.I \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. There was no frequency effect, $b$ = `r d$hypothesis$Estimate`, 95% Cr.I \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`, although the evidence for the absence of a difference was weak.
+
+There were no interactions between blurring and word frequency—all Cr.I included 0; however, evidence for this lack of difference was ambiguous (ER ≈ 1).
+
+#### RTs: Ex-Gaussian
+
+```{r}
+#| label: tbl-freqeffect
+#| tbl-cap: "Frequency effect by blurring level"
+
+p_rt_filter <- rts_wf |>
+  filter(corr==1, category=="NONAN")
+
+
+p_rt_out <- p_rt_filter |> 
+ filter(rt >= .2 & rt <= 2.5) |>
+  ungroup()
+
+p_rt <- p_rt_filter |>
+   filter(rt >= .2 & rt <= 2.5) |>
+  group_by(frequency, blur) |>
+  dplyr::summarise(rt=mean(rt)) |>
+  dplyr::mutate(rt_ms=rt*1000) |>
+  select(-rt)
+
+# table for the effect
+p_rt |> group_by(blur) |>
+  pivot_wider(names_from=frequency, values_from=rt_ms) |>
+  mutate(`Frequency Effect`=round(LOW-HIGH)) |>
+   flextable() |>
+  autofit() |> 
+  theme_apa()
+
+```
+
+We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After removing RTs below .2 and above 2.5 we were left with `r dim(p_rt_out)[1]` trials.
+
+```{r}
+
+## Contrasts
+#hypothesis
+#set contrasts in df 
+p_rt_filter$blur <- as.factor(p_rt_filter$blur)
+
+contrasts(p_rt_filter$blur) <-contr.hypothesis(blurC)
+
+freqc <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
+
+p_rt_filter$frequency<- as.factor(p_rt_filter$frequency)
+
+contrasts(p_rt_filter$frequency) <-contr.hypothesis(freqc)
+
+
+```
+
+```{r}
+#| eval: false
+
+#max model
+bform_exg1 <- bf(
+rt ~ blur*frequency + (1 + blur*frequency |p| participant) + (1 + blur|i| Target),
+sigma ~ blur*frequency + (1 + blur*frequency |p|participant) + (1 + blur |i| Target),
+beta ~ blur*frequency  + (1 + blur*frequency |p|participant) + (1 + blur |i| Target))
+```
+
+```{r}
+#| eval: false
+#|
+prior_exp1 <- c(set_prior("normal(0,100)", class = "b", coef=""))
+
+fit_exg1 <- brm(
+bform_exg1, data = blur_rt_sc,
+warmup = 1000,
+                    iter = 5000,
+                    chains = 4,
+                    family = exgaussian(),
+                    init = 0,
+                    cores = 4,
+control = list(adapt_delta = 0.8), 
+backend="cmdstanr", 
+file = "blmm_sc_wf",
+threads = threading(4))
+
+
+```
+
+```{r}
+fit_sc <- read_rds("https://osf.io/kdv38/download")
+fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+```
+
+```{r}
+#| label: tbl-expt2summary
+#| tbl-cap: "Summary of posterior fixed effect estimates for Posterior Ex-Guassian parameter hypothses  in Experiment 2"
+#| 
+# Run hypothesis tests and ensure consistent formatting
+a = hypothesis(fit_sc , "blur1 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+b = hypothesis(fit_sc , "blur2 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+c = hypothesis(fit_sc_lc, "blur1 = 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+d = hypothesis(fit_sc, "frequency1 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+e = hypothesis(fit_sc, "blur1:frequency1 < 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+f = hypothesis(fit_sc, "blur2:frequency1 < 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+g = hypothesis(fit_sc_lc, "blur1:frequency1 = 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+
+h = hypothesis(fit_sc , "sigma_blur1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+i = hypothesis(fit_sc , "sigma_blur2 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+j = hypothesis(fit_sc_lc, "sigma_blur1 = 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+k = hypothesis(fit_sc, "sigma_frequency1 < 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+l = hypothesis(fit_sc, "sigma_blur1:frequency1 < 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+m = hypothesis(fit_sc , "sigma_blur2:frequency1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+n = hypothesis(fit_sc_lc, "sigma_blur1:frequency1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+
+o = hypothesis(fit_sc , "beta_blur1 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+p = hypothesis(fit_sc , "beta_blur2 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+q = hypothesis(fit_sc_lc, "beta_blur1 = 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+r = hypothesis(fit_sc, "beta_frequency1 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+s = hypothesis(fit_sc, "beta_blur1:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+t = hypothesis(fit_sc , "beta_blur2:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+
+# Combine all results into a single table
+tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) |>
+  mutate(Evid.Ratio = as.numeric(Evid.Ratio)) |>
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) <  0")) |> 
+  select(-Star) |>
+  mutate(`90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
+  rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
+   rename("Mean" = "Estimate") |>
+  select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, Post.Prob)
+
+# Format and display the table
+tab |>
+  flextable() |>
+  autofit() |> 
+  theme_apa()
+
+```
+
+@tbl-expt2summary provides a model summary. @fig-quantiledeltaexp2 visualizes RTs as quantile and delta plots highlighting how blurring and word frequency affected processing during word recognition.
+
+##### Mu
+
+Looking at $\mu$ first, high blurred words had greater shifting than clear words, $b$ = `r a$Estimate`, 90% Cr.I \[`r a$CI.Lower`, `r a$CI.Upper`\], ER = `r a$Evid.Ratio`, and low blurred words, $b$ = `r b$Estimate`, 90% Cr.I \[`r b$CI.Lower`, `r b$CI.Upper`\], ER = `r b$Evid.Ratio`.
+
+There was no difference in shifting between low blurred words and clear words, $b$ = `r c$Estimate`, 90% Cr.I \[`r c$CI.Lower`, `r c$CI.Upper`\], ER = `r c$Evid.Ratio`.
+
+For word frequency, there was no evidence for greater shifting for low frequency compared to high frequency words, $b$ = `r d$Estimate`, 90% Cr.I \[`r d$CI.Lower`, `r d$CI.Upper`\], ER = `r d$Evid.Ratio`.
+
+Regarding the interaction between frequency and blurring, there was an amplified word frequency effect for high blurred words compared to clear words, $b$ = `r e$Estimate`, 90% Cr.I \[`r e$CI.Lower`, `r e$CI.Upper`\], ER = `r e$Evid.Ratio`, and low blurred words, $b$ = `r f$Estimate`, 95% Cr.I \[`r f$CI.Lower`, `r f$CI.Upper`\], ER = `r f$Evid.Ratio`, with greater shifting for low frequency words.
+
+There was strong evidence that there was no amplification of the word frequency effect for the low blurred vs. clear comparison, $b$ = `r g$Estimate`, 95% Cr.I \[`r g$CI.Lower`, `r g$CI.Upper`\], ER = `r g$Evid.Ratio`.
+
+##### Sigma
+
+High blurred words had higher $\sigma$ compared to clear words, $b$ = `r h$Estimate`, 90% Cr.I \[`r h$CI.Lower`, `r h$CI.Upper`\], ER = `r h$Evid.Ratio`, and low blurred words, $b$ = `r i$Estimate`, 95% Cr.I \[`r i$CI.Lower`, `r i$CI.Upper`\], ER = `r i$Evid.Ratio`.
+
+There was weak evidence that low blurred words had greater variance than clear words, $b$ = `r j$Estimate`, 90% Cr.I \[`r j$CI.Lower`, `r j$CI.Upper`\], ER = `r j$Evid.Ratio`.
+
+Low frequency words showed greater variance than high frequency words, $b$ = `r k$Estimate`, 90% Cr.I \[`r k$CI.Lower`, `r k$CI.Upper`\], ER = `r k$Evid.Ratio`.
+
+There were no significant interactions—all Cr.I included 0.
+
+##### Beta
+
+High blurred words showed greater skewing than clear words, $b$ = `r o$Estimate`, 90% Cr.I \[`r o$CI.Lower`, `r o$CI.Upper`\], ER = `r o$Evid.Ratio`, and low blurred words, $b$ = `r p$Estimate`, 90% Cr.I \[`r p$CI.Lower`, `r p$CI.Upper`\], ER = `r p$Evid.Ratio`. There was strong evidence for no skewing difference between low blurred words and clear words, $b$ = `r q$Estimate`, 95% Cr.I \[`r q$CI.Lower`, `r q$CI.Upper`\], ER = `r q$Evid.Ratio`.
+
+Low frequency words did not show greater skewing than high frequency words, $b$ = `r r$Estimate`, 95% Cr.I \[`r r$CI.Lower`, `r r$CI.Upper`\], ER = `r r$Evid.Ratio`.
+
+However, the word frequency effect was magnified for high blurred words compared to clear, $b$ = `r s$Estimate`, 95% Cr.I \[`r s$CI.Lower`, `r s$CI.Upper`\], ER = `r s$Evid.Ratio`, and low blurred words, $b$ = `r t$Estimate`, 90% Cr.I \[`r t$CI.Lower`, `r t$CI.Upper`\], ER = `r t$Evid.Ratio`, with greater skewing for low frequency words than high frequency words.
+
+There was also an interaction for the low blurred vs. clear words comparison, $b$ = `r u$Estimate`, 95% Cr.I \[`r u$CI.Lower`, `r u$CI.Upper`\], ER = `r u$Evid.Ratio`. However, the word frequency effect was reversed here, with low blurred-high frequency words having greater skewing than low blurred-low frequency words.
+
+```{r}
+
+#Delta plots (one per subject)
+quibble <- function(x, q = seq(.1, .9, .2)) {
+  tibble(x = quantile(x, q), q = q)
+}
+
+data.quantiles <- p_rt_out |>
+  dplyr::group_by(participant,blur,frequency, corr) |>
+  dplyr::mutate(rt_ms = rt*1000) |> 
+  dplyr::summarise(RT = list(quibble(rt_ms, seq(.1, .9, .2)))) |> 
+  tidyr::unnest(RT) |>
+  ungroup()
+
+
+data.delta <- data.quantiles |>
+  dplyr::group_by(participant, blur,frequency,  q) |>
+  dplyr::summarize(RT=mean(x)) |>
+  ungroup()
+
+  
+```
+
+```{r}
+#Delta plots (based on vincentiles)
+vincentiles <- data.quantiles |>
+  dplyr::group_by(blur,frequency, q) |>
+  dplyr::summarize(RT=mean(x)) |>
+  ungroup()
+
+v=vincentiles |>
+  dplyr::group_by(blur,frequency, q) |>
+  dplyr::summarise(MRT=mean(RT)) |>
+  ungroup()
+
+
+p <- ggplot(v, aes(x = q, y = MRT, colour=blur)) +
+  facet_grid(~frequency) + 
+  geom_line(size = 1) +
+  geom_point(size = 3)  +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 16, face = "bold"), 
+        axis.text = element_text(size = 16),
+        plot.title = element_text(face = "bold", size = 20)) +
+  scale_y_continuous(breaks=seq(500,1600,100)) +
+  theme(legend.title=element_blank())+
+    coord_cartesian(ylim = c(500, 1600)) +
+  scale_x_continuous(breaks=seq(.1,.9, .2))+
+    geom_label_repel(data=v, aes(x=q, y=MRT, label=round(MRT,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5)+
+  labs(title = "Quantile Analysis", x = "Quantiles", y = "Response latencies in ms")
+
+
+p1 <- ggplot(v, aes(x = q, y = MRT, colour=frequency)) +
+  facet_grid(~blur) + 
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  theme(axis.title = element_text(size = 16, face = "bold"), 
+        axis.text = element_text(size = 16),
+        plot.title = element_text(face = "bold", size = 20)) +
+  scale_y_continuous(breaks=seq(600,1600,100)) +
+  theme(legend.title=element_blank())+
+    coord_cartesian(ylim = c(600, 1600)) +
+  scale_x_continuous(breaks=seq(.1,.9, .2))+
+   geom_label_repel(data=v, aes(y=MRT, label=round(MRT,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5)+
+  labs(title = "Quantile Analysis", x = "Quantiles", y = "Response latencies in ms", tag = "A")
+
+
+
+
+```
+
+```{r}
+
+p2 <- ggplot(data=v,aes(y=MRT, x=frequency, color=q)) + facet_grid(~blur)+
+  geom_line()+
+  geom_point(size=4) 
+
+```
+
+```{r}
+#| label: tbl-freq
+#| tbl-cap: "Word frequency effect across .1, .3, .5, .7, .9 quantiles as a function of blurring"
+#diff
+v_wf <- v |>
+  dplyr::group_by(blur, q)|>
+  tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
+  mutate(Diff=LOW-HIGH) |>
+  rename("Blur" = "blur") |>
+  mutate(Blur = ifelse(Blur=="C", "Clear", ifelse(Blur=="HB", "High Blur", "Low Blur")))|> 
+  ungroup()
+
+v_wf |> select(Blur, q, Diff) |> 
+  pivot_wider(names_from="q", values_from="Diff") |> 
+  mutate(across(where(is.numeric), ~ round(.x, 3))) |>
+   flextable() |>
+  autofit() |> 
+  theme_apa()
+
+```
+
+```{r}
+v_chb <- v |>
+  dplyr::filter(blur=="C" | blur=="HB") |>
+  dplyr::group_by(frequency, q)|>
+  mutate(mean_rt = mean(MRT)) |> 
+  ungroup()|> 
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff=HB-C)
+
+
+v_chb_freq <- v |>
+  dplyr::group_by(blur, q)|>
+  mutate(mean_rt = mean(MRT)) |> 
+  ungroup()|> 
+  tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
+  mutate(diff=LOW-HIGH)
+
+
+p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) + facet_grid(~frequency) + 
+  geom_abline(intercept = 0, slope = 0) +
+  geom_line(size = 1, colour = "black") +
+  geom_point(size = 3, colour = "black") +
+  theme_bw() + 
+  theme(legend.position = "none") + 
+  theme(axis.title = element_text(size = 16, face = "bold"), 
+        axis.text = element_text(size = 16),
+        plot.title = element_text(face = "bold", size = 20)) +
+scale_y_continuous(breaks=seq(100,500,50)) +
+    coord_cartesian(ylim = c(100, 500)) +
+  scale_x_continuous(breaks=seq(600,1150, 100)) +
+geom_label_repel(data=v_chb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5)  +
+  labs(title= "High Blue vs. Clear", x = "", y = "Frequency Effect", tag = "B")
+
+
+```
+
+```{r}
+v_clb <- v |>
+  dplyr::group_by(frequency,q)|>
+   mutate(mean_rt = mean(MRT)) |> 
+  ungroup() |> 
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff=LB-C)
+
+
+p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) + facet_grid(~frequency) + 
+  geom_abline(intercept = 0, slope = 0) +
+  geom_line(size = 1, colour = "black") +
+  geom_point(size = 3, colour = "black") +
+  theme_bw() + 
+  theme(legend.position = "none") + 
+  theme(axis.title = element_text(size = 16, face = "bold"), 
+        axis.text = element_text(size = 16),
+        plot.title = element_text(face = "bold", size = 20)) +
+scale_y_continuous(breaks=seq(0, 100, 20)) +
+    coord_cartesian(ylim = c(0, 100)) +
+  scale_x_continuous(breaks=seq(600,1100, 100))+
+  geom_label_repel(data=v_clb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5) + 
+  labs( title = "Clear - Low Blur", x = "Mean RT per quantile", y = "Differences")
+
+```
+
+```{r}
+
+v_hlb <- v |>
+  dplyr::filter(blur=="HB" | blur=="LB") |>
+  dplyr::group_by(frequency,q)|>
+   mutate(mean_rt = mean(MRT)) |> 
+  ungroup() |> 
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff=HB-LB)
+
+
+p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) + 
+  facet_grid(~frequency) + 
+  geom_abline(intercept = 0, slope = 0) +
+  geom_line(size = 1, colour = "black") +
+  geom_point(size = 3, colour = "black") +
+  theme_bw() + 
+  theme(legend.position = "none") + 
+  theme(axis.title = element_text(size = 16, face = "bold"), 
+        axis.text = element_text(size = 16),
+        plot.title = element_text(face = "bold", size = 20)) +
+  scale_x_continuous(breaks=seq(600,1100, 100))+
+  geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5) + 
+  labs( title = "High Blur - Low Blur", x = "", y = "Group differences")
+
+```
+
+```{r}
+#| label: fig-quantiledeltaexp2
+#| fig-cap: "Group RT distributions in the blurring and word frequency manipulations in word stimuli. A. Quantile plots with each point represents the average RT quantiles (.1, .3, .5, .7,and .9) in each condition. B. Delta plots obatined by computing the quantiles for each participant and subsequently averaging the obtained values for each quantile over the participants and subtracting the values from each condition."
+#| fig-width: 12
+#| fig-height: 14
+
+bottom <- cowplot::plot_grid(p1, p2,p3, 
+                   ncol = 3, 
+                   nrow = 1,
+                   label_size = 14, 
+                   hjust = -0.8, 
+                   scale=.95,
+                   align = "v")
+
+cowplot::plot_grid(p, bottom, 
+                   ncol=1, nrow=2)
+
+ggsave(filename='./figures/figure_kde3.png',width=12,height=14, dpi=300)
+
+
+```
+
+#### Recognition Memory
+
+```{r}
+
+mem_sc <- read_csv("https://osf.io/eapu5/download")
+
+```
+
+```{r}
+#hypothesis
+blurC <-hypr(HB~C, HB~LB,levels=c("C", "HB", "LB"))
+
+
+HF_cont <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
+```
+
+```{r}
+
+#set contrasts in df 
+mem_sc$blur<-as.factor(mem_sc$blur)
+
+contrasts(mem_sc$blur) <-contr.hypothesis(blurC)
+
+mem_sc$frequency<-as.factor(mem_sc$frequency)
+
+contrasts(mem_sc$frequency) <-contr.hypothesis(HF_cont)
+
+```
+
+```{r}
+#| eval: false
+#| 
+prior_exp <- c(set_prior("cauchy(0,.35)", class = "b"))
+
+fit_sc_mem <- brm(sayold ~ isold*blur*frequency + (1+isold*blur*frequency|participant) + (1+isold*blur*frequency|target), data=mem_sc, 
+warmup = 1000,
+                    iter = 5000,
+                    chains = 4, 
+                    init=0, 
+                    family = bernoulli(link = "probit"),
+                    cores = 4, 
+control = list(adapt_delta = 0.9),
+prior=prior_exp, 
+sample_prior = T, 
+save_pars = save_pars(all=T),
+backend="cmdstanr", 
+threads = threading(4))
+
+```
+
+```{r}
+
+fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
+
+fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
+
+```
+
+```{r}
+emm_m2_d1 <- emmeans(fit_sc_mem, ~isold | blur * frequency) |> 
+  contrast("revpairwise")
+
+emm_m2_d2 <- emmeans(fit_sc_mem, ~isold + blur * frequency) |> 
+  contrast(interaction = c("revpairwise", "pairwise"), by = "frequency")
+
+# (Negative) criteria
+emm_m2_c1 <- emmeans(fit_sc_mem, ~blur * frequency)
+emm_m2_c2 <- emmeans(fit_sc_mem, ~blur | frequency) |> 
+  contrast("pairwise")
+```
+
+```{r}
+#| label: fig-m2-emmeans
+#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences, with 66% (thick) and 95% CIs (thin lines)
+#| fig-width: 12
+#| fig-height: 10
+
+
+blur_level <- c("Clear", "High blur", "Low blur", "Clear-High blur", "Clear-Low blur", "High blur-Low blur")
+
+tmp <- bind_rows(
+  bind_rows(
+    gather_emmeans_draws(emm_m2_d1) |> 
+      group_by(blur, frequency) |> 
+      select(-contrast),
+    gather_emmeans_draws(emm_m2_d2) |> 
+      rename(
+        blur = blur_pairwise
+      ) |> 
+      group_by(blur, frequency) |> 
+      select(-isold_revpairwise)
+  ),
+  bind_rows(
+    gather_emmeans_draws(emm_m2_c1),
+    gather_emmeans_draws(emm_m2_c2) |> 
+      rename(
+        blur = contrast
+      )
+  ),
+  .id = "Parameter"
+) |> 
+  ungroup() |> 
+  mutate(Parameter = factor(Parameter, labels = c("dprime", "Criterion"))) |> 
+   mutate(
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
+      fct_inorder(),
+    blur = fct_inorder(blur), 
+    frequency=ifelse(frequency=="HIGH", "High", "Low")
+  ) 
+# Convert blur to an ordered factor to control spacing
+# Convert blur to a factor with predefined order
+tmp |>   
+  mutate(
+    .value = if_else(Parameter == "Criterion", .value * -1, .value),
+    Parameter = fct_rev(Parameter)
+  ) |> 
+  ggplot(aes(x = as.numeric(blur), y = .value, fill = frequency)) +  
+  labs(
+    x = "Blurring Level (or difference)",
+    y = "Parameter value"
+  ) +
+  geom_hline(yintercept = 0, linewidth = .25) +
+  
+  # Replace scale_x_discrete with scale_x_continuous
+  scale_x_continuous(
+    breaks = 1:6,  # Assuming you have 6 unique blur levels
+    labels = blur_level  # Your predefined labels
+  ) +
+  
+  scale_slab_alpha_discrete(range = c(1, .5)) +
+  
+  stat_halfeye(
+    normalize = "xy",
+    width = 0.44,
+    slab_color = "black",
+    interval_size_range = c(0.2, 1),
+    .width = c(.66, .95),
+    aes(
+      side = ifelse(frequency == "High", "left", "right"),
+      x = ifelse(frequency == "High", as.numeric(blur) - .08, as.numeric(blur) + .08)
+    )
+  ) +
+  
+  guides(slab_alpha = "none") +
+  facet_grid(Parameter ~ t, scales = "free")
+
+ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
+
+```
+
+```{r}
+#| echo: false
+
+a = hypothesis(fit_sc_mem , "blur1 > 0")
+
+b = hypothesis(fit_sc_mem , "blur2 > 0")
+
+c = hypothesis(fit_sc_mem_lb, "blur1 = 0")
+
+d= hypothesis(fit_sc_mem, "frequency1 < 0")
+
+e = hypothesis(fit_sc_mem, "blur1:frequency1 = 0")
+
+f = hypothesis(fit_sc_mem, "blur2:frequency1 = 0")
+
+g = hypothesis(fit_sc_mem_lb, "blur1:frequency1 = 0")
+
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+  select(-Star)
+
+tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
+
+
+tb1 <- tab |> 
+   mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) > 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) > 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) > 0"))
+```
+
+```{r}
+#| echo: false
+
+a = hypothesis(fit_sc_mem , "isold1:blur1 > 0")
+
+b = hypothesis(fit_sc_mem , "isold1:blur2 > 0")
+
+c = hypothesis(fit_sc_mem_lb, "isold1:blur1 = 0")
+
+d= hypothesis(fit_sc_mem, "isold1:frequency1 < 0")
+
+e = hypothesis(fit_sc_mem, "isold1:blur1:frequency1 > 0")
+
+f = hypothesis(fit_sc_mem, "isold1:blur2:frequency1 > 0")
+
+g = hypothesis(fit_sc_mem_lb, "isold1:blur1:frequency1 > 0")
+
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis) |>
+    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
+  select(-Star)
+
+tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
+
+
+tb1 <- tab |> 
+   mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","Low Frequency - High Frequency",  "(High Blur-Clear) - (Low Frequency-High Frequency) > 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) > 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) > 0"))
+```
+
+#### Sensitivity
+
+Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), \$\\beta\$ = `r a$hypothesis$Estimate`, 95% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, \$b\$ = `r b$hypothesis$Estimate`, 95% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, \$\\beta\$ = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 95% Cr.I\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, \$\\beta\$ = `r e$hypothesis$Estimate`, 95% Cr.I\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, \$\\beta\$ = -0.14, 95% Cr.I\[-0.21, -0.07\]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, \$\\beta\$ = `r f$hypothesis$Estimate`, 95% Cr.I\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this post hoc, High frequency-high blurred words were better recognized than low-frequency-blurred words, \$b\$ = 0.11, 95% Cr.I\[0.04, 0.18\]. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% Cr.I\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
+
+### Discussion
+
+Experiment 2 explored the source of the late stage processing underlying the disfluency effect. Using a word frequency manipulation coupled with a semantic categorization task, we discovered non-additive effects of frequency and blurring on response time distributions. Specifically, the word frequency effect was magnified for high blurred words(compared to clear and low blurred words). We observed this on $\mu$ and $\beta$ parameters, indicating that when stimuli are degraded, word frequency influences early and late stages of processing during word recognition. This pattern has also been found with other disfluent stimuli, such as hard-to-read handwritten cursive words [@barnhart2010; @perea2016; @vergara-martínez2021].
+
+Looking at quantile and delta plots, we see there was a robust word-frequency advantage that increased in the higher quantiles for clear and low-blurred words at the 0.1, 0.3, 0.5, 0.7, and 0.9 quantiles, respectively). Critically, for the high blurred condition, the word-frequency effect not only changed across quantiles with a steeper slope, but it was also larger in the first quantiles (see @tbl-freq). This finding suggests that word-frequency already taps onto an encoding stage of processing when the stimuli appear in hard-to-read format like high blurred words. This replicates earlier research with easy-to-read and hard-to-read handwriting [@perea2016; @vergara-martínez2021].
+
+Critical here is how non-additivity observed here impacts memory. Replicating Experiments 1a and 1b, we observed an overall memory benefit for high blurred words. Additionally, we observed better recognition memory for low frequency words compared to high frequency words. Examining the interaction between blurring and frequency revealed a distinct pattern. We observed a disfluency effect for high frequency-high blurred words. However, low frequency words only benefited memory when they were unaltered (clear words showed a low frequency benefit). When words were blurred, the low ferquency memory benefit did not emerge. This pattern of findings helps us shed some light on the potential source of late stage processing in the disfluency effect.
+
+## General Discussion
+
+Interfering with stimulus perception during encoding can sometimes improve later explicit memory. The mixed data on perceptual disfluency has called into question the utility of such manipulations in the learning domain. One of the main aims of the current set of experiments was to examine the underlying mechanisms of the perceptual disfluency effect to better understand when perceptual disfluendey aids memory and when it does not. To this end, our study delved into the impact of one type of perceptual disfluency--blurring (i.e., low blurring and high blurring)--on the process of encoding, as assessed through a LDT (Experiments 1a and 1b), and a semantic categorization task (Experiment 2). RT distributions were analyzed with an ex-Gaussian model and DDM (Experiments 1a and 1b) to better understand how perceptual disfluency affects encoding. These models offered a comprehensive descriptive and theoretical framework through which to examine the perceptual disfluency effect.
+
+To recapitulate our findings, during encoding, high blurred words showed greater distributional shifting and skewing compared to clear and low blurred words. In addition, DDM fits indicated high blurred words had a higher $T_{er}$ and lower $v$. Conversely, low blurred words compared to clear words showed greater distributional shifting, but there was no difference in skewing. DDM fits showed higher $T_{er}$, but had no effect on $v$.
+
+Turning to recognition memory, high blurred words were more likely to be recognized at test compared to clear words and low blurred words. This pattern arose regardless if context was reinstated at test (Experiment 1b). This pattern replicates the results from @rosner2015. In addition, we showed word frequency (Experiment 2) also modulates the disfluency effect. Namely, low frequency words did not show a disfluency effect. In fact, the effect seemed to be reversed for clear words and low blurred words. However, high frequency words did show a disfluency effect.
+
+These findings have several implications. At a theoretical level, the current data suggests that in order for perceptual disfluency to benefit memory it has to be disfluent enough to affect both early and late stages of processing. A manipulation that only produces a general slowing of responses is not sufficient to enact an mnemonic effect. However, an important caveat to this is that processes during encoding of the word itself are not enough to produce an menominc benefit. In Experiment 2, we did not observe better memory for low frequency-high blurred words which are the hardest and presumably receive the most top-down processing. We only observed a disfluency effect for high frequency-high blurred words. This points to the importance of control processes and processing limitations in producing the disfluency effect.
+
+We argue the current findings align more closely with the stage-specific account proposed by @ptok2019. While the account was proposed to explain memory effects that require conflict during encoding, like the semantic interference effect, we feel that it is a useful theoretical framework to explain the current findings. In fact, @ptok2019 and @ptok2020 suggested a connection between their framework and perceptual disfluency effects and desirable difficulties, more broadly.
+
+Within the stage-specific account, memory performance depends on the nature of processing during encoding and the utilization of cognitive control mechanisms. In our experiments, participants were tasked with determining whether letter strings represented words or non-words (Experiments 1a and 1b), or whether a word belonged to an animal category (Experiment 2). For skilled readers, these tasks are executed automatically and smoothly. Coupled with perceptual disfluency, this combination is believed to lead to memory advantages seen with perceptual disfluent stimuli.
+
+When we manipulated word frequency, however, the process of recognizing low-frequency words demanded more effort and attentional resources in addition to the perceptual disfluency of blurring. Consequently, this lead to the task becoming more challenging and difficult. Thus, the increased processing demands from recognizing low frequency words may have countered the benefits from high-blurred words, as more attentional resources were allocated to recognizing low-frequency words. When there was minimal control demands (i.e., clear words), we did see better memory for low-frequency words.
+
+There are other examples that support this capacity-limited view of perceptual disfluency. For instance, @geller2018 showed that easy-to-read cursive words and hard-to-read cursive words are better remembered than computer print words, but the memory effect is much larger for easier to read cursive words. As another notable example, participants with low working memory capacity do not seem to benefit from perecptaul disfluency as much as those with higher working memory capacity [@lehmann2015]. At a broader level, @wenzel2019 suggested that intelligence is an important factor for when desirable difficulties are desirable for learning.
+
+At a methodological level, our experiments demonstrate that a straightforward blurring manipulation can benefit memory, which we observed whether or not we reinstated the context during testing. However, blurring has to be sufficiently difficult do so. If the secondary task requires too much attentional control the effect might not be observed.
+
+More significantly, our current experiments underscore the benefits of using mathematical and computational models (e.g., ex-Gaussian model and DDM) to examine perceptual disfluency during encoding. For instance, while previous research often validates perceptual manipulations by examining accuracy and overall response time [@geller2020; @geller2018], our experiments revealed that words with high and low levels of blurring affect response time distributions differently. Specifically, low blurred words influenced early or non-decision stages of processing, whereas high blurred words affected both early and late stages. These findings suggest that $T_{er}$ and $v$ are sensitive to manipulations of perceptual disfluency (also see @gomez2014).
+
+Furthermore, our modeling of RTs appears to be a more sensitive method. Although we found weak evidence for differences between clean and low blurred conditions, we did notice variations in non-decision time and a shift in the response time distribution for low blurred words compared to clear words. We recommend that future studies employ distribution modeling and DDM to decompose response times and directly quantify the impact of perceptual disfluency on encoding.
+
+While we looked at the DDM to inform processes during encoding, there is one case of the DDM being applied to the study of perceptual disfluency at test. In one recent study, @hu2022 examined RTs during retrieval. @hu2022 were primarily interested in how perceptual disfluency (i.e., Sans Forgetica typeface; @geller2020) influenced DDM parameters during recognition and how they relate to confidence judgments. At test,they found a non-significant difference in mean RTs between Sans Forgetica typeface and Arial typeface. However, looking at the DDM parameters, Sans Forgetica and Airal typefaces differed on $T_{er}$, but not drift rate. They also looked at how parameters of the DDM were related to confidence judgments. Higher $T_{er}$ was related to lower confidence and higher drift rate was associated with higher confidence. While their focus was on retrieval and not encoding, this corresponds with what we observed for our low blurred words in Experiments 1a and 1b--a weak manipulation affected non-decision time, but not drift rate. Overall, this further highlights the utility of the the DDM in studying perceptual disfluency (and other encoding conflict effects) during encoding and at test,
+
+Finally, at a practical level, we do show that blurring can benefit later memory. However, caution needs to be taken here. First, the current experiments were conducted online using simple materials (i.e., list learning). It is unclear how these effects would generalize to a classroom setting. Second, participants were not told about the upcoming test. @geller2021 has showed that low test expectancy is an important moderator for this effect. Third, while we did not establish a region of practical equivalence, the size of the disfluency effect appears to be be small in nature. Looking at the default region of proximal equivalence (ROPE) from the `bayestestr` package (here -0.10 -.10 in standardized units) many of the critical contrasts either were completely inside this region or overlapped this region, suggesting negligible differences. For more applied work, this might be well below the smallest effect size of interest. Now this is not to say all research on perceptual disfluency is superfluous. As noted in @geller2021a, a fruitful avenue for future work might be to investigate how perceptual influenced effects processing in every day life where memory is largely incidental [@castel].
+
+These results provide some context for the large number of replication failures. Many of the studies looking at disfluency do not take care in ensuring the disfluency manipulation is actually disfluent. Most times, studies use only two levels (disfluent/fluent) and perform analses that may not be well suited for the type of the type of data they have. As we have hopefully shown here, it is important to take into account the entire RT distribution. By examining the RT distributions of different levels of disfluency we obtained a richer better understanding of the stages or loci manipulations have during encoding. It is our hope that learning and memory researches will begin to use these tools to help understand encoding processes involved in perceptual disfluency effects but also encoding contexts where there is considerable conflict.
+
+### Conclusion
+
+Our paper contributes nuanced insights to the intricate relationship between perceptual disfluency and memory encoding. We have shown that perceptual disfluency can aid in memory retention, but its efficacy is contingent upon the degree of disfluency and other contextual factors such as word frequency. Our findings endorse the stage-specific account, emphasizing the role of cognitive control mechanisms in the observed memory advantages with perceptual disfluency. Furthermore, our methodological contributions, employing an ex-Gaussian model and DDM, not only validate the benefits of examining RT distributions, but also open new avenues for future research in learning and memory studies. We caution, however, that the applicability of these findings in real-world educational settings remains an open question, and the effect sizes observed were relatively small, thus warranting further investigation.
+
+Ultimately, this work stands as a call to action for a more comprehensive, nuanced approach to studying perceptual disfluency, incorporating both advanced statistical methods and a more exhaustive range of experimental conditions to better elucidate when and how disfluency can facilitate memory.
 
 ## References
 
