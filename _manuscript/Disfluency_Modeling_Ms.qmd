@@ -1375,7 +1375,7 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 
 prior_exp1 <- c(set_prior("normal(0,10)", class = "b"), 
                  set_prior("normal(0,10)", class = "b", dpar="sigma"), 
-                 set_prior("normal(0,10)", class = "b", dpar="beta")
+                 set_prior("normal(0,10)", class = "b", dpar="beta"))
                 
 
 fit_exg1 <- brm(
@@ -1779,7 +1779,7 @@ warmup = 1000,
 control = list(adapt_delta = 0.9),
 prior=prior_exp2, 
 sample_prior = T, 
-file="blmm_sdt_c_nointercept"
+file="blmm_sdt_c_nointercept",
 save_pars = save_pars(all=T),
 backend="cmdstanr",
 
