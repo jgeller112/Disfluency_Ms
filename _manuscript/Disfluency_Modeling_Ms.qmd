@@ -1273,10 +1273,7 @@ tmp <- tempdir()
 download.file("https://osf.io/ne36z/download", file.path(tmp, "acc_blmm_expnocontext.RData"), mode = "wb")
 load(file.path(tmp, "acc_blmm_expnocontext.RData"))
 
-x <- read_rds("https://osf.io/ne36z/download")
-
 fit_acc_lbc <- read_rds("https://osf.io/yhz4c/download")
-
 ```
 
 ```{r}
@@ -1801,8 +1798,6 @@ fit_mem_noc <- read_rds("https://osf.io/2pgnm/download")
 
 #get the lowblur vs. c conrtast
 fit_mem_lbc <- read_rds("https://osf.io/tucn9/download")
-
-
 ```
 
 ```{r}
@@ -2199,38 +2194,47 @@ threads = threading(4))
 ```
 
 ```{r}
-fit_sc <- read_rds("https://osf.io/kdv38/download")
-fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+# The following often fails to download during rendering due to the size of the objects
+# fit_sc <- read_rds("https://osf.io/kdv38/download")
+# fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+
+# Alternative: download the files manually and load them
+# 1. (create a /model/ folder and download the file below)
+# 2. Run:
+# download.file("https://osf.io/kdv38/download", "./models/fit_sc.RData",  mode = "wb")
+# download.file("https://osf.io/49bgx/download", "./models/fit_sc_lc.RData",  mode = "wb")
+fit_sc <- read_rds("./models/fit_sc.RData")
+fit_sc_lc <- read_rds("./models/fit_sc_lc.RData")
 ```
 
 ```{r}
 #| label: tbl-expt2summary
 #| tbl-cap: "Summary of posterior fixed effect estimates for Posterior Ex-Guassian parameter hypothses  in Experiment 2"
-#| 
+
 # Run hypothesis tests and ensure consistent formatting
-a = hypothesis(fit_sc , "blur1 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-b = hypothesis(fit_sc , "blur2 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-c = hypothesis(fit_sc_lc, "blur1 = 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-d = hypothesis(fit_sc, "frequency1 > 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-e = hypothesis(fit_sc, "blur1:frequency1 < 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-f = hypothesis(fit_sc, "blur2:frequency1 < 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-g = hypothesis(fit_sc_lc, "blur1:frequency1 = 0", dpar="mu") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+a = hypothesis(fit_sc , "blur1 > 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+b = hypothesis(fit_sc , "blur2 > 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+c = hypothesis(fit_sc_lc, "blur1 = 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+d = hypothesis(fit_sc, "frequency1 > 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+e = hypothesis(fit_sc, "blur1:frequency1 < 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+f = hypothesis(fit_sc, "blur2:frequency1 < 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+g = hypothesis(fit_sc_lc, "blur1:frequency1 = 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 
-h = hypothesis(fit_sc , "sigma_blur1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-i = hypothesis(fit_sc , "sigma_blur2 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-j = hypothesis(fit_sc_lc, "sigma_blur1 = 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-k = hypothesis(fit_sc, "sigma_frequency1 < 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-l = hypothesis(fit_sc, "sigma_blur1:frequency1 < 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-m = hypothesis(fit_sc , "sigma_blur2:frequency1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
-n = hypothesis(fit_sc_lc, "sigma_blur1:frequency1 > 0") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+h = hypothesis(fit_sc , "sigma_blur1 > 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+i = hypothesis(fit_sc , "sigma_blur2 > 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+j = hypothesis(fit_sc_lc, "sigma_blur1 = 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+k = hypothesis(fit_sc, "sigma_frequency1 < 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+l = hypothesis(fit_sc, "sigma_blur1:frequency1 < 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+m = hypothesis(fit_sc , "sigma_blur2:frequency1 > 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
+n = hypothesis(fit_sc_lc, "sigma_blur1:frequency1 > 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
 
-o = hypothesis(fit_sc , "beta_blur1 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-p = hypothesis(fit_sc , "beta_blur2 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-q = hypothesis(fit_sc_lc, "beta_blur1 = 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-r = hypothesis(fit_sc, "beta_frequency1 > 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-s = hypothesis(fit_sc, "beta_blur1:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-t = hypothesis(fit_sc , "beta_blur2:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 < 0", dpar="beta") |> .$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+o = hypothesis(fit_sc , "beta_blur1 > 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+p = hypothesis(fit_sc , "beta_blur2 > 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+q = hypothesis(fit_sc_lc, "beta_blur1 = 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+r = hypothesis(fit_sc, "beta_frequency1 > 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+s = hypothesis(fit_sc, "beta_blur1:frequency1 < 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+t = hypothesis(fit_sc , "beta_blur2:frequency1 < 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 < 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
 
 # Combine all results into a single table
 tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) |>
@@ -2546,11 +2550,13 @@ threads = threading(4))
 ```
 
 ```{r}
+# fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
+# fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
 
-fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
-
-fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
-
+# download.file("https://osf.io/wn79f/download", "./models/fit_sc_mem.RData",  mode = "wb")
+# download.file("https://osf.io/c8bqh/download", "./models/fit_sc_mem_lb.RData",  mode = "wb")
+fit_sc_mem <- read_rds("./models/fit_sc_mem.RData")
+fit_sc_mem_lb <- read_rds("./models/fit_sc_mem_lb.RData")
 ```
 
 ```{r}
