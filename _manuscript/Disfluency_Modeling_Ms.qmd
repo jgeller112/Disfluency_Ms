@@ -751,19 +751,17 @@ v$blur<- factor(v$blur, level=c("High blur", "Low blur", "Clear"))
 
 
 
-p <- ggplot(v, aes(x = q, y = MRT*1000, colour = blur, group=blur))+
+p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   geom_line(size = 1) +
-  geom_point(size = 3)  +  
-  scale_y_continuous(breaks=seq(500,1600,100)) +
-  theme(legend.title=element_blank())+
-    coord_cartesian(ylim = c(500, 1600)) +
-  scale_x_continuous(breaks=seq(.1,.9, .2))+
-  geom_label_repel(data=v, aes(x=q, y=MRT*1000, label=round(MRT*1000,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10) + 
-  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A")  +      # Optional tag for labeling
-    theme_minimal(base_size=14) 
-
-  
-
+  geom_point(size = 3) +
+  scale_y_continuous(breaks = seq(500, 1600, 100)) +
+  theme(legend.title = element_blank()) +
+  coord_cartesian(ylim = c(500, 1600)) +
+  scale_x_continuous(breaks = seq(.1, .9, .2)) +
+  geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
+  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + # Optional tag for labeling
+  theme_minimal(base_size = 14) +
+  ggokabeito::scale_colour_okabe_ito()
 ```
 
 ```{r}
@@ -1638,19 +1636,17 @@ v$blur<- factor(v$blur, level=c("High blur", "Low blur", "Clear"))
 
 
 
-p <- ggplot(v, aes(x = q, y = MRT*1000, colour = blur, group=blur))+
+p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   geom_line(size = 1) +
   geom_point(size = 3) +
-  scale_y_continuous(breaks=seq(500,1600,100)) +
-  theme(legend.title=element_blank())+
-    coord_cartesian(ylim = c(500, 1600)) +
-  scale_x_continuous(breaks=seq(.1,.9, .2))+
-  geom_label_repel(data=v, aes(x=q, y=MRT*1000, label=round(MRT*1000,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10) + 
-  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A")  +      # Optional tag for labeling
-    theme_minimal(base_size=14) 
-
-  
-
+  scale_y_continuous(breaks = seq(500, 1600, 100)) +
+  theme(legend.title = element_blank()) +
+  coord_cartesian(ylim = c(500, 1600)) +
+  scale_x_continuous(breaks = seq(.1, .9, .2)) +
+  geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
+  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + # Optional tag for labeling
+  theme_minimal(base_size = 14) +
+  ggokabeito::scale_colour_okabe_ito()
 ```
 
 ```{r}
@@ -2324,39 +2320,41 @@ v=vincentiles |>
   ungroup()
 
 
-p <- ggplot(v, aes(x = q, y = MRT, colour=blur)) +
-  facet_grid(~frequency) + 
-  geom_line(size = 1) +
-  geom_point(size = 3)  +
-  theme_bw() + 
-  theme(axis.title = element_text(size = 16, face = "bold"), 
-        axis.text = element_text(size = 16),
-        plot.title = element_text(face = "bold", size = 20)) +
-  scale_y_continuous(breaks=seq(500,1600,100)) +
-  theme(legend.title=element_blank())+
-    coord_cartesian(ylim = c(500, 1600)) +
-  scale_x_continuous(breaks=seq(.1,.9, .2))+
-    geom_label_repel(data=v, aes(x=q, y=MRT, label=round(MRT,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5)+
-  labs(title = "Quantile Analysis", x = "Quantiles", y = "Response latencies in ms")
-
-
-p1 <- ggplot(v, aes(x = q, y = MRT, colour=frequency)) +
-  facet_grid(~blur) + 
+p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
+  facet_grid(~frequency) +
   geom_line(size = 1) +
   geom_point(size = 3) +
-  theme(axis.title = element_text(size = 16, face = "bold"), 
-        axis.text = element_text(size = 16),
-        plot.title = element_text(face = "bold", size = 20)) +
-  scale_y_continuous(breaks=seq(600,1600,100)) +
-  theme(legend.title=element_blank())+
-    coord_cartesian(ylim = c(600, 1600)) +
-  scale_x_continuous(breaks=seq(.1,.9, .2))+
-   geom_label_repel(data=v, aes(y=MRT, label=round(MRT,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5)+
-  labs(title = "Quantile Analysis", x = "Quantiles", y = "Response latencies in ms", tag = "A")
+  theme_bw() +
+  theme(
+    axis.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 16),
+    plot.title = element_text(face = "bold", size = 20)
+  ) +
+  scale_y_continuous(breaks = seq(500, 1600, 100)) +
+  theme(legend.title = element_blank()) +
+  coord_cartesian(ylim = c(500, 1600)) +
+  scale_x_continuous(breaks = seq(.1, .9, .2)) +
+  geom_label_repel(data = v, aes(x = q, y = MRT, label = round(MRT, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5) +
+  labs(title = "Quantile Analysis", x = "Quantiles", y = "Response latencies in ms") +
+  ggokabeito::scale_colour_okabe_ito()
 
 
-
-
+p1 <- ggplot(v, aes(x = q, y = MRT, colour = frequency)) +
+  facet_grid(~blur) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  theme(
+    axis.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 16),
+    plot.title = element_text(face = "bold", size = 20)
+  ) +
+  scale_y_continuous(breaks = seq(600, 1600, 100)) +
+  theme(legend.title = element_blank()) +
+  coord_cartesian(ylim = c(600, 1600)) +
+  scale_x_continuous(breaks = seq(.1, .9, .2)) +
+  geom_label_repel(data = v, aes(y = MRT, label = round(MRT, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5) +
+  labs(title = "Quantile Analysis", x = "Quantiles", y = "Response latencies in ms", tag = "A") +
+  ggokabeito::scale_colour_okabe_ito()
 ```
 
 ```{r}
@@ -2645,7 +2643,8 @@ tmp |>
   ) +
   
   guides(slab_alpha = "none") +
-  facet_grid(Parameter ~ t, scales = "free")
+  facet_grid(Parameter ~ t, scales = "free") +
+  ggokabeito::scale_fill_okabe_ito()
 
 ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
 
