@@ -1174,6 +1174,9 @@ ggsave("expt1a-dprime.png", width=19, height=8, dpi=300)
 
 ```
 
+
+### Discussion
+
 Experiment 1a successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory.
 
 Adding to this, we utilized cognitive and mathematical modeling to gain further insights into the mechanisms underlying the perceptual disfluency effect. Descriptively, high blurred words induced a more pronounced shift in the RT distribution (μ) and exhibited a higher degree of skew (τ) compared to clear and low blurred words. However, low blurred words did not differ compared to clear words on $\mu$ or $\beta$. These patterns can be clearly seen in our quantile delta plots in Fig. 3.
@@ -1346,7 +1349,7 @@ blur_rt_new <- blur_rt |>
 
 ```
 
-The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r 1-dim(blur_rt_new)[1]/dim(blur_rt)[1]` %)
+The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r 1-dim(blur_rt_new)[1]/dim(blur_rt)[1]` % *[don't you need to multiply by 100 to format it as percent?]*)
 
 ```{r}
 #hypothesis
