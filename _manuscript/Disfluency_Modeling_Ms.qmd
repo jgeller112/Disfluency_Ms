@@ -873,14 +873,12 @@ formula <- bf(rt | dec(corr) ~ 0 + blur +
 
 
 
-bprior <- prior(normal(0, 1), class = b) +
-  prior(normal(0, 1), class = b, dpar = ndt)+
-  prior(normal(0, 1), class = sd) +
-  prior(normal(0, 1), class = sd, dpar = ndt) + 
-  prior("normal(0, 0.3)", class = "sd", group = "participant")+ 
+bprior <- prior("normal(0, 1)", class = "b") +
+  prior("normal(0, 1)", class = "b", dpar = "ndt") +
+  prior("normal(0, 1)", class = "sd") +
+  prior("normal(0, 1)", class = "sd", dpar = "ndt") +
+  prior("normal(0, 0.3)", class = "sd", group = "participant") +
   prior("normal(0, 0.3)", class = "sd", group = "string")
-
-
 ```
 
 ```{r}
