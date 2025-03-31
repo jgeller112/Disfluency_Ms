@@ -131,15 +131,12 @@ library(emmeans)
 library(tidylog)
 library(tidybayes)
 library(hypr)
-library(cowplot)
 library(colorspace)
 library(ragg)
-library(cowplot)
 library(ggtext)
 library(ggdist)
 library(flextable)
 library(cmdstanr)
-
 
 options(timeout = 3000)
 ```
