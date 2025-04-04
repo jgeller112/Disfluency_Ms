@@ -47,11 +47,22 @@ author:
     orcid: 0000-0002-9689-4189
     roles: 
       - editing
+      - validation
       - formal analysis
     affiliations:
      - id: id3
        name: "Harrisburg University of Science and Technology"
        department: Department of Cognitive Analytics (Analytics)
+  - name: Dominique Makowski 
+    orcid: 0000-0002-9689-4189
+    roles: 
+      - editing
+      - validation
+      - formal analysis
+    affiliations:
+     - id: id4
+       name: "University of Sussex"
+       department: School of Psychology
 author-note:
   status-changes: 
     affiliation-change: ~
@@ -139,7 +150,7 @@ library(flextable)
 library(cmdstanr)
 
 
-options(timeout = 3000)
+options(timeout = 5000)
 ```
 
 ```{r}
@@ -246,7 +257,9 @@ The DDM has been shown to be a valuable tool for studying the effects of differe
 
 In the present experiments, we pursued two aims related to perceptual disfluency. The first aim was to examine the replicability of the perceptual disfluency effect. To optimize our chances for observing this effect, we utilized a disfluency manipulation known to enhance memory in the literature—blurring [@rosner2015]. We manipulated perceptual disfluency by blurring the words at three levels. Participants were presented with clear words (no blur), low blurred words (5% Gaussian blur) and high blurred words (15% Gaussian blur). High level blurring has been shown to enhance memory [@rosner2015]. As @geller2018 noted, not all manipulations are created equal. Perceptual manipulations affect processing in different ways. It is important to show just how these manipulations affect different stages of processing and what type of manipulations do and do not produce a disfluency effect. By examining different levels of perceptual disfluency, we provide a more nuanced account of encoding processes and how this affects memory.
 
-The second, more pivotal aim, was to enrich the toolkit of researchers exploring conflict encoding like perceptual disfluency. Through the application of distribution techniques, like the ex-Gaussian analysis and DDM, our goal was to showcase how these techniques can grant us a deeper insight into the influence of encoding difficulty on memory. Overall, these endeavors will help us ascertain the conditions under which perceptual disfluency is beneficial for memory and when it is not.
+The second, more pivotal aim was to enrich the methodological toolkit available to researchers investigating conflict encoding, such as perceptual disfluency. By applying distributional techniques—specifically ex-Gaussian analysis and the diffusion decision model (DDM)—our goal was to demonstrate how these approaches can provide deeper insight into how encoding difficulty influences memory. It is important to note that other distributional techniques for analyzing response times exist (e.g., the linear ballistic accumulator model, gamma distributions, etc.). However, we chose the ex-Gaussian and DDM approaches due to their popularity and extensive use in the word recognition literature, where they have received the most empirical attention [@balota2008]. Ultimately, these efforts aim to clarify the conditions under which perceptual disfluency enhances memory—and when it does not.
+
+To promote transparency and reproducibility, this tutorial was written in R [@R] using Quarto [@Allaire_Quarto_2024], an open-source publishing system that allows for dynamic and static documents. This allows figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document.To increase computational reproducibility we use the rix [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility. Not only does this give us a snapshot of the packages used to create the current manuscript, but it also takes a snapshot of system dependencies used at run-time. This way reproducers can easily re-use the exact same environment by installing the nix package manager and using the included default.nix file to set up the right environment. The README file in the GitHub repository contains detailed information on how to set this up to reproduce the contents of the current manuscript. We have also included a video tutorial. We hope this will make it easier for researchers to apply this code to their own research. 
 
 ### Predictions
 
@@ -655,6 +668,7 @@ fit_c <- read_rds("https://osf.io/82nre/download")
 ```{r}
 #| label: tbl-exgauss1a
 #| tbl-cap: "Summary of posterior fixed effect estimates for Ex-Gaussian parameter hypotheses in Experiment 1a"
+#| tbl-subcap: "95% Cr.I for equivalency tests"
 
 # Compute hypothesis tests
 a <- hypothesis(fit_c, "blurHB - blurC > 0", dpar="mu") 
@@ -1193,7 +1207,7 @@ Given the important theoretical implications of these findings, Experiment 1b se
 
 #### Transparency and Openness
 
-This study was not pregregistered.All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiment 1b can be found at https://osf.io/6sy7k/
+This study was not pregregistered. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiment 1b can be found at https://osf.io/6sy7k/
 
 #### Participants
 
@@ -2188,7 +2202,19 @@ threads = threading(4))
 
 ```
 
+
 ```{r}
+
+fit_sc <- read_rds("https://osf.io/kdv38/download")
+
+fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+
+```
+
+
+
+```{r}
+#| eval: false
 # The following often fails to download during rendering due to the size of the objects
 # fit_sc <- read_rds("https://osf.io/kdv38/download")
 # fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
@@ -2547,6 +2573,17 @@ threads = threading(4))
 ```
 
 ```{r}
+
+fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
+
+fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
+
+```
+
+```{r}
+#| eval: false
+
+
 # fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
 # fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
 
