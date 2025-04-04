@@ -2145,6 +2145,7 @@ p_rt <- p_rt_filter |>
 p_rt |> group_by(blur) |>
   pivot_wider(names_from=frequency, values_from=rt_ms) |>
   mutate(`Frequency Effect`=round(LOW-HIGH)) |>
+  rename("Low" ="LOW", "High" = "HIGH") |>
    flextable() |>
   autofit() |> 
   theme_apa()
