@@ -5,7 +5,7 @@ required_packages <- c(
   "patchwork"
 )
 
-rix(date = "2025-03-10",
+rix(date = "2025-04-07",
     r_pkgs = required_packages, 
     system_pkgs = c("quarto", "git", "pandoc", "cmdstan"),
     git_pkgs = list(
