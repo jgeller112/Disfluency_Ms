@@ -259,7 +259,7 @@ In the present experiments, we pursued two aims related to perceptual disfluency
 
 The second, more pivotal aim was to enrich the methodological toolkit available to researchers investigating conflict encoding, such as perceptual disfluency. By applying distributional techniques—specifically ex-Gaussian analysis and the diffusion decision model (DDM)—our goal was to demonstrate how these approaches can provide deeper insight into how encoding difficulty influences memory. It is important to note that other distributional techniques for analyzing response times exist (e.g., the linear ballistic accumulator model, gamma distributions, etc.). However, we chose the ex-Gaussian and DDM approaches due to their popularity and extensive use in the word recognition literature, where they have received the most empirical attention [@balota2008]. Ultimately, these efforts aim to clarify the conditions under which perceptual disfluency enhances memory—and when it does not.
 
-To promote transparency and reproducibility, this tutorial was written in R [@R] using Quarto [@Allaire_Quarto_2024], an open-source publishing system that allows for dynamic and static documents. This allows figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document.To increase computational reproducibility we use the rix [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility. Not only does this give us a snapshot of the packages used to create the current manuscript, but it also takes a snapshot of system dependencies used at run-time. This way reproducers can easily re-use the exact same environment by installing the nix package manager and using the included default.nix file to set up the right environment. The README file in the GitHub repository contains detailed information on how to set this up to reproduce the contents of the current manuscript. We have also included a video tutorial. We hope this will make it easier for researchers to apply this code to their own research. 
+To promote transparency and reproducibility, this tutorial was written in R [@R] using Quarto [@Allaire_Quarto_2024], an open-source publishing system that allows for dynamic and static documents. This allows figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document.To increase computational reproducibility we use the rix [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility. Not only does this give us a snapshot of the packages used to create the current manuscript, but it also takes a snapshot of system dependencies used at run-time. This way reproducers can easily re-use the exact same environment by installing the nix package manager and using the included default.nix file to set up the right environment. The README file in the GitHub repository contains detailed information on how to set this up to reproduce the contents of the current manuscript. We have also included a video tutorial. We hope this will make it easier for researchers to apply this code to their own research.
 
 ### Predictions
 
@@ -273,9 +273,7 @@ Lastly, we might observe not only a shift of the entire distribution (an effect 
 
 In terms of the DDM parameters, we predicted high blurred words would affect both $v$ and $T_{er}$ parameters. Specifically, high blurred words would produce lower $v$ and high $T_{er}$ compared to clear and low blurred words. Additionally, we predicted that low blurred words would only affect $T_{er}$. @tbl-predictions summarizes each account of the perceptual disfluency and the predicted outcomes according to each mathematical model.
 
-In addition to ex-Gaussian and DDM analyses, we also used quantile and delta plots to better understand the changes in the RT distribution across different conditions. These techniques are crucial as they shed light on how the impact of a particular manipulation varies across the RT distribution.
-
-The process of visualization through quantile analysis can be broken down into four distinct steps:
+In addition to ex-Gaussian and DDM analyses, we will provide a graphical description of changes to the RT distribution using quantile and delta plots [ see @angele2023]. The process of visualization through quantile analysis can be broken down into four distinct steps:
 
 1.  Sorting and plotting: For correct trials, RTs are arranged in ascending order within each condition. We then plot the average of the specified quantiles (e.g., .1, .2, .3, .4, .5, .9).
 
@@ -283,9 +281,9 @@ The process of visualization through quantile analysis can be broken down into f
 
 3.  Between-condition quantile averaging: The average for each quantile is computed between the conditions.
 
-4.  Difference Calculation: We determine the difference between the conditions, ensuring the sign of the difference remains unchanged.
+4.  Difference calculation: We determine the difference between the conditions, ensuring the sign of the difference remains unchanged.
 
-Typically, there are four observable patterns. No observable difference occurs when the conditions do not show any noticeable distinction. Late differences emerge when increasing differences appear later in the sequence, suggesting that the conditions diverge over time. A complete shift indicates a consistent difference across all quantiles, signaling an overall shift in the distribution. Finally, early differences reveal distinctions early in the reaction time distribution, suggesting an initial divergence between conditions. maps these patterns onto existing theoretical models of disfluency.
+Typically, there are four observable patterns in the graphical depiction. No observable difference occurs when the conditions do not show any noticeable distinction. Late differences emerge when increasing differences appear later in the sequence, suggesting that the conditions diverge over time. A complete shift indicates a consistent difference across all quantiles, signaling an overall shift in the distribution. Finally, early differences reveal distinctions early in the reaction time distribution, suggesting an initial divergence between conditions. maps these patterns onto existing theoretical models of disfluency.
 
 ```{r}
 #| label: tbl-predictions
@@ -403,7 +401,7 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 All models were fit using The Stan modeling language [@grant2017] with the `brms` [@brms] package in in R (v.4.4.2; @R). For all reported models, we fit maximal random-effect structures justified by the design (Barr et al., 2013) *\[REF should be bibtex\]*. This included random intercepts for participants and items, and a random slope by blurring level for each varying random intercept. Contrast codes (effects coding) for each variable were created using the `hypr` package in R [@hypr]. We fit the models twice: Once with contrast codes for high blur vs. clear and for high blur vs. Low blur and once with the low blur vs. clear contrast.
 
-In all experiments reported here, the statistical model was run with four chains of 5,000 Markov chain Monte Carlo iterations (For the DDM we fit a model with 2,000 chains to reduce computational time), with 1,000-iteration warm-ups for 4 chains (16,000 samples in total). Convergence and stability of the Bayesian sampling is quantified by the Rˆ diagnostics below 1.01 and Effective Sample Size (ESS) greater than 1000 [@brms]. For both the RT data and accuracy data, we report our models with with weakly-informative priors for the population-level parameters. Using a weakly-informative prior as opposed to a default (which is an uniform prior where all effects are equally likely) allows for the calculation of evidence ratio (Bayes Factor) for one-sides tests. For the ex-Gaussian analysis we used a weak prior (i.e., N \~ (0, 100)). For the population-level effects in the accuracy and signal detection analyses, we used a Cauchy distribution with the mean of 0 and scale of 0.35 (cauchy \~ 0, 0.35)) recommended by [@kinoshita2023] for logistic regression.
+In all experiments reported here, the statistical model was run with four chains of 5,000 Markov chain Monte Carlo iterations (For the DDM we fit a model with 2,000 chains to reduce computational time), with 1,000-iteration warm-ups for 4 chains (16,000 samples in total). Convergence and stability of the Bayesian sampling is quantified by the $R^2$ diagnostics below 1.01 and Effective Sample Size (ESS) greater than 1000 [@brms]. For both the RT data and accuracy data, we report our models with with weakly-informative priors for the population-level parameters. Using a weakly-informative prior as opposed to a default (which is an uniform prior where all effects are equally likely) allows for the calculation of evidence ratio (Bayes Factor) for one-sides tests. For the ex-Gaussian analysis we used a weak prior (i.e., N \~ (0, 100)). For the population-level effects in the accuracy and signal detection analyses, we used a Cauchy distribution with the mean of 0 and scale of 0.35 (cauchy \~ 0, 0.35)) recommended by [@kinoshita2023] for logistic regression.
 
 For the marginal means and differences, we report the expected values under the posterior distribution and their 90% credible intervals (Cr. I.). For marginal mean differences, we also report the posterior probability that a difference δ is not zero. If a hypothesis states that δ \\\> 0, then it would be considered strong evidence for this hypothesis would be if zero is not included in the 90% Cr. I. of δ and the posterior P(δ \\\> 0) is close to one (by a reasonably clear margin). To extract the estimated marginal means from the posterior distribution of the fitted models we used a combination of `emmeans` R package [@emmeans-2] `bayestestr`[@bayestestR], and `brms` [@brms-2].
 
@@ -419,7 +417,11 @@ We used a hierarchical-Bayesian variant of the Wiener diffusion model [@vandeker
 
 #### Recognition memory
 
-For our recognition memory data, we fit a Bayesian generalized linear multilevel model with a Bernoulli distribution with a probit link. In its simplest from, SDT models are regressions with a probit link. To estimate the SDT parameter of interest (\$d\^\$), we fit a Bayesian hierarchical generalized linear model with a binomial distribution probit link function to participant responses (their actual response (old vs. new)) as a function of actual item status (old vs. new) and blurring level. Traditional SDT analyses have proven to be an informative and efficient approach to analyzing binary accuracy data. However, considering the deficiency in precision and power in traditional analyses compared to mixed effects analyses, it is worth considering a Bayesian generalized linear mixed effect approach to SDT [see @zloteanu2024] for a nice tutorial on Bayesian SDT models.
+For our recognition memory data, we fit a Bayesian generalized linear multilevel model with a Bernoulli distribution and a probit link function. In its simplest form, Signal Detection Theory (SDT) models can be viewed as regressions with a probit link. To estimate the key SDT parameter \$d\^{\\prime}\$, we modeled participant responses (i.e., whether they responded "old" or "new") as a function of item status (actual "old" vs. "new") and blurring level, using a Bayesian hierarchical generalized linear model with a binomial distribution and probit link.
+
+Traditional SDT analyses have been informative and efficient for binary accuracy data. However, these approaches lack the precision and power of mixed-effects models. For this reason, we adopt a Bayesian generalized linear mixed-effects modeling approach to SDT (see \[\@zloteanu2024\] for an excellent tutorial on Bayesian SDT models).
+
+When fitting a GLMM with a probit link, model estimates map directly onto SDT parameters. Specifically, the interaction between item status (old vs. new) and the variable of interest (e.g., blurring level) on participants' responses corresponds to \$d\^{\\prime}\$. The criterion (\$c\$) can also be derived from the model by examining the main effect of the variable of interest on response behavior.
 
 ### Results and Discussion
 
@@ -573,6 +575,7 @@ acc_exp1a <- tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|> 
   flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |> 
   theme_apa()
 
@@ -708,6 +711,7 @@ tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Parameter,Mean, SE, `90% CrI`,ER, Post.Prob)|>
   flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |>
   theme_apa()
 
@@ -998,6 +1002,7 @@ tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
   flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |> 
   theme_apa()
 ```
@@ -1333,6 +1338,7 @@ acc_exp1b <- tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|> 
   flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |> 
   theme_apa()
 
@@ -1463,6 +1469,7 @@ tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)|> 
    flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |>
   theme_apa()
 
@@ -1599,6 +1606,7 @@ tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
   flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |> 
   theme_apa()
 
@@ -2110,6 +2118,7 @@ acc_exp2 <- tab |>
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
   flextable() |>
   autofit() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   theme_apa()
 
 acc_exp2
@@ -2203,7 +2212,6 @@ threads = threading(4))
 
 ```
 
-
 ```{r}
 
 fit_sc <- read_rds("https://osf.io/kdv38/download")
@@ -2211,8 +2219,6 @@ fit_sc <- read_rds("https://osf.io/kdv38/download")
 fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
 
 ```
-
-
 
 ```{r}
 #| eval: false
@@ -2271,6 +2277,7 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) 
 # Format and display the table
 tab |>
   flextable() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |> 
   theme_apa()
 
@@ -2745,7 +2752,7 @@ tb1 <- tab |>
 
 #### Sensitivity
 
-Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), \$\\beta\$ = `r a$hypothesis$Estimate`, 95% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, \$b\$ = `r b$hypothesis$Estimate`, 95% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, \$\\beta\$ = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 95% Cr.I\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, \$\\beta\$ = `r e$hypothesis$Estimate`, 95% Cr.I\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, \$\\beta\$ = -0.14, 95% Cr.I\[-0.21, -0.07\]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, \$\\beta\$ = `r f$hypothesis$Estimate`, 95% Cr.I\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this post hoc, High frequency-high blurred words were better recognized than low-frequency-blurred words, \$b\$ = 0.11, 95% Cr.I\[0.04, 0.18\]. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% Cr.I\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
+Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), \$\\beta\$ = `r a$hypothesis$Estimate`, 90% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, \$b\$ = `r b$hypothesis$Estimate`, 90% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, \$\\beta\$ = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 90% Cr.I\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, \$\\beta\$ = `r e$hypothesis$Estimate`, 95% Cr.I\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, \$\\beta\$ = -0.14, 90% Cr.I\[-0.21, -0.07\]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, \$\\beta\$ = `r f$hypothesis$Estimate`, 90% Cr.I\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this interaction post hoc, high frequency-high blurred words were better recognized than low-frequency-blurred words. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% Cr.I\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
 
 ### Discussion
 
