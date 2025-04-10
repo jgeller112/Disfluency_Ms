@@ -350,7 +350,8 @@ ft <- flextable(data) |>
           align = "center", part = "body") |>
     bold(part = "header") |>
   
-    autofit()
+    autofit() |> 
+  fit_to_width(17)
 
 # Print the table
 ft
@@ -419,7 +420,7 @@ We used a hierarchical-Bayesian variant of the Wiener diffusion model [@vandeker
 
 For our recognition memory data, we fit a Bayesian generalized linear multilevel model with a Bernoulli distribution and a probit link function. In its simplest form, Signal Detection Theory (SDT) models can be viewed as regressions with a probit link. To estimate the key SDT parameter \$d\^{\\prime}\$, we modeled participant responses (i.e., whether they responded "old" or "new") as a function of item status (actual "old" vs. "new") and blurring level, using a Bayesian hierarchical generalized linear model with a binomial distribution and probit link.
 
-Traditional SDT analyses have been informative and efficient for binary accuracy data. However, these approaches lack the precision and power of mixed-effects models. For this reason, we adopt a Bayesian generalized linear mixed-effects modeling approach to SDT (see \[\@zloteanu2024\] for an excellent tutorial on Bayesian SDT models).
+Traditional SDT analyses have been informative and efficient for binary accuracy data. However, these approaches lack the precision and power of mixed-effects models. For this reason, we adopt a Bayesian generalized linear mixed-effects modeling approach to SDT \[see \@zloteanu2024 for an excellent tutorial on Bayesian SDT models\]
 
 When fitting a GLMM with a probit link, model estimates map directly onto SDT parameters. Specifically, the interaction between item status (old vs. new) and the variable of interest (e.g., blurring level) on participants' responses corresponds to \$d\^{\\prime}\$. The criterion (\$c\$) can also be derived from the model by examining the main effect of the variable of interest on response behavior.
 
@@ -440,7 +441,7 @@ blur_acc_new<- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
 
-The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point points `r 1-dim(blur_acc_new)[1]/dim(blur_acc)[1]` %
+The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point points (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`)
 
 ```{r}
 #| echo: false
@@ -539,7 +540,7 @@ acc_means <- emmeans(acc_c, specs="blur", type="response")
 
 ```{r}
 #| label: tbl-acc1a
-#| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1a 
+#| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1a
 
 a <- hypothesis(acc_c, "blur1 <  0") 
 
@@ -605,7 +606,7 @@ blur_rt_new <- blur_rt |>
 
 ```
 
-The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r 1-dim(blur_rt_new)[1]/dim(blur_rt)[1]` %)
+The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
 
 ```{r}
 ## Contrasts
@@ -1242,7 +1243,7 @@ blur_acc_new<- blur_acc |>
 
 ```
 
-The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point (`r 1-dim(blur_acc_new)[1]/dim(blur_acc)[1]` %)
+The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`
 
 ```{r}
 
@@ -1369,7 +1370,7 @@ blur_rt_new <- blur_rt |>
 
 ```
 
-The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r 1-dim(blur_rt_new)[1]/dim(blur_rt)[1]` % *\[don't you need to multiply by 100 to format it as percent?\]*)
+The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
 
 ```{r}
 #hypothesis
