@@ -7,7 +7,7 @@ required_packages <- c(
 
 rix(date = "2025-04-07",
     r_pkgs = required_packages, 
-    system_pkgs = c("quarto", "git", "pandoc", "cmdstan"),
+    system_pkgs = c("quarto", "git", "pandoc",  "typst", "stanc", "tbb"),
     git_pkgs = list(
       list(
         package_name = "cmdstanr",
@@ -16,6 +16,7 @@ rix(date = "2025-04-07",
       ), 
     tex_pkgs = c("amsmath", "ninecolors", "apa7", "scalerel", "threeparttable", "threeparttablex", "endfloat", "environ", "multirow", "tcolorbox", "pdfcol", "tikzfill", "fontawesome5", "framed", "newtx", "fontaxes", "xstring", "wrapfig", "tabularray", "siunitx", 
                  "fvextra", "geometry","setspace", "fancyvrb", "anyfontsize"), 
-    ide = "rstudio",
+    shell_hook = "Rscript install_cmdstan.R",
+    ide = "code",
     project_path = ".",
     overwrite = TRUE)
