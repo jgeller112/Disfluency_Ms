@@ -99,7 +99,7 @@ or
 ```bash
 positron
 ```
-For RStudio (linux only), simply type:
+For RStudio, simply type:
 ```bash
 rstudio
 ```
