@@ -113,6 +113,7 @@ format:
           \setstretch{1.2} % Slightly stretch lines for better readability
 
 execute: 
+  freeze: auto
   echo: false
   warning: false
   message: false
@@ -147,11 +148,74 @@ library(cowplot)
 library(ggtext)
 library(ggdist)
 library(flextable)
+library(officer)
 library(cmdstanr)
 
 
 options(timeout = 5000)
 ```
+
+
+```{r}
+# check if data is in folder, otherwise download it
+check_and_download <- function(filename, url, data_dir = "data") {
+  # Construct full file path
+  file_path <- file.path(data_dir, filename)
+  
+  # Check if file exists
+  if (!file.exists(file_path)) {
+    message("File not found, downloading: ", filename)
+    
+    # Create directory if it doesn't exist
+    if (!dir.exists(data_dir)) {
+      dir.create(data_dir, recursive = TRUE)
+    }
+    
+    # Download the file
+    download.file(url, destfile = file_path, mode = "wb")
+    message("Download complete: ", file_path)
+  } else {
+    message("File already exists: ", file_path)
+  }
+  
+  return(file_path)
+}
+
+library(tibble)
+
+data_files <- tribble(
+  ~filename,                                 ~url,
+  "fit_acc_context.rds",                     "https://osf.io/xwdzn/download",
+  "fit_acc_context_lbc.rds",                 "https://osf.io/wt3ry/download",
+  "cleaned_context_rt.csv",                 "https://osf.io/xv5bd/download",
+  "brms_rt_priorall.rds",                    "https://osf.io/82nre/download",
+  "weiner_diff_1.rds",                       "https://osf.io/hqauz/download",
+  "blmm_sdt_context.csv",                    "https://osf.io/xjvc7/download",
+  "c_blmm_sdt_hblb.rds",                     "https://osf.io/xsvgt/download",
+  "blmm_sdt_lbc.rds",                        "https://osf.io/4qp38/download",
+  "acc_blmm_expnocontext.RData",            "https://osf.io/ne36z/download",
+  "noc_acc_lbc.Rds",                         "https://osf.io/yhz4c/download",
+  "cleaned_nocontext_rt.csv",               "https://osf.io/excgd/download",
+  "brms_rt_priorall_noc (1).rds",           "https://osf.io/egqyt/download",
+  "weiner_diff_noc.rds",                     "https://osf.io/3j98t/download",
+  "cond_blmm_sdt_contextnot.csv",           "https://osf.io/jw2gx/download",
+  "c_blmm_sdt_noc_hblb.rds",                 "https://osf.io/2pgnm/download",
+  "c_blmm_sdt_noc_lbc.rds",                  "https://osf.io/tucn9/download",
+  "acc_blmm_sc.RData",                       "https://osf.io/5u7p8/download",
+  "sc_acc_lbc.rds",                          "https://osf.io/ehjxq/download",
+  "SC_blmm_sdt.csv",                         "https://osf.io/eapu5/download",
+  "blmm_rt_sc.rds",                          "https://osf.io/kdv38/download",
+  "brms_sc_nointerp_lbc (1).rds",           "https://osf.io/49bgx/download",
+  "wf_sc_sdt_blmm.rds",                      "https://osf.io/wn79f/download",
+  "wf_sc_sdt_blmm_lb.rds",                   "https://osf.io/c8bqh/download"
+)
+
+# This assumes your dataframe has columns filename and url
+pwalk(data_files, function(filename, url) {
+  check_and_download(filename, url)
+})
+```
+
 
 ```{r}
 
@@ -286,6 +350,11 @@ In addition to ex-Gaussian and DDM analyses, we will provide a graphical descrip
 Typically, there are four observable patterns in the graphical depiction. No observable difference occurs when the conditions do not show any noticeable distinction. Late differences emerge when increasing differences appear later in the sequence, suggesting that the conditions diverge over time. A complete shift indicates a consistent difference across all quantiles, signaling an overall shift in the distribution. Finally, early differences reveal distinctions early in the reaction time distribution, suggesting an initial divergence between conditions. maps these patterns onto existing theoretical models of disfluency.
 
 ```{r}
+open_section <- prop_section(type = "continuous")
+block_section(open_section)
+```
+
+```{r}
 #| label: tbl-predictions
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
 
@@ -334,30 +403,41 @@ data <- data.frame(
 
 # Create flextable
 ft <- flextable(data) |>
-    set_header_labels(
-        Account = "Account",
-        Description = "Description",
-        Loci = "Loci",
-        Contrast = "Contrast",
-        ExGaussianPredictions = "Ex-Gaussian Predictions",
-        DDMPredictions = "Drift Diffusion Predictions",
-        QuantilePlots = "Quantile Plots",
-        RecognitionMemoryPredictions = "Recognition Memory Predictions"
-    ) |>
-    merge_v(j = c("Account", "Description", "Loci")) |>
-    align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") |>
-    align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), 
-          align = "center", part = "body") |>
-    bold(part = "header") |>
-  
-    autofit() |> 
-  fit_to_width(17)
+  set_header_labels(
+    Account = "Account",
+    Description = "Description",
+    Loci = "Loci",
+    Contrast = "Contrast",
+    ExGaussianPredictions = "Ex-Gaussian Predictions",
+    DDMPredictions = "Drift Diffusion Predictions",
+    QuantilePlots = "Quantile Plots",
+    RecognitionMemoryPredictions = "Recognition Memory Predictions"
+  ) |>
+  merge_v(j = c("Account", "Description", "Loci")) |>
+  align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") |>
+  align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), 
+        align = "center", part = "body") |>
+    width(j = "Account", width = 1) |>
+    width(j = "Description", width = 2) |>
+    width(j = "Loci", width = 1) |>
+    width(j = "Contrast", width = 1) |>
+    width(j = "ExGaussianPredictions", width = 1.5) |>
+    width(j = "DDMPredictions", width = 1.5) |>
+    width(j = "QuantilePlots", width = 1.5) |>
+    width(j = "RecognitionMemoryPredictions", width = 1.5) |>
+    bold(part = "header")
 
 # Print the table
 ft
-
-
 ```
+
+```{r}
+close_section <- prop_section(
+    page_size = page_size(orient = "landscape"), 
+    type = "continuous")
+block_section(close_section)
+```
+
 
 ## Experiment 1a: Context Reinstatement
 
@@ -776,7 +856,7 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
   geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
   labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + # Optional tag for labeling
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 16) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
@@ -796,7 +876,7 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
   theme(legend.position = "none") +
-    theme_minimal(base_size=14)+
+    theme_minimal(base_size=16)+
 scale_y_continuous(breaks=seq(110,440,50)) +
     coord_cartesian(ylim = c(110, 440)) +
   scale_x_continuous(breaks=seq(600,1300, 100))+
@@ -823,7 +903,7 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=14) + 
+  theme_minimal(base_size=16) + 
   theme(legend.position = "none") + 
 scale_y_continuous(breaks=seq(-10, 70, 10)) +
     coord_cartesian(ylim = c(-10, 70)) +
@@ -850,7 +930,7 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 14) + 
+  theme_minimal(base_size = 16) + 
   theme(legend.position = "none") + 
   scale_x_continuous(breaks=seq(600,1350, 200))+
     geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+ 
@@ -1188,7 +1268,7 @@ tmp |>
   stat_halfeye(colour="black") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=14)
+  theme_minimal(base_size=16)
 
 ggsave("expt1a-dprime.png", width=19, height=8, dpi=300)
 
@@ -1667,7 +1747,7 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
   geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
   labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + # Optional tag for labeling
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 16) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
@@ -1687,7 +1767,7 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
   theme(legend.position = "none") +
-    theme_minimal(base_size=14)+
+    theme_minimal(base_size=16)+
 scale_y_continuous(breaks=seq(110,440,50)) +
     coord_cartesian(ylim = c(110, 440)) +
   scale_x_continuous(breaks=seq(600,1300, 100))+
@@ -1714,7 +1794,7 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=14) + 
+  theme_minimal(base_size=16) + 
   theme(legend.position = "none") + 
 scale_y_continuous(breaks=seq(-10, 70, 10)) +
     coord_cartesian(ylim = c(-10, 70)) +
@@ -1741,7 +1821,7 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 14) + 
+  theme_minimal(base_size = 16) + 
   theme(legend.position = "none") + 
   scale_x_continuous(breaks=seq(600,1350, 200))+
     geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+ 
@@ -1923,7 +2003,7 @@ tmp |>
   stat_halfeye(colour="black", .width = c(0.66, 0.90)) + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=14)
+  theme_minimal(base_size=16)
 
 ggsave("expt1b-dprime.png", width=19, height=8, dpi=300)
 
@@ -2118,8 +2198,8 @@ acc_exp2 <- tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
   flextable() |>
-  autofit() |>
   add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
+  autofit() |>
   theme_apa()
 
 acc_exp2
@@ -2689,7 +2769,8 @@ tmp |>
   
   guides(slab_alpha = "none") +
   facet_grid(Parameter ~ t, scales = "free") +
-  ggokabeito::scale_fill_okabe_ito()
+  ggokabeito::scale_fill_okabe_ito() + 
+    theme_minimal(base_size=16)
 
 ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
 
