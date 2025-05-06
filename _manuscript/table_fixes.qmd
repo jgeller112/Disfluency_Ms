@@ -113,7 +113,6 @@ format:
           \setstretch{1.2} % Slightly stretch lines for better readability
 
 execute: 
-  freeze: auto
   echo: false
   warning: false
   message: false
@@ -144,15 +143,18 @@ library(tidybayes)
 library(hypr)
 library(colorspace)
 library(ragg)
+library(cowplot)
 library(ggtext)
 library(ggdist)
 library(flextable)
-library(officer)
+# install.packages("cmdstanr", repos = c('https://stan-dev.r-universe.dev', getOption("repos")))
 library(cmdstanr)
+library(officer)
+library(officedown)
+library(purrr)
 
 options(timeout = 5000)
 ```
-
 
 ```{r}
 # check if data is in folder, otherwise download it
@@ -213,7 +215,6 @@ pwalk(data_files, function(filename, url) {
   check_and_download(filename, url)
 })
 ```
-
 
 ```{r}
 
@@ -436,7 +437,6 @@ close_section <- prop_section(
 block_section(close_section)
 ```
 
-
 ## Experiment 1a: Context Reinstatement
 
 In Experiment 1a, we collected RTs from a lexical decision task (LDT) during encoding followed by a surprise recognition memory test. Using a two-choice task like the LDT allowed us to examine how perceptual disfluency affects encoding processes using mathematical models. Based on previous research [@geller2021], there was no mention of the recognition test when participants signed up for the study to give us the best chance of observing a disfluency effect.
@@ -511,9 +511,11 @@ All models presented no divergences, and all chains mixed well and produced comp
 ```{r}
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
-blur_acc <- read.csv("https://osf.io/xv5bd/download") |>
-    dplyr::filter(lex=="m")
+# blur_acc <- read.csv("https://osf.io/xv5bd/download") |>
+#     dplyr::filter(lex=="m")
 
+blur_acc <- read.csv("data/cleaned_context_rt.csv") |>
+    dplyr::filter(lex=="m")
 
 blur_acc_new<- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
@@ -597,17 +599,19 @@ fit_acc_weak_lb <- brm(corr ~ blur + (1 + blur | participant) + (1 + blur | stri
   save_pars = save_pars(all = T),
   sample_prior = T,
   threads = threading(4),
-  file = "fit_acc_context_lbc"
+  file = "data/fit_acc_context_lbc"
 )
 
 ```
 
 ```{r}
 # get file from osf
-acc_c<-read_rds("https://osf.io/xwdzn/download")
+# acc_c <- read_rds("https://osf.io/xwdzn/download")
+acc_c <- read_rds("data/fit_acc_context.rds")
 
 # get lowblur-c comparison
-acc_lb <- read_rds("https://osf.io/wt3ry/download")
+# acc_lb <- read_rds("https://osf.io/wt3ry/download")
+acc_lb <- read_rds("data/fit_acc_context_lbc.rds")
 ```
 
 ```{r}
@@ -668,7 +672,8 @@ Model estimates can be found in @tbl-acc1a. Clear words were better identified (
 
 ```{r}
 #load data from osf
-rts <- read_csv("https://osf.io/xv5bd/download")
+# rts <- read_csv("https://osf.io/xv5bd/download")
+rts <- read_csv("data/cleaned_context_rt.csv")
 
 ```
 
@@ -743,8 +748,8 @@ save(fit_exg1, file = "blmm_rt_context_05-25-23.RData")
 #here::here("Expt1", "BRM_ACC_RT", #"blmm_rt_context_05-25-23.RData"))
 
 # no intercept model - easier to fit priors on all levels of factor 
-fit_c <- read_rds("https://osf.io/82nre/download")
-
+# fit_c <- read_rds("https://osf.io/82nre/download")
+fit_c <- read_rds("data/brms_rt_priorall.rds")
 ```
 
 ```{r}
@@ -854,7 +859,7 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
   geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
   labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + # Optional tag for labeling
-  theme_minimal(base_size = 16) +
+  theme_minimal(base_size = 14) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
@@ -874,7 +879,7 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
   theme(legend.position = "none") +
-    theme_minimal(base_size=16)+
+    theme_minimal(base_size=14)+
 scale_y_continuous(breaks=seq(110,440,50)) +
     coord_cartesian(ylim = c(110, 440)) +
   scale_x_continuous(breaks=seq(600,1300, 100))+
@@ -901,7 +906,7 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
+  theme_minimal(base_size=14) + 
   theme(legend.position = "none") + 
 scale_y_continuous(breaks=seq(-10, 70, 10)) +
     coord_cartesian(ylim = c(-10, 70)) +
@@ -928,7 +933,7 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 16) + 
+  theme_minimal(base_size = 14) + 
   theme(legend.position = "none") + 
   scale_x_continuous(breaks=seq(600,1350, 200))+
     geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+ 
@@ -974,12 +979,14 @@ formula <- bf(rt | dec(corr) ~ 0 + blur +
 
 
 
-bprior <- prior("normal(0, 1)", class = "b") +
-  prior("normal(0, 1)", class = "b", dpar = "ndt") +
-  prior("normal(0, 1)", class = "sd") +
-  prior("normal(0, 1)", class = "sd", dpar = "ndt") +
-  prior("normal(0, 0.3)", class = "sd", group = "participant") +
+bprior <- prior(normal(0, 1), class = b) +
+  prior(normal(0, 1), class = b, dpar = ndt)+
+  prior(normal(0, 1), class = sd) +
+  prior(normal(0, 1), class = sd, dpar = ndt) + 
+  prior("normal(0, 0.3)", class = "sd", group = "participant")+ 
   prior("normal(0, 0.3)", class = "sd", group = "string")
+
+
 ```
 
 ```{r}
@@ -1038,9 +1045,8 @@ fit_wiener1 <- brm(formula,
 
 ```{r}
 #diff object on osf
-fit_wiener <- read_rds("https://osf.io/hqauz/download")
-
-
+# fit_wiener <- read_rds("https://osf.io/hqauz/download")
+fit_wiener <- read_rds("data/weiner_diff_1.rds")
 ```
 
 ```{r}
@@ -1091,8 +1097,8 @@ Non-decision time was higher for high-blurred words compared to clear words, *b*
 #### Recognition Memory
 
 ```{r}
-
-mem_c <- read_csv("https://osf.io/xjvc7/download")
+# mem_c <- read_csv("https://osf.io/xjvc7/download")
+mem_c <- read_csv("data/blmm_sdt_context.csv")
 ```
 
 ```{r}
@@ -1133,11 +1139,11 @@ fit_mem_c <- brm(sayold ~ 0 + isold * blur + (1 + isold * blur | participant) + 
 ```
 
 ```{r}
+# fit_mem1 <- read_rds("https://osf.io/xsvgt/download")
+fit_mem1 <- read_rds("data/c_blmm_sdt_hblb.rds")
 
-fit_mem1 <- read_rds("https://osf.io/xsvgt/download")
-
-
-sd_lb <- read_rds("https://osf.io/4qp38/download")
+# sd_lb <- read_rds("https://osf.io/4qp38/download")
+sd_lb <- read_rds("data/blmm_sdt_lbc.rds")
 
 ```
 
@@ -1264,7 +1270,7 @@ tmp |>
   stat_halfeye(colour="black") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=16)
+  theme_minimal(base_size=14)
 
 ggsave("expt1a-dprime.png", width=19, height=8, dpi=300)
 
@@ -1310,9 +1316,11 @@ We fit the same statistical models as Experiment 1a.
 ```{r}
 
 # get data from osf
-blur_acc <- read_csv("https://osf.io/excgd/download") |>
-    dplyr::filter(lex=="m")
+# blur_acc <- read_csv("https://osf.io/excgd/download") |>
+#     dplyr::filter(lex=="m")
 
+blur_acc <- read_csv("data/cleaned_nocontext_rt.csv") |>
+    dplyr::filter(lex=="m")
 
 blur_acc_new<- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
@@ -1362,11 +1370,13 @@ file="fit_acc_weak_nocontext")
 ```{r}
 
 # get file from osf
-tmp <- tempdir()
-download.file("https://osf.io/ne36z/download", file.path(tmp, "acc_blmm_expnocontext.RData"), mode = "wb")
-load(file.path(tmp, "acc_blmm_expnocontext.RData"))
+# tmp <- tempdir()
+# download.file("https://osf.io/ne36z/download", file.path(tmp, "acc_blmm_expnocontext.RData"), mode = "wb")
+# load(file.path(tmp, "acc_blmm_expnocontext.RData"))
+load("data/acc_blmm_expnocontext.RData")
 
-fit_acc_lbc <- read_rds("https://osf.io/yhz4c/download")
+# fit_acc_lbc <- read_rds("https://osf.io/yhz4c/download")
+fit_acc_lbc <- read_rds("data/noc_acc_lbc.Rds")
 ```
 
 ```{r}
@@ -1430,7 +1440,8 @@ A summary of posterior estimates are located in @tbl-acc1b. Clear words were bet
 
 ```{r}
 #load data from osf
-rts <- read_csv("https://osf.io/excgd/download")
+# rts <- read_csv("https://osf.io/excgd/download")
+rts <- read_csv("data/cleaned_nocontext_rt.csv")
 ```
 
 ```{r}
@@ -1498,9 +1509,8 @@ threads = threading(4))
 #load rdata for model 
 #load_github_data("https://osf.io/uxc2f/download")
 
-
-fit_exg1 <- read_rds("https://osf.io/egqyt/download")
-
+# fit_exg1 <- read_rds("https://osf.io/egqyt/download")
+fit_exg1 <- read_rds("data/brms_rt_priorall_noc (1).rds")
 
 ```
 
@@ -1643,7 +1653,8 @@ fit_wiener1 <- brm(formula,
 
 ```{r}
 
-fit_wiener <- read_rds("https://osf.io/3j98t/download")
+# fit_wiener <- read_rds("https://osf.io/3j98t/download")
+fit_wiener <- read_rds("data/weiner_diff_noc.rds")
 
 ```
 
@@ -1743,7 +1754,7 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
   geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
   labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + # Optional tag for labeling
-  theme_minimal(base_size = 16) +
+  theme_minimal(base_size = 14) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
@@ -1763,7 +1774,7 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
   theme(legend.position = "none") +
-    theme_minimal(base_size=16)+
+    theme_minimal(base_size=14)+
 scale_y_continuous(breaks=seq(110,440,50)) +
     coord_cartesian(ylim = c(110, 440)) +
   scale_x_continuous(breaks=seq(600,1300, 100))+
@@ -1790,7 +1801,7 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
+  theme_minimal(base_size=14) + 
   theme(legend.position = "none") + 
 scale_y_continuous(breaks=seq(-10, 70, 10)) +
     coord_cartesian(ylim = c(-10, 70)) +
@@ -1817,7 +1828,7 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 16) + 
+  theme_minimal(base_size = 14) + 
   theme(legend.position = "none") + 
   scale_x_continuous(breaks=seq(600,1350, 200))+
     geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+ 
@@ -1846,7 +1857,8 @@ ggsave(filename='./figures/figure_kde2.png',width=12,height=12)
 
 ```{r}
 
-mem_nc <- read_csv("https://osf.io/jw2gx/download")
+# mem_nc <- read_csv("https://osf.io/jw2gx/download")
+mem_nc <- read_csv("data/cond_blmm_sdt_contextnot.csv")
 
 ```
 
@@ -1888,10 +1900,12 @@ threads = threading(4))
 
 ```{r}
 
-fit_mem_noc <- read_rds("https://osf.io/2pgnm/download")
+# fit_mem_noc <- read_rds("https://osf.io/2pgnm/download")
+fit_mem_noc <- read_rds("data/c_blmm_sdt_noc_hblb.rds")
 
-#get the lowblur vs. c conrtast
-fit_mem_lbc <- read_rds("https://osf.io/tucn9/download")
+#get the lowblur vs. c contrast
+# fit_mem_lbc <- read_rds("https://osf.io/tucn9/download")
+fit_mem_lbc <- read_rds("data/c_blmm_sdt_noc_lbc.rds")
 ```
 
 ```{r}
@@ -1999,7 +2013,7 @@ tmp |>
   stat_halfeye(colour="black", .width = c(0.66, 0.90)) + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=16)
+  theme_minimal(base_size=14)
 
 ggsave("expt1b-dprime.png", width=19, height=8, dpi=300)
 
@@ -2048,7 +2062,8 @@ We used the same procedure as Experiments 1b. The main difference is that instea
 #### Accuracy
 
 ```{r}
-rts_wf <- read_csv("https://osf.io/29hnd/download")
+# rts_wf <- read_csv("https://osf.io/29hnd/download")
+rts_wf <- read_csv("data/SC_rt_cleaned.csv")
 ```
 
 ```{r}
@@ -2113,18 +2128,18 @@ threads = threading(4))
 
 ```{r}
 # get file from osf
-tmp <- tempdir()
-download.file("https://osf.io/5u7p8/download", file.path(tmp, "acc_blmm_sc.RData"),  mode = "wb")
-load(file.path(tmp, "acc_blmm_sc.RData"))
+# tmp <- tempdir()
+# download.file("https://osf.io/5u7p8/download", file.path(tmp, "acc_blmm_sc.RData"),  mode = "wb")
+# load(file.path(tmp, "acc_blmm_sc.RData"))
+load("data/acc_blmm_sc.RData")
 
-fit_acc_sc_lb <- read_rds("https://osf.io/ehjxq/download")
-
+# fit_acc_sc_lb <- read_rds("https://osf.io/ehjxq/download")
+fit_acc_sb_lb <- read_rds("data/sc_acc_lbc.rds")
 ```
 
 ```{r}
 emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |> 
   parameters::parameters(centrality = "mean")
-
 ```
 
 ```{r}
@@ -2194,8 +2209,8 @@ acc_exp2 <- tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio") |>
     select(Hypothesis, Mean, SE, `90% CrI`,ER, Post.Prob)|>  
   flextable() |>
-  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   autofit() |>
+  add_footer_lines("Note. A 95% CrI is used for the equivalence test against 0") |>
   theme_apa()
 
 acc_exp2
@@ -2291,9 +2306,11 @@ threads = threading(4))
 
 ```{r}
 
-fit_sc <- read_rds("https://osf.io/kdv38/download")
+# fit_sc <- read_rds("https://osf.io/kdv38/download")
+fit_sc <- read_rds("data/blmm_rt_sc.rds")
 
-fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+# fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+fit_sc_lc <- read_rds("data/brms_sc_nointerp_lbc (1).rds")
 
 ```
 
@@ -2611,7 +2628,8 @@ ggsave(filename='./figures/figure_kde3.png',width=12,height=14, dpi=300)
 
 ```{r}
 
-mem_sc <- read_csv("https://osf.io/eapu5/download")
+# mem_sc <- read_csv("https://osf.io/eapu5/download")
+mem_sc <- read_csv("data/SC_blmm_sdt.csv")
 
 ```
 
@@ -2659,10 +2677,11 @@ threads = threading(4))
 
 ```{r}
 
-fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
+# fit_sc_mem <- read_rds("https://osf.io/wn79f/download")
+fit_sc_mem <- read_rds("data/wf_sc_sdt_blmm.rds")
 
-fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
-
+# fit_sc_mem_lb <- read_rds("https://osf.io/c8bqh/download")
+fit_sc_mem_lb <- read_rds("data/wf_sc_sdt_blmm_lb.rds")
 ```
 
 ```{r}
@@ -2765,8 +2784,7 @@ tmp |>
   
   guides(slab_alpha = "none") +
   facet_grid(Parameter ~ t, scales = "free") +
-  ggokabeito::scale_fill_okabe_ito() + 
-    theme_minimal(base_size=16)
+  ggokabeito::scale_fill_okabe_ito()
 
 ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
 

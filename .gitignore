@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+/_manuscript/table_fixes_cache
+/_manuscript/table_fixes_files
+*.RData
+*.rds
+*.csv
