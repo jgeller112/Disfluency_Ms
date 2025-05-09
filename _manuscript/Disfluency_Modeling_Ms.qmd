@@ -1265,7 +1265,8 @@ tmp |>
     x = "Blurring Level (or difference)",
     y = "Parameter value", 
   ) +
-  stat_halfeye(colour="black", .width = c(0.66, 0.90), .interval="quantile", point_interval = "mean_qi") + 
+  stat_halfeye(colour="black", 
+               .width = c(0.66, 0.90), point_interval = "mean_qi") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
   theme_minimal(base_size=16)
@@ -1473,10 +1474,8 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 
 ```{r}
 #| eval: false
-
-prior_exp1 <- c(set_prior("normal(0,10)", class = "b"), 
-                 set_prior("normal(0,10)", class = "b", dpar="sigma"), 
-                 set_prior("normal(0,10)", class = "b", dpar="beta"))
+#| 
+prior_exp1 <- c(set_prior("normal(0,100)", class = "b", coef=""))
                 
 
 fit_exg1 <- brm(
@@ -1492,7 +1491,7 @@ sample_prior = T,
 save_pars = save_pars(all=T),
 control = list(adapt_delta = 0.8), 
 backend="cmdstanr", 
-threads = threading(4))
+threads = threading(2))
 
 
 ```
@@ -2003,7 +2002,7 @@ tmp |>
     x = "Blurring Level (or difference)",
     y = "Parameter value", 
   ) +
-  stat_halfeye(colour="black", .width = c(0.66, 0.90), .interval="quantile", point_interval = "mean_qi") + 
+  stat_halfeye(colour="black", .width = c(0.66, 0.90), point_interval = "mean_qi") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
   theme_minimal(base_size=16)
@@ -2269,7 +2268,6 @@ contrasts(p_rt_filter$frequency) <-contr.hypothesis(freqc)
 
 ```{r}
 #| eval: false
-
 #max model
 bform_exg1 <- bf(
 rt ~ blur*frequency + (1 + blur*frequency |p| participant) + (1 + blur|i| Target),
@@ -2863,7 +2861,7 @@ These findings have several implications. At a theoretical level, the current da
 
 We argue the current findings align more closely with the stage-specific account proposed by @ptok2019. While the account was proposed to explain memory effects that require conflict during encoding, like the semantic interference effect, we feel that it is a useful theoretical framework to explain the current findings. In fact, @ptok2019 and @ptok2020 suggested a connection between their framework and perceptual disfluency effects and desirable difficulties, more broadly.
 
-Within the stage-specific account, memory performance depends on the nature of processing during encoding and the utilization of cognitive control mechanisms. In our experiments, participants were tasked with determining whether letter strings represented words or non-words (Experiments 1a and 1b), or whether a word belonged to an animal category (Experiment 2). For skilled readers, these tasks are executed automatically and smoothly. Coupled with perceptual disfluency, this combination is believed to lead to memory advantages seen with perceptual disfluent stimuli.
+Within the stage-specific account, memory performance depends on the nature of processing during encoding and the utilization of cognitive control mechanisms. In our experiments, participants were tasked with determining whether letter strings represented words or non-words (Experiments 1a and 1b), or whether a word belonged to an animal category (Experiment 2). For skilled readers, these tasks are executed automatically and smoothly. Coupled with perceptual disfluency, this combination is believed to lead to memory advantages seen with perceptually disfluent stimuli.
 
 When we manipulated word frequency, however, the process of recognizing low-frequency words demanded more effort and attentional resources in addition to the perceptual disfluency of blurring. Consequently, this lead to the task becoming more challenging and difficult. Thus, the increased processing demands from recognizing low frequency words may have countered the benefits from high-blurred words, as more attentional resources were allocated to recognizing low-frequency words. When there was minimal control demands (i.e., clear words), we did see better memory for low-frequency words.
 
