@@ -2253,26 +2253,27 @@ We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After
 ## Contrasts
 #hypothesis
 #set contrasts in df 
-p_rt_filter$blur <- as.factor(p_rt_filter$blur)
+p_rt_out$blur <- as.factor(p_rt_out$blur)
 
-contrasts(p_rt_filter$blur) <-contr.hypothesis(blurC)
+contrasts(p_rt_out$blur) <-contr.hypothesis(blurC)
 
 freqc <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
 
-p_rt_filter$frequency<- as.factor(p_rt_filter$frequency)
+p_rt_out$frequency<- as.factor(p_rt_out$frequency)
 
-contrasts(p_rt_filter$frequency) <-contr.hypothesis(freqc)
+contrasts(p_rt_out$frequency) <-contr.hypothesis(freqc)
 
 
 ```
 
 ```{r}
 #| eval: false
+
 #max model
 bform_exg1 <- bf(
-rt ~ blur*frequency + (1 + blur*frequency |p| participant) + (1 + blur|i| Target),
-sigma ~ blur*frequency + (1 + blur*frequency |p|participant) + (1 + blur |i| Target),
-beta ~ blur*frequency  + (1 + blur*frequency |p|participant) + (1 + blur |i| Target))
+rt ~  0+ blur + frequency + (1 + blur*frequency |p| participant) + (1 + blur|i| target),
+sigma ~ 0 + blur + frequency + (1 + blur*frequency |p|participant) + (1 + blur |i| target),
+beta ~  0 + blur + frequency  + (1 + blur*frequency |p|participant) + (1 + blur |i| target))
 ```
 
 ```{r}
@@ -2281,7 +2282,7 @@ beta ~ blur*frequency  + (1 + blur*frequency |p|participant) + (1 + blur |i| Tar
 prior_exp1 <- c(set_prior("normal(0,100)", class = "b", coef=""))
 
 fit_exg1 <- brm(
-bform_exg1, data = blur_rt_sc,
+bform_exg1, data = p_rt_out,
 warmup = 1000,
                     iter = 5000,
                     chains = 4,
@@ -2289,9 +2290,11 @@ warmup = 1000,
                     init = 0,
                     cores = 4,
 control = list(adapt_delta = 0.8), 
+sample_prior = T, 
+save_pars = save_pars(all=T), 
 backend="cmdstanr", 
 file = "blmm_sc_wf",
-threads = threading(4))
+threads = threading(2))
 
 
 ```
