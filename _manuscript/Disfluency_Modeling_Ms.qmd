@@ -483,7 +483,7 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 All models were fit in R (v.4.4.2; \@R) using the Stan modeling language \[\@grant2017\] via the **brms** package \[\@brms\]. We used maximal random-effects structures justified by the design \[\@barr2013\], including random intercepts for participants and items, and random slopes for blurring level. For accuracy and SDT models, contrast codes (ANOVA/effects coding) were generated using the **hypr** package \[\@hypr\]. Models were fit twice: once with contrasts comparing high blur vs. clear and high blur vs. low blur, and once with low blur vs. clear. For ex-Guassian models and DDMs, we suppressed the intercept (i.e., fit models without a baseline) to aid convergence and simplify estimation.
 
-We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples (except for the diffusion model, which used 2,000 iterations to reduce computation time). Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) \[\@brms\]. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio) calculations for directional hypotheses. Priors are detailed below.
+We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples (except for the diffusion model, which used 2,000 iterations to reduce computation time). Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) \[\@brms\]. Default priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio) calculations for directional hypotheses. Priors are detailed in more detail below and interested readers can see how are priors were specified by viewing the Quarto document on Github.
 
 We report posterior means and 90% credible intervals (Cr.I.). For marginal mean differences, we also report the posterior probability that \$\\delta \\neq 0\$. Hypotheses were considered supported if zero was excluded from the 90% Cr.I. and \$P(\\delta \> 0)\$ approached 1. Estimated marginal means were extracted using a combination of **emmeans** [@emmeans], **bayestestR** \[@bayestestR\], and **brms** [@brms].
 
@@ -491,7 +491,7 @@ Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and 
 
 #### Ex-Gaussian Model
 
-We modeled response times with an ex-Gaussian distribution, allowing both the Gaussian mean ($\mu$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please not that when we refer to $\beta$ we are reffering to $\tau$. We applied weakly informative priors (e.g., \$N(0,10)\$) on $\mu$, \$\\sigma\$, and $\beta$ coefficients, with default priors for other parameters. To visualize distributional shifts, we also generated delta plots.
+We modeled response times with an ex-Gaussian distribution, allowing the Gaussian mean ($\mu$), the Guassian standard deviation (\$\\sigma\$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are reffering to $\tau$. We applied weakly informative priors (e.g., \$N(0,10)\$) on $\mu$, $\sigma$, and $\beta$ coefficients, with default priors for other parameters. To visualize distributional shifts, we also generated delta plots.
 
 #### Diffusion Model
 
@@ -2625,86 +2625,6 @@ ggsave(filename='./figures/figure_kde3.png',width=12,height=14, dpi=300)
 
 ```
 
-### DDM
-
-```{r}
-
-rts_wf <- read_csv("https://osf.io/29hnd/download")
-
-rts_dim <- rts_wf |>
-  filter(category=="NONAN")
-
-blur_acc_wf<- rts_dim |>
-  group_by(participant) |>
-  dplyr::filter(rt >= .2 & rt <= 2.5)|>
-  dplyr::filter(category=="NONAN")
-```
-
-```{r}
-formula <- bf(rt | dec(corr) ~ 0 + blur + frequency + blur:frequency + 
-                (1 + blur|p|participant) + (1+blur+frequency|i|target),  
-              ndt ~ 0 + blur + frequency + blur:frequency, 
-              bias = .5)
-```
-
-```{r}
-
-bprior <- c(
-  prior("normal(0, 1)", class = b), 
-  set_prior("normal(0, 1)", dpar = "ndt", lb=0, ub="min_Y"), 
-  set_prior("normal(0, 1)", class = "sd"), 
-  set_prior("normal(0, 0.3)", class = "sd", group = "participant"), 
-  set_prior("normal(0, 0.3)", class = "sd", group = "target")
-  )
-
-make_stancode(formula, 
-              family = wiener(link_bs = "identity", 
-                              link_ndt = "identity",
-                              link_bias = "identity"),
-              data = blur_acc_wf, 
-              prior = bprior)
-
-tmp_dat <- make_standata(formula, 
-                         family = wiener(link_bs = "identity", 
-                              link_ndt = "identity",
-                              link_bias = "identity"),
-                            data = blur_acc_wf, prior = bprior)
-str(tmp_dat, 1, give.attr = FALSE)
-
-initfun <- function() {
-  list(
-    b = rnorm(tmp_dat$K),
-    bs=.5, 
-    b_ndt = runif(tmp_dat$K_ndt, 0.001, 0.05),
-    sd_1 = runif(tmp_dat$M_1, 0.5, 1),
-    sd_2 = runif(tmp_dat$M_2, 0.5, 1),
-    z_1 = matrix(rnorm(tmp_dat$M_1*tmp_dat$N_1, 0, 0.01),
-                 tmp_dat$M_1, tmp_dat$N_1),
-    z_2 = matrix(rnorm(tmp_dat$M_2*tmp_dat$N_2, 0, 0.01),
-                 tmp_dat$M_2, tmp_dat$N_2),
-    L_1 = diag(tmp_dat$M_1),
-    L_2 = diag(tmp_dat$M_2)
-  )
-}
-```
-
-```{r}
-
-wf_sc_ddm <- brm(formula, 
-                   data = blur_acc_wf,
-                   family = wiener(link_bs = "identity", 
-                                   link_ndt = "identity",
-                                   link_bias = "identity"),
-                   prior = bprior, init=initfun,
-                   iter = 2000, warmup = 500, 
-                   chains = 4, cores = 4,
-                   file="weiner_diff_wf", 
-                   backend = "cmdstanr", 
-                   threads = threading(2),
-                   control = list(max_treedepth = 15))
-
-```
-
 #### Recognition Memory
 
 ```{r}
@@ -2852,10 +2772,9 @@ tmp |>
   stat_halfeye(
     normalize = "xy",
     width = 0.44,
-    slab_color = "black",
-   .interval="quantile", 
+    slab_color = "black", 
    point_interval = "mean_qi",
-    .width = c(.66, .90),
+    .width = c(.66, .95),
     aes(
       side = ifelse(frequency == "High", "left", "right"),
       x = ifelse(frequency == "High", as.numeric(blur) - .08, as.numeric(blur) + .08)
@@ -2865,7 +2784,7 @@ tmp |>
   guides(slab_alpha = "none") +
   facet_grid(Parameter ~ t, scales = "free") +
   ggokabeito::scale_fill_okabe_ito() + 
-    theme_minimal(base_size=16)
+    theme_minimal(base_size=16) 
 
 ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
 
