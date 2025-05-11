@@ -1463,7 +1463,7 @@ contrasts(blur_rt$blur) <-contr.hypothesis(blurC)
 ```{r}
 #| eval: false
 
-bform_exg1 <- bf(
+bform_exg1b <- bf(
 rt ~ 0+ blur + (1 + blur |p| participant) + (1 + blur|i| string),
 sigma ~ 0+ blur + (1 + blur |p|participant) + (1 + blur |i| string),
 beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
@@ -1472,15 +1472,16 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 ```{r}
 #| eval: false
 #| 
-prior_exp1 <- c(set_prior("normal(0,100)", class = "b", coef=""))
-                
+prior1b <- c(prior("normal(0,10)", class = "b", coef = ""), 
+            prior("lkj(2)", class = "cor"),
+            prior("student_t(3, 0, 0.02)", class = "sd"))                
 
 fit_exg1 <- brm(
 bform_exg1, data = blur_rt_new,
 warmup = 1000,
                     iter = 5000,
                     chains = 4,
-                    prior = prior_exp1,
+                    prior = prior1b,
                     family = exgaussian(),
                     init = 0,
                     cores = 4, 
