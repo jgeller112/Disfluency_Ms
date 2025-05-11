@@ -693,9 +693,9 @@ The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1
 blurC <-hypr(HB~C, HB~LB, levels=c("C", "HB", "LB"))
 
 #set contrasts in df 
-blur_rt$blur <- as.factor(blur_rt$blur)
+blur_rt_new$blur <- as.factor(blur_rt$blur)
 
-contrasts(blur_rt$blur) <-contr.hypothesis(blurC)
+contrasts(blur_rt_new$blur) <-contr.hypothesis(blurC)
 
 ```
 
@@ -711,11 +711,12 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 ```{r}
 #| eval: false
 
-prior_exp1 <- c(set_prior("normal(0,100)", class = "b", coef=""))
-                
+prior_exp1 <- c(prior("normal(0,10)", class = "b", coef = ""), 
+            prior("lkj(2)", class = "cor"),
+            prior("student_t(3, 0, 0.02)", class = "sd"))                
 
 fit_exg1 <- brm(
-bform_exg1, data = blur_rt,
+bform_exg1, data = blur_rt_new,
 warmup = 1000,
                     iter = 5000,
                     chains = 4,
@@ -727,11 +728,7 @@ sample_prior = T,
 save_pars = save_pars(all=T),
 control = list(adapt_delta = 0.8), 
 backend="cmdstanr", 
-threads = threading(4))
-
-setwd(here::here("Context", "RT_BRM_Model"))
-
-save(fit_exg1, file = "blmm_rt_context_05-25-23.RData")
+threads = threading(2))
 
 ```
 
