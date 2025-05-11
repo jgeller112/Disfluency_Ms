@@ -741,7 +741,7 @@ threads = threading(2))
 #here::here("Expt1", "BRM_ACC_RT", #"blmm_rt_context_05-25-23.RData"))
 
 # no intercept model - easier to fit priors on all levels of factor 
-fit_c <- read_rds("https://osf.io/82nre/download")
+fit_c <- read_rds("https://osf.io/9jr4z/download")
 
 ```
 
