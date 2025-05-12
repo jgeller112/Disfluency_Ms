@@ -1499,7 +1499,7 @@ threads = threading(2))
 #load_github_data("https://osf.io/uxc2f/download")
 
 
-fit_exg1 <- read_rds("https://osf.io/egqyt/download")
+fit_exg1 <- read_rds("https://osf.io/9jr4z/download")
 
 
 ```
