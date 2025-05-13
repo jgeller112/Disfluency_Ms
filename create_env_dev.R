@@ -2,8 +2,7 @@ required_packages <- c(
   "easystats", "tidyverse", "knitr", "cowplot", "ggeffects", "here", 
   "data.table", "ggrepel", "brms", "ggdist", "emmeans", "tidylog", 
   "tidybayes", "hypr", "colorspace", "ragg", "ggtext", "flextable", "posterior", "tinytable", "ggokabeito",
-  "patchwork"
-)
+  "patchwork", "officedown")
 
 rix(date = "2025-04-07",
     r_pkgs = required_packages, 
