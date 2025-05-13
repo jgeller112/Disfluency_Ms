@@ -76,7 +76,7 @@ author-note:
     conflict-of-interest: The authors have no conflicts of interest to disclose.
     financial-support: This work was supported by research start-up funds to JG.
     authorship-agreements: ~
-abstract: "Perceptual disfluency, induced by blurring or difficult-to-read typefaces, can sometimes enhance memory retention, but the underlying mechanisms remain unclear. To investigate this, we manipulated blurring levels (clear, low blur, high blur) during encoding and assessed recognition performance in a surprise memory test.In Experiments 1a and 1b, response latencies from a lexical decision task were analyzed using ex-Gaussian distribution modeling and drift diffusion modeling. Results showed that blurring differentially influenced parameters oe the model, with high blur affecting both early and late-stage processes, while low blur primarily influenced early-stage processes. Recognition test results further revealed that high-blur words were remembered better than both clear and low-blurred words.Experiment 2 employed a semantic categorization task with a word frequency manipulation to further examine the locus of the perceptual disfluency effect. Similar to Experiments 1a and 1b, high blur influenced both early and late-stage processes, while low blur primarily affected early-stage processes. Low-frequency words exhibited greater shifting and skewing in distributional parameters, yet only high-frequency, highly blurred words demonstrated an enhanced memory effect. These findings suggest that both early and late cognitive processes contribute to the mnemonic benefits associated with perceptual disfluency.Overall, this study demonstrates that distributional and computational analyses provide powerful tools for dissecting encoding mechanisms and their effects on memory, offering valuable insights into models of perceptual disfluency."
+abstract: "Perceptual disfluency, induced by blurring or difficult-to-read typefaces, can sometimes enhance memory retention, but the underlying mechanisms remain unclear. To investigate this, we manipulated blurring levels (clear, low blur, high blur) during encoding and assessed recognition performance in a surprise memory test. In Experiments 1a and 1b, response latencies from a lexical decision task were analyzed using ex-Gaussian distribution modeling and drift diffusion modeling. Results showed that blurring differentially influenced parameters oe the model, with high blur affecting both early and late-stage processes, while low blur primarily influenced early-stage processes. Recognition test results further revealed that high-blur words were remembered better than both clear and low-blurred words.Experiment 2 employed a semantic categorization task with a word frequency manipulation to further examine the locus of the perceptual disfluency effect. Similar to Experiments 1a and 1b, high blur influenced both early and late-stage processes, while low blur primarily affected early-stage processes. Low-frequency words exhibited greater shifting and skewing in distributional parameters, yet only high-frequency, highly blurred words demonstrated an enhanced memory effect. These findings suggest that both early and late cognitive processes contribute to the mnemonic benefits associated with perceptual disfluency.Overall, this study demonstrates that distributional and computational analyses provide powerful tools for dissecting encoding mechanisms and their effects on memory, offering valuable insights into models of perceptual disfluency."
 
 keywords: [disfluency, LDT, DDM, x-Gaussian, distributional analyses, word recognition]
 floatsintext: true
@@ -279,7 +279,7 @@ To achieve the aim of utilizing perceptual disflueny in applied settings, a bett
 
 The compensatory processing account [@mulligan1996] suggests that the disfluency effect is a result of increased top-down processing from lexical and semantic levels of representation. This framework is largely based on the popular interactive activation mode (IA model) of word recognition [@mcclelland1981]. In the IA model, visual input activates representations at three levels of representation: the feature, letter, and word levels. Activation in the IA model is both feed-forward and feed-backward. Thus, when there is perceptual noise (such as the one induced by a mask), there is increased top-down processing from higher, lexical or semantic, levels to aid in word identification. It is this increased top-down processing to lower levels that produces better memory.
 
-More recently, @ptok2019 put forth a limited capacity and stage-specific model to explain conflict-encoding effects like the perceptual disfluency effect. Within their model, memory effects arising from encoding conflict rely on (1) the level of processing tapped by the task and (2) metacognitive processes that include monitoring and control. Across six experiments, @ptok2020 demonstrated better recognition memory for target words when shown with incongruent versus congruent semantic distractor words (i.e., category labels of size, animacy, or gender; e.g., "Chair - Alive" vs. "Chair - Inanimate"), but no memory benefit for incongruent versus congruent response distractor words (e.g., Lisa -"left"/ Lisa - "right"). While both tasks resulted in conflict evinced by longer reaction times (RTs) to targets preceded by incongruent primes, only when the encoding task focused attention on target meaning (i.e., semantic categorization) rather than response selection did a memory benefit arise. In a follow-up set of experiments, @ptok2020 replicated this pattern of findings, and in addition, provided physiological evidence from cognitive pupillometry (i.e., the study of eye pupil size and how it relates to cognitive processing), which has been shown to be an indicator of mental effort and congitive control \[see @mathot2018 and @vanderwel2018 for reviews\]. In their study they observed larger pupil size for semantic incongruent and response incongruent primes, but only observed a memory benefit for semantic incongruent conditions. Interestingly, they also showed that these memory benefits can be mitigated by manipulating endogenous attention. @ptok2020 (Experiment 3) were able to eradicate the conflict encoding benefit by having participants sit in a chinrest and focus on the task. This is similar to what has been found in the perceptual disfluency literature. For example, having participants study words in anticipation for a test can eradicate the benefit of perceptual disfluency @geller2021. In addition, requiring participants to make judgments of learning (i.e., a metamemory judgment on a scale of 0-100 indicating how likely it is they will recall the word on a later memory test) after each studied word also eradicates the disfluency effect [@rosner2015; @besken2013]. Taken together, this highlights the critical role of both the kind of processing done on the to-be-remembered stimuli, and control processes in eliciting a disfluency effect.
+More recently, @ptok2019 put forth a limited capacity and stage-specific model to explain conflict-encoding effects like the perceptual disfluency effect. Within their model, memory effects arising from encoding conflict rely on (1) the level of processing tapped by the task and (2) metacognitive processes that include monitoring and control. Across six experiments, @ptok2020 demonstrated better recognition memory for target words when shown with incongruent versus congruent semantic distractor words (i.e., category labels of size, animacy, or gender; e.g., "Chair - Alive" vs. "Chair - Inanimate"), but no memory benefit for incongruent versus congruent response distractor words (e.g., Lisa -"left"/ Lisa - "right"). While both tasks resulted in conflict evinced by longer reaction times (RTs) to targets preceded by incongruent primes, only when the encoding task focused attention on target meaning (i.e., semantic categorization) rather than response selection did a memory benefit arise. In a follow-up set of experiments, @ptok2020 replicated this pattern of findings, and in addition, provided physiological evidence from cognitive pupillometry (i.e., the study of eye pupil size and how it relates to cognitive processing), which has been shown to be an indicator of mental effort and congitive control [see @mathot2018 and @vanderwel2018 for reviews]. In their study they observed larger pupil size for semantic incongruent and response incongruent primes, but only observed a memory benefit for semantic incongruent conditions. Interestingly, they also showed that these memory benefits can be mitigated by manipulating endogenous attention. @ptok2020 (Experiment 3) were able to eradicate the conflict encoding benefit by having participants sit in a chinrest and focus on the task. This is similar to what has been found in the perceptual disfluency literature. For example, having participants study words in anticipation for a test can eradicate the benefit of perceptual disfluency @geller2021. In addition, requiring participants to make judgments of learning (i.e., a metamemory judgment on a scale of 0-100 indicating how likely it is they will recall the word on a later memory test) after each studied word also eradicates the disfluency effect [@rosner2015; @besken2013]. Taken together, this highlights the critical role of both the kind of processing done on the to-be-remembered stimuli, and control processes in eliciting a disfluency effect.
 
 All three of these theories propose potential loci for the perceptual disfluency effect. In the metacognitive account, the disfluency effect occurs at a later post-lexical stage, after word recognition has taken place. The compensatory processing account [@mulligan1996] links the perceptual disfluency effect directly to the word recognition process. That is, disfluent words receive more top-down processing from lexical or semantic levels during encoding. Lastly, the stage-specific model proposed by @ptok2019 associates perceptual disfluency effects with a specific stage of processing, namely the semantic level, but it also considers general attentional and cognitive control processes that are not solely tied to the word recognition process.
 
@@ -479,40 +479,53 @@ We created two lists: One list (84 words; 28 clear, 28 low blur, and 28 high blu
 
 The experiment consisted of two phases: an encoding phase (LDT) and a test phase. During the encoding phase, a fixation cross appeared at the center of the screen for 500 ms. The fixation cross was immediately replaced by a letter string in the same location. To continue to the next trial, participants had to decide if the letter string presented on screen was a word or not by either pressing designated keys on the keyboard ("m" or "z") or by tapping on designated areas on the screen (word vs. nonword) if they were using a cell phone/tablet. After the encoding phase, participants were given a surprise old/new recognition memory test. During the test phase, a word appeared in the center of the screen that either had been presented during study ("old") or had not been presented during study ("new"). Old words occurred in their original typeface, and following the counterbalancing procedure, each of the new words was presented as clear, low blurred, or high blurred. All words were individually randomized for each participant during both the study and test phases and progress was self-paced. After the experiment, participants were debriefed. The entire experiment lasted approximately 15 minutes.
 
-### Analysis Plan
+### Data analysis plan
 
-All models were fit in R (v.4.4.2; \@R) using the Stan modeling language \[\@grant2017\] via the **brms** package \[\@brms\]. We used maximal random-effects structures justified by the design \[\@barr2013\], including random intercepts for participants and items, and random slopes for blurring level. For accuracy and SDT models, contrast codes (ANOVA/effects coding) were generated using the **hypr** package \[\@hypr\]. Models were fit twice: once with contrasts comparing high blur vs. clear and high blur vs. low blur, and once with low blur vs. clear. For ex-Guassian models and DDMs, we suppressed the intercept (i.e., fit models without a baseline) to aid convergence and simplify estimation.
+All models were fit in R (v.4.4.2; \@R) using the Stan modeling language [@grant2017] via the **brms** package [@brms]. We used maximal random-effects structures justified by the design [@barr2013], including random intercepts for participants and items, and random slopes for blurring level.
 
-We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples (except for the diffusion model, which used 2,000 iterations to reduce computation time). Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) \[\@brms\]. Default priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio) calculations for directional hypotheses. Priors are detailed in more detail below and interested readers can see how are priors were specified by viewing the Quarto document on Github.
+Contrast coding (effects/ANOVA coding) was applied using the `hypr` package \[\@hypr\] for accuracy and signal detection models. To obtain all relevant comparisons, models were fit twice: once comparing high blur to clear and high blur to low blur, and once comparing low blur to clear. For ex-Gaussian and diffusion models, the intercept was suppressed (i.e., no baseline condition) to simplify estimation and improve convergence.
 
-We report posterior means and 90% credible intervals (Cr.I.). For marginal mean differences, we also report the posterior probability that \$\\delta \\neq 0\$. Hypotheses were considered supported if zero was excluded from the 90% Cr.I. and \$P(\\delta \> 0)\$ approached 1. Estimated marginal means were extracted using a combination of **emmeans** [@emmeans], **bayestestR** \[@bayestestR\], and **brms** [@brms].
+We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples (except for the diffusion model, which used 2,000 iterations to reduce computation time). Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) [@brms]. Default priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio(ER)) calculations for two sided-hypotheses against a point null. Full prior specifications are available in the Quarto source file on GitHub.
+
+We report posterior means and 90% credible intervals (CrIs). For marginal mean differences, we also report the posterior probability that $\delta \neq 0$. Hypotheses were considered supported if zero was excluded from the 90% CrIs and $P(\delta > 0)$ approached 1. Estimated marginal means were extracted using a combination of **emmeans** [@emmeans], **bayestestR** [@bayestestR], and **brms** [@brms].
 
 Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and ESS [@vehtari2021]. We used the Evidence Ratio (ER), which generalizes Bayes factors for directional hypotheses: ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 supports the null; values between 0.3–3 are inconclusive.
 
+#### Accuracy
+
+Accuracy (coded as correct vs. incorrect) was modeled using a Bayesian logistic regression with a Bernoulli distribution. We specified a Cauchy(0, 0.35) prior for population-level effects, as recommended by \[\@kinoshita2023\].
+
 #### Ex-Gaussian Model
 
-We modeled response times with an ex-Gaussian distribution, allowing the Gaussian mean ($\mu$), the Guassian standard deviation (\$\\sigma\$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are reffering to $\tau$. We applied weakly informative priors (e.g., \$N(0,10)\$) on $\mu$, $\sigma$, and $\beta$ coefficients, with default priors for other parameters. To visualize distributional shifts, we also generated delta plots.
+We modeled response times with an ex-Gaussian distribution, allowing the Gaussian mean/location ($\mu$), the Guassian standard deviation (\$\\sigma\$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. We applied weakly informative priors (e.g., \$N(0,10)\$) on $\mu$, $\sigma$, and $\beta$ coefficients, with default priors for other parameters. To visualize distributional shifts, we also generated delta plots.
 
 #### Diffusion Model
 
-We fit a hierarchical Bayesian Wiener diffusion model \[@vandekerckhove2011\] with accuracy coding, estimating drift rate (information processing efficiency), boundary separation (response caution; fixed at 0.5), and non-decision time. Weakly informative priors were used; full details are in the Quarto document.
+We fit a hierarchical Bayesian Wiener diffusion model [@vandekerckhove2011] with accuracy coding, estimating drift rate (information processing efficiency), boundary separation (response caution; fixed at 0.5), and non-decision time. Weakly informative priors were used; full details are in the Quarto document.
 
 #### Recognition Memory
 
-Recognition memory data were analyzed using a Bayesian generalized linear multilevel model (Bernoulli distribution, probit link). Following Signal Detection Theory (SDT), we modeled responses ("old" vs. "new") as a function of item status and blurring level. We used a Cauchy(0, 0.35) prior for population effects, as recommended by \[@kinoshita2023\].
+Recognition memory data were analyzed using a Bayesian generalized linear multilevel model (Bernoulli distribution with a probit link). Following Signal Detection Theory (SDT; [@green1966]), participant responses ("old" vs. "new") were modeled as a function of item status ("old" vs. "new") and blurring level. We specified a Cauchy(0, 0.35) prior for population-level effects.
 
-Bayesian GLMMs offer more precision than traditional SDT. In this framework, the interaction between item status and the predictor of interest maps onto $d'$; the criterion ($c$) can be derived from the main effect of the predictor. For a detailed walkthrough of Bayesian SDT models, see [@zloteanu2024].
+Bayesian GLMMs provide a more precise and flexible approach than traditional SDT analyses. In this framework, the interaction between item status and a predictor of interest corresponds to *d′*, while the main effects reflect response criterion. For a detailed discussion of Bayesian SDT modeling, see \[\@zloteanu2024\]. Note that our model parameterization reflects *–c* (i.e., reversed sign), though for visualization purposes we use the conventional parameterization, where positive values indicate more conservative responding and negative values indicate a more liberal bias.
 
 ### Results and Discussion
 
-All models presented no divergences, and all chains mixed well and produced comparable estimates ($\hat{R}$ \< 1.01).
+All models presented no divergences, and all chains mixed well and produced comparable estimates ($\hat{R}$ \< 1.01 and ESS \> 1000).
 
 #### Accuracy
 
 ```{r}
+
+blur_acc <- read_csv("https://osf.io/xv5bd/download")
+
+
+```
+
+```{r}
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
-blur_acc <- read.csv(here::here("_manuscript", "data", "cleaned_context_rt.csv")) |>
+blur_acc <- blur_acc  |>
     dplyr::filter(lex=="m")
 
 
@@ -612,12 +625,6 @@ acc_lb <- read_rds("https://osf.io/wt3ry/download")
 ```
 
 ```{r}
-
-acc_means <- emmeans(acc_c, specs="blur", type="response")
-
-```
-
-```{r}
 #| label: tbl-acc1a
 #| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1a
 #| apa-note:  "95% Cr.I for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
@@ -686,18 +693,6 @@ blur_rt_new <- blur_rt |>
 ```
 
 The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
-
-```{r}
-## Contrasts
-#hypothesis
-blurC <-hypr(HB~C, HB~LB, levels=c("C", "HB", "LB"))
-
-#set contrasts in df 
-blur_rt_new$blur <- as.factor(blur_rt$blur)
-
-contrasts(blur_rt_new$blur) <-contr.hypothesis(blurC)
-
-```
 
 ```{r}
 #| eval: false
@@ -790,6 +785,7 @@ tab |>
   flextable() |>
   autofit() |>
   theme_apa()
+
 
 ```
 
@@ -1108,12 +1104,17 @@ contrasts(mem_c$blur) <-contr.hypothesis(blurC)
 ```
 
 ```{r}
+#| eval: false 
+
+#priors for sdt model
+sdt_priors <- c(set_prior("cauchy(0,.35)", class = "b"))
+```
+
+```{r}
 #| eval: false
 #| 
 
-prior_exp2 <- c(set_prior("cauchy(0,.35)", class = "b"))
-
-fit_mem_c <- brm(sayold ~ 0 + isold * blur + (1 + isold * blur | participant) + (1 + isold * blur | string),
+fit_mem_c <- brm(sayold ~ isold * blur + (1 + isold * blur | participant) + (1 + isold * blur | string),
   data = mem_c,
   warmup = 1000,
   iter = 5000,
@@ -1122,12 +1123,12 @@ fit_mem_c <- brm(sayold ~ 0 + isold * blur + (1 + isold * blur | participant) + 
   family = bernoulli(link = "probit"),
   cores = 4,
   control = list(adapt_delta = 0.9),
-  prior = prior_exp2,
+  prior = sdt_priors,
   sample_prior = T,
-  file = "blmm_sdt_c_nointercept",
+  file = "blmm_sdt_expt1",
   save_pars = save_pars(all = T),
   backend = "cmdstanr",
-  threads = threading(4)
+  threads = threading(2)
 )
 
 
@@ -1136,7 +1137,6 @@ fit_mem_c <- brm(sayold ~ 0 + isold * blur + (1 + isold * blur | participant) + 
 ```{r}
 
 fit_mem1 <- read_rds("https://osf.io/xsvgt/download")
-
 
 sd_lb <- read_rds("https://osf.io/4qp38/download")
 
@@ -1156,16 +1156,16 @@ c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3))
 
 ##### Sensitivity
 
-@fig-dprimeexp1a highlights High-blurred words were better remembered than clear words, $\beta$ = `r a$hypothesis$Estimate`, 90% Cr.I \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, $\beta$ = `r b$hypothesis$Estimate`, 90% Cr.I \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was very little evidence for a difference in sensitivity between clear words and low-blurred words, $\beta$ = `r c$hypothesis$Estimate`, 90% Cr.I \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
+@fig-dprimeexp1a highlights high-blurred words were better remembered than clear words, $\beta$ = `r a$hypothesis$Estimate`, 90% Cr.I \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, $\beta$ = `r b$hypothesis$Estimate`, 90% Cr.I \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was very little evidence for a difference in sensitivity between clear words and low-blurred words, $\beta$ = `r c$hypothesis$Estimate`, 95% Cr.I \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
 
 ##### Exploratory
 
 ###### Bias
 
 ```{r}
-a <- hypothesis(fit_mem1 , "blur2 < 0")
+a <- hypothesis(fit_mem1 , "blur2 = 0")
 b <- hypothesis(sd_lb , "blur1 < 0")
-c<-  hypothesis(fit_mem1 , "blur1= 0")
+c<-  hypothesis(fit_mem1 , "blur1 > 0")
 
 
 a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
@@ -1198,7 +1198,7 @@ emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) |>
 
 ```{r}
 #| label: fig-dprimeexp1a
-#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences, with 66% (thick) and 95% Cr.Is (thin lines)
+#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences, with 95% CrIs (thin lines)
 #| fig-width: 12
 #| fig-height: 8
 
@@ -1263,7 +1263,7 @@ tmp |>
     y = "Parameter value", 
   ) +
   stat_halfeye(colour="black", 
-               .width = c(0.66, 0.90), point_interval = "mean_qi") + 
+               .width = c(0.95), point_interval = "mean_qi") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
   theme_minimal(base_size=16)
@@ -1425,7 +1425,7 @@ acc_exp1b
 
 ```
 
-A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r``process_ER_column(``a$hypothesis$Evid.Ratio)`. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r``process_ER_column(``b$hypothesis$Evid.Ratio)`. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`.
+A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% Cr.I\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = ``` r``process_ER_column(``a$hypothesis$Evid.Ratio) ```. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% Cr.I\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = ``` r``process_ER_column(``b$hypothesis$Evid.Ratio) ```. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% Cr.I\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`.
 
 #### RTs: Ex-Gaussian
 
@@ -1557,7 +1557,7 @@ A visualization of how blurring affected processing during word recognition can 
 
 Analyses of the $\sigma$ and $\beta$ parameters yielded a similar pattern. Variance was higher for high blurred words compared to clear words, *b* = `r round(d$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`, and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(e$hypothesis$Evid.Ratio)`.
 
-Finally, there was greater skewing for high blurred words compared to clear words, *b* = `r round(g$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(g$hypothesis$CI.Lower, 3)`, `r round(g$hypothesis$CI.Upper, 3)`\], ER = `r round(g$hypothesis$Evid.Ratio, 3)`, and low blurred words, *b* = `r round(h$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(h$hypothesis$CI.Lower, 3)`, `r round(h$hypothesis$CI.Upper, 3)`\], ER = `r``process_ER_column(``h$hypothesis$Evid.Ratio)`.
+Finally, there was greater skewing for high blurred words compared to clear words, *b* = `r round(g$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(g$hypothesis$CI.Lower, 3)`, `r round(g$hypothesis$CI.Upper, 3)`\], ER = `r round(g$hypothesis$Evid.Ratio, 3)`, and low blurred words, *b* = `r round(h$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(h$hypothesis$CI.Lower, 3)`, `r round(h$hypothesis$CI.Upper, 3)`\], ER = ``` r``process_ER_column(``h$hypothesis$Evid.Ratio) ```.
 
 Low blurred words compared to clear words only differed on the $\mu$ parameter, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% Cr.I \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`, with greater shifting for low blurred words. For $\beta$ and $\sigma$, the 95% Cr.I crossed zero and the ER was greater than 100.
 
@@ -1869,6 +1869,7 @@ contrasts(mem_c$blur) <-contr.hypothesis(blurC)
 #| eval: false
 #| 
 
+# weak prior
 prior_exp2 <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 fit_mem_nc <- brm(sayold ~ isold*blur + (1+isold*blur|participant) + (1+isold*blur|string), data=mem_nc, 
@@ -1884,8 +1885,7 @@ sample_prior = T,
 file="blmm_sdt_c_nointercept",
 save_pars = save_pars(all=T),
 backend="cmdstanr",
-
-threads = threading(4))
+threads = threading(2))
 
 
 ```
@@ -2710,7 +2710,7 @@ emm_m2_c2 <- emmeans(fit_sc_mem, ~blur | frequency) |>
 
 ```{r}
 #| label: fig-m2-emmeans
-#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences, with 66% (thick) and 95% CIs (thin lines)
+#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences,  95% CrIs (thin lines)
 #| fig-width: 12
 #| fig-height: 10
 
@@ -2773,7 +2773,7 @@ tmp |>
     width = 0.44,
     slab_color = "black", 
    point_interval = "mean_qi",
-    .width = c(.66, .95),
+    .width = c(.95),
     aes(
       side = ifelse(frequency == "High", "left", "right"),
       x = ifelse(frequency == "High", as.numeric(blur) - .08, as.numeric(blur) + .08)
