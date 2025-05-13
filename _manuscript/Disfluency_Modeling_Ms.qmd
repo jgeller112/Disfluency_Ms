@@ -1644,7 +1644,7 @@ fit_wiener1 <- brm(formula,
 
 ```{r}
 
-fit_wiener <- read_rds("https://osf.io/3j98t/download")
+fit_wiener <- read_rds("https://osf.io/gy5ab/download")
 
 ```
 
