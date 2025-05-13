@@ -2027,7 +2027,7 @@ The stage specific account, on the other hand, is influenced by extra attentiona
 
 Low frequency words, like high blurred words, routinely attract attention during encoding [see evidence from pupillometry; @kuchinke2007]. Thus the benefits of perceptual disfluency may be less effective for these items. High frequency items on the other hand should be more likely to benefit from a manipulation that enhances attention to, and encoding of, the item. The presence of low frequency words could make perceptual disfluency redundant in this regard. In this regard, we might not see a perceptual disfluency effect for low frequency items. @ptok2019 argued that the memory benefits for conflict encoding phenomena are limited to tasks that are relatively fluent, automatic, and encoding poor. Any additional demands placed on the participants imposed by the task could reduce the disfluency effect. As evidence for this, @ptok2020 showed manipulating endogenous attention (by using a chinrest) eliminated the memory benefit from semantic interference during encoding. Similarly, @geller2021 manipulated attention through a test expectancy manipulation (i.e., being told about an upcoming memory test or not) which presumably oriented participants to study all words for the upcoming memory test, regardless of disfluency. This resulted in the elimination of the disfluency effect. Lastly, @westerman1997 (Experiment 3), showed, with a masking manipulation, that changing encoding instructions from reading the target word (more automatic) to spelling the target word eliminated the perceptual disfluency effect. In Experiment 2, we examine how word frequency interacts with perceptual disfluency and how this affects memory.
 
-### Method
+## Method
 
 ### Transparency and Openness
 
@@ -2852,7 +2852,7 @@ Looking at quantile and delta plots, we see there was a robust word-frequency ad
 
 Critical here is how the observed non-additivity impacts memory. Replicating Experiments 1a and 1b, we report an overall memory benefit for high blurred words. Additionally, we observed better recognition memory for low frequency words compared to high frequency words. Examining the interaction between blurring and frequency revealed a distinct pattern. We observed a disfluency effect for high frequency-high blurred words. However, low frequency words only benefited memory when they were unaltered (clear words showed a low frequency benefit). When words were blurred, the low ferquency memory benefit did not emerge. This pattern of findings helps us shed some light on the potential source of late stage processing in the disfluency effect.
 
-## General Discussion
+# General Discussion
 
 Interfering with stimulus perception during encoding can sometimes improve later explicit memory. The mixed data on perceptual disfluency has called into question the utility of such manipulations in the learning domain. One of the main aims of the current set of experiments was to examine the underlying mechanisms of the perceptual disfluency effect to better understand when perceptual disfluendcy aids memory and when it does not. To this end, our study delved into the impact of one type of perceptual disfluency--blurring (i.e., low blurring and high blurring)--on the process of encoding, as assessed through a LDT (Experiments 1a and 1b), and a semantic categorization task (Experiment 2). RT distributions were analyzed with an ex-Gaussian model and DDM (Experiments 1a and 1b) to better understand how perceptual disfluency affects encoding. These models offered a comprehensive descriptive and theoretical framework through which to examine the perceptual disfluency effect.
 
@@ -2882,13 +2882,13 @@ Finally, at a practical level, we do show that blurring can benefit later memory
 
 These results provide some context for the large number of replication failures. Many of the studies looking at disfluency do not take care in ensuring the disfluency manipulation is actually disfluent. Most times, studies use only two levels (disfluent/fluent) and perform analyses that may not be well suited for the type of the type of data they have. As we have hopefully shown here, it is important to take into account the entire RT distribution. By examining the RT distributions of different levels of disfluency we obtained a richer better understanding of the stages or loci manipulations have during encoding. It is our hope that learning and memory researches will begin to use these tools to help understand encoding processes involved in perceptual disfluency effects but also encoding contexts where there is considerable conflict.
 
-### Conclusion
+## Conclusion
 
 Our paper contributes nuanced insights to the intricate relationship between perceptual disfluency and memory encoding. We have shown that perceptual disfluency can aid in memory retention, but its efficacy is contingent upon the degree of disfluency and other contextual factors such as word frequency. Our findings endorse the stage-specific account, emphasizing the role of cognitive control mechanisms in the observed memory advantages with perceptual disfluency. Furthermore, our methodological contributions, employing an ex-Gaussian model and DDM, not only validate the benefits of examining RT distributions, but also open new avenues for future research in learning and memory studies. We caution, however, that the applicability of these findings in real-world educational settings remains an open question, and the effect sizes observed were relatively small, thus warranting further investigation.
 
 Ultimately, this work stands as a call to action for a more comprehensive, nuanced approach to studying perceptual disfluency, incorporating both advanced statistical methods and a more exhaustive range of experimental conditions to better elucidate when and how disfluency can facilitate memory.
 
-## References
+# References
 
 ::: {#refs}
 :::
