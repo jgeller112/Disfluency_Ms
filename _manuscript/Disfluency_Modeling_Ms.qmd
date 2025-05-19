@@ -113,7 +113,6 @@ format:
           \setstretch{1.2} % Slightly stretch lines for better readability
 
 execute: 
-  freeze: auto
   echo: false
   warning: false
   message: false
@@ -126,13 +125,41 @@ execute:
 ---
 
 ```{r}
+required_packages <- c(
+  "brms",
+  "cmdstanr",
+  "colorspace",
+  "cowplot",
+  "data.table",
+  "easystats",
+  "emmeans",
+  "flextable",
+  "ggeffects",
+  "ggdist",
+  "ggrepel",
+  "ggtext",
+  "hypr",
+  "knitr",
+  "officer",
+  "patchwork",
+  "ragg",
+  "tidybayes",
+  "tidylog",
+  "tinytable", 
+  "tidyverse"
+)
+
+install_missing <- setdiff(required_packages, rownames(installed.packages()))
+if (length(install_missing) > 0) install.packages(install_missing)
+```
+
+```{r}
 #| label: load packages
 
 library(easystats)
 library(tidyverse)
 library(patchwork)
 library(knitr)
-library(cowplot)
 library(ggeffects)
 library(data.table)
 library(ggrepel)
@@ -150,12 +177,15 @@ library(ggdist)
 library(flextable)
 library(officer)
 library(cmdstanr)
+library(tinytable)
 
 
 options(timeout = 5000)
 ```
 
 ```{r}
+#| eval: false
+#| 
 # check if data is in folder, otherwise download it
 check_and_download <- function(filename, url, data_dir = "data") {
   # Construct full file path
@@ -271,7 +301,7 @@ Unfortunately, the evidence for the perceptual disfluency effect is not always a
 
 Due to the mixed findings, researchers began exploring boundary conditions of the disfluency effect. The importance of testing the effects of disfluency in the presence of other variables is key to its usefulness as an educational intervention. @geller2018, for instance, found level of disfluency (more vs. less disfluent) mattered. Using easy-to-read and hard-to-read handwritten cursive words,@geller2018 showed there is a *Goldilocks* zone for perceptual disfluency effects. That is, stimuli cannot be too easy to read (i.e., print words) or too hard to read (i.e., hard-to-read cursive). Only when the stimuli were moderately difficult or just right (i.e., easy-to-read cursive), did memory improve. In another paper, @geller2021 demonstrated that memory benefits for disfluent stimuli are more robust when test expectancy is low. That is, a disfluency effect is only seen when participants are not told about an upcoming memory test. The authors reasoned that knowing about a memory test engaged a strategy where all stimuli get processed to a deeper level, regardless of how perceptually disfluent the stimulus is. This countervails any benefit disfluency has on memory. Additionally, a few studies have noted the importance of individual differences. For example, @eskenazi2021 showed better spellers remembered more words and meanings than poor spellers when placed in a disfluent font (Sans Forgetica).
 
-Although perceptual disfluency can arise in certain contexts, its usefulness in educational settings—where students are prepared for tests—may be limited. However, \@geller2021 argued that perceptual disfluency holds practical value because people often rely on incidental memory in everyday decision-making. For disfluency to be leveraged effectively, though, it is essential to predict when and where it will occur.
+Although perceptual disfluency can arise in certain contexts, its usefulness in educational settings—where students are prepared for tests—may be limited. However, @geller2021 argued that perceptual disfluency holds practical value because people often rely on incidental memory in everyday decision-making. For disfluency to be leveraged effectively, though, it is essential to predict when and where it will occur.
 
 ## Theoretical accounts of the disfluency effect
 
@@ -481,9 +511,9 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 ### Data analysis plan
 
-All models were fit in R (v.4.4.2; \@R) using the Stan modeling language [@grant2017] via the **brms** package [@brms]. We used maximal random-effects structures justified by the design [@barr2013], including random intercepts for participants and items, and random slopes for blurring level.
+All models were fit in R (v.4.4.2; @R) using the Stan modeling language [@grant2017] via the **brms** package [@brms]. We used maximal random-effects structures justified by the design [@barr2013], including random intercepts for participants and items, and random slopes for blurring level.
 
-Contrast coding (effects/ANOVA coding) was applied using the `hypr` package \[@hypr\] for accuracy and signal detection models. To obtain all relevant comparisons, models were fit twice: once comparing high blur to clear and high blur to low blur, and once comparing low blur to clear. For ex-Gaussian and diffusion models, the intercept was suppressed (i.e., no baseline condition) to simplify estimation and improve convergence [@Singmann2017].
+Contrast coding (effects/ANOVA coding) was applied using the `hypr` package [@hypr] for accuracy and signal detection models. To obtain all relevant comparisons, models were fit twice: once comparing high blur to clear and high blur to low blur, and once comparing low blur to clear. For ex-Gaussian and diffusion models, the intercept was suppressed (i.e., no baseline condition) to simplify estimation and improve convergence [@Singmann2017].
 
 We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples (except for the diffusion model, which used 2,000 iterations to reduce computation time). Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) [@brms]. Default priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio(ER)) calculations for two sided-hypotheses against a point null. Full prior specifications are available in the Quarto source file on GitHub.
 
@@ -493,7 +523,7 @@ Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and 
 
 #### Accuracy
 
-Accuracy (coded as correct vs. incorrect) was modeled using a Bayesian logistic regression with a Bernoulli distribution. We specified a Cauchy(0, 0.35) prior for population-level effects, as recommended by \[\@kinoshita2023\].
+Accuracy (coded as correct vs. incorrect) was modeled using a Bayesian logistic regression with a Bernoulli distribution. We specified a Cauchy(0, 0.35) prior for population-level effects, as recommended by \[kinoshita2023\].
 
 #### Ex-Gaussian model
 
@@ -507,7 +537,7 @@ We fit a hierarchical Bayesian Wiener diffusion model [@vandekerckhove2011] with
 
 Recognition memory data were analyzed using a Bayesian generalized linear multilevel model (Bernoulli distribution with a probit link). Following Signal Detection Theory (SDT; [@green1966]), correct responses can either be hparticipant responses ("old" vs. "new") were modeled as a function of item status ("old" vs. "new") and blurring level. We specified a Cauchy(0, 0.35) prior for population-level effects.
 
-Bayesian GLMMs provide a more precise and flexible approach than traditional SDT analyses. In this framework, the interaction between item status and a predictor of interest corresponds to *d′*, while the main effects reflect response criterion. For a detailed discussion of Bayesian SDT modeling, see \[@zloteanu2024\]. Note that our model parameterization reflects *–c* (i.e., reversed sign), though for visualization purposes we use the conventional parameterization, where positive values indicate more conservative responding and negative values indicate a more liberal bias.
+Bayesian GLMMs provide a more precise and flexible approach than traditional SDT analyses. In this framework, the interaction between item status and a predictor of interest corresponds to *d′*, while the main effects reflect response criterion. For a detailed discussion of Bayesian SDT modeling, see [@zloteanu2024]. Note that our model parameterization reflects *–c* (i.e., reversed sign), though for visualization purposes we use the conventional parameterization, where positive values indicate more conservative responding and negative values indicate a more liberal bias.
 
 ### Results and Discussion
 
@@ -692,7 +722,7 @@ blur_rt_new <- blur_rt |>
 
 ```
 
-The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
+The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`
 
 ```{r}
 #| eval: false
@@ -942,7 +972,6 @@ combined_plot <- p / delta_comb
 
 combined_plot
  # Automatically labels rows as A, B
-
 
 ggsave(filename='./figures/figure_kde.png',width=10,height=12)
 ```
@@ -1321,7 +1350,7 @@ blur_acc_new<- blur_acc |>
 
 ```
 
-The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`
+The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`)
 
 ```{r}
 
@@ -1425,7 +1454,7 @@ acc_exp1b
 
 ```
 
-A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% CrI\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = ``` r``process_ER_column(``a$hypothesis$Evid.Ratio) ```. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% CrI\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = ``` r``process_ER_column(``b$hypothesis$Evid.Ratio) ```. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% CrI\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`.
+A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% CrI [`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% CrI [`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`], ER = `r c$hypothesis$Evid.Ratio`.
 
 #### RTs: Ex-Gaussian
 
@@ -1444,10 +1473,9 @@ blur_rt_new <- blur_rt |>
   dplyr::filter(rt >= .2 & rt <= 2.5) |>
   mutate(rt_ms=rt*1000)
 
-
 ```
 
-The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3))`
+The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
 
 ```{r}
 #hypothesis
@@ -1553,13 +1581,13 @@ tab |>
 
 ```
 
-A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant1b. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low blur words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant1b. Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low blur words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 Analyses of the $\sigma$ and $\beta$ parameters yielded a similar pattern. Variance was higher for high blurred words compared to clear words, *b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`, and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(e$hypothesis$Evid.Ratio)`.
 
-Finally, there was greater skewing for high blurred words compared to clear words, *b* = `r round(g$hypothesis$Estimate, 3)`, 90% CrI \[`r round(g$hypothesis$CI.Lower, 3)`, `r round(g$hypothesis$CI.Upper, 3)`\], ER = `r round(g$hypothesis$Evid.Ratio, 3)`, and low blurred words, *b* = `r round(h$hypothesis$Estimate, 3)`, 90% CrI \[`r round(h$hypothesis$CI.Lower, 3)`, `r round(h$hypothesis$CI.Upper, 3)`\], ER = ``` r``process_ER_column(``h$hypothesis$Evid.Ratio) ```.
+Finally, there was greater skewing for high blurred words compared to clear words, *b* = `r round(g$hypothesis$Estimate, 3)`, 90% CrI \[`r round(g$hypothesis$CI.Lower, 3)`, `r round(g$hypothesis$CI.Upper, 3)`\], ER = `r round(g$hypothesis$Evid.Ratio, 3)`, and low blurred words, *b* = `r round(h$hypothesis$Estimate, 3)`, 90% CrI [`r round(h$hypothesis$CI.Lower, 3)`, `r round(h$hypothesis$CI.Upper, 3)`], ER = `r  process_ER_column(h$hypothesis$Evid.Ratio)`. 
 
-Low blurred words compared to clear words only differed on the $\mu$ parameter, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`, with greater shifting for low blurred words. For $\beta$ and $\sigma$, the 95% CrI crossed zero and the ER was greater than 100.
+Low blurred words compared to clear words only differed on the $\mu$ parameter, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI [`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`, with greater shifting for low blurred words. For $\beta$ and $\sigma$, the 95% CrI crossed zero and the ER was greater than 100.
 
 #### Diffusion Model
 
@@ -1683,15 +1711,15 @@ tab |>
    mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob` + "Post.Prob") |>
+    rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob`= "Post.Prob") |>
     select(Hypothesis, Parameter, Mean, SE, `90% CrI`,ER, `Posterior Prob`)|>  
   flextable() |>
-  autofit() |> 
+  set_table_properties(layout = "autofit") |>
   theme_apa()
 
 ```
 
-A summary of the diffusion model results can be found in @tbl-diffexpt1b. High-blurred words had a lower drift rate than clear words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was no difference in drift rate between low-blurred words and clear words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
+A summary of the diffusion model results can be found in @tbl-diffexpt1b. High-blurred words had a lower drift rate than clear words, *b* = `r a$hypothesis$Estimate`, 90% CrI [`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r b$hypothesis$Estimate`, 90% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was no difference in drift rate between low-blurred words and clear words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
 
 Non-decision time was higher for high-blurred words compared to clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r e$hypothesis$Estimate`, 90% CrI \[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r process_ER_column(e$hypothesis$Evid.Ratio)`. Low-blurred words had a higher non-decision time than clear words, *b* = `r f$hypothesis$Estimate`, 90% CrI \[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
 
@@ -1839,11 +1867,11 @@ delta_comb = (p1+p2+p3)
 
 combined_plot <- p / delta_comb
 
-combined_plot
- # Automatically labels rows as A, B
-
 
 ggsave(filename='./figures/figure_kde2.png',width=12,height=12)
+
+combined_plot
+ # Automatically labels rows as A, B
 ```
 
 #### Recognition Memory
@@ -2364,7 +2392,7 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) 
 # Format and display the table
 tab |>
   flextable() |>
-  autofit() |> 
+ set_table_properties(layout = "autofit") |>
   theme_apa()
 
 ```
@@ -2623,7 +2651,6 @@ cowplot::plot_grid(p, bottom,
 
 ggsave(filename='./figures/figure_kde3.png',width=12,height=14, dpi=300)
 
-
 ```
 
 #### Recognition Memory
@@ -2797,9 +2824,9 @@ ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
 a <- hypothesis(fit_sc_mem, "blur1 > 0")
 b <- hypothesis(fit_sc_mem, "blur2 > 0")
 c <- hypothesis(fit_sc_mem_lb, "blur1 = 0")
-d <- hypothesis(fit_sc_mem, "frequency1 < 0")
-e <- hypothesis(fit_sc_mem, "blur1:frequency1 = 0")
-f <- hypothesis(fit_sc_mem, "blur2:frequency1 = 0")
+d <- hypothesis(fit_sc_mem, "frequency1 > 0")
+e <- hypothesis(fit_sc_mem, "blur1:frequency1 > 0")
+f <- hypothesis(fit_sc_mem, "blur2:frequency1 > 0")
 g <- hypothesis(fit_sc_mem_lb, "blur1:frequency1 = 0")
 
 # Extract and round each hypothesis table
@@ -2834,15 +2861,15 @@ tb1 <- tab |>
     "High Blur - Low Blur > 0",
     "Low Blur - Clear = 0",
     "High - Low  < 0",
-    "(High Blur - Clear) × (Low vs High Frequency) = 0",
-    "(High Blur - Low Blur) × (Low vs High Frequency) = 0",
+    "(High Blur - Clear) × (Low vs High Frequency) > 0",
+    "(High Blur - Low Blur) × (Low vs High Frequency) > 0",
     "(Low Blur - Clear) × (Low vs High Frequency) = 0"
   ))
 ```
 
-#### Sensitivity
+##### Sensitivity
 
-Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), \$\\beta\$ = `r a$hypothesis$Estimate`, 90% CrI\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, \$b\$ = `r b$hypothesis$Estimate`, 90% CrI\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, \$\\beta\$ = `r c$hypothesis$Estimate`, 95% CrI\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 90% CrI\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, \$\\beta\$ = `r e$hypothesis$Estimate`, 95% CrI\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, \$\\beta\$ = -0.14, 90% CrI\[-0.21, -0.07\]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, \$\\beta\$ = `r f$hypothesis$Estimate`, 90% CrI\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this interaction post hoc, high frequency-high blurred words were better recognized than low-frequency-blurred words. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% CrI\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
+Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), $b$ = `r a$hypothesis$Estimate`, 90% CrI\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, $\beta$ = `r c$hypothesis$Estimate`, 95% CrI\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 90% CrI\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, $\beta$ = `r e$hypothesis$Estimate`, 95% CrI\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, $\beta$ = -0.14, 90% CrI [-0.21, -0.07 ]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, $\beta$ = `r f$hypothesis$Estimate`, 90% CrI\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this interaction post-hoc, high frequency-high blurred words were better recognized than low-frequency-blurred words. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% CrI\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
 
 ### Discussion
 
@@ -2872,7 +2899,7 @@ There are other examples that support this capacity-limited view of perceptual d
 
 At a methodological level, our experiments demonstrate that a straightforward blurring manipulation can benefit memory, which we observed whether or not we reinstated the context during testing. However, blurring has to be sufficiently difficult do so. If the secondary task requires too much attentional control the effect might not be observed.
 
-More significantly, our current experiments underscore the benefits of using mathematical and computational models—such as the ex-Gaussian model and the drift diffusion model (DDM)—to examine perceptual disfluency during encoding. In Experiments 1a and 1b, both models converged on similar findings. Specifically, response time distributions were differentially affected by the degree of visual blur. Words with low levels of blur primarily influenced early or non-decision stages of processing (reflected in parameters such as \$T\_{\\text{er}}\$ and \$\\mu\$), whereas highly blurred words impacted both early and later stages (\$T\_{\\text{er}}\$, \$\\tau\$, and \$v\$). These findings suggest that both the DDM and ex-Gaussian model are sensitive to perceptual disfluency and can be used to uncover underlying cognitive mechanisms during encoding (see also \@gomez2014). Although the models converged on similar patterns, it remains an open question whether one should be favored over the other. However, in terms of directly linking disfluency to cognitive processes, the DDM offers a clearer theoretical framework and may be the more informative model in this context.
+More significantly, our current experiments underscore the benefits of using mathematical and computational models—such as the ex-Gaussian model and the drift diffusion model (DDM)—to examine perceptual disfluency during encoding. In Experiments 1a and 1b, both models converged on similar findings. Specifically, response time distributions were differentially affected by the degree of visual blur. Words with low levels of blur primarily influenced early or non-decision stages of processing (reflected in parameters such as \$T\_{\\text{er}}\$ and \$\\mu\$), whereas highly blurred words impacted both early and later stages (\$T\_{\\text{er}}\$, \$\\tau\$, and \$v\$). These findings suggest that both the DDM and ex-Gaussian model are sensitive to perceptual disfluency and can be used to uncover underlying cognitive mechanisms during encoding (see also gomez2014). Although the models converged on similar patterns, it remains an open question whether one should be favored over the other. However, in terms of directly linking disfluency to cognitive processes, the DDM offers a clearer theoretical framework and may be the more informative model in this context.
 
 Furthermore, our distrbution modeling of RTs appears to be a more sensitive method. Although we found weak evidence for differences between clean and low blurred conditions, we did notice variations in non-decision time and a shift in the response time distribution for low blurred words compared to clear words. We recommend that future studies employ distribution modeling and DDM to decompose response times and directly quantify the impact of perceptual disfluency on encoding.
 
