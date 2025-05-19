@@ -1961,7 +1961,7 @@ emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) |>
 
 ```{r}
 #| label: fig-dprimeexp1b
-#| fig-cap: Estimated posterior distributions (mean) for d-prime and criterion, and differences, with 66% (thick) and 90% CrIs (thin lines)
+#| fig-cap: Estimated posterior distributions (mean) for d-prime and criterion, and differences, with 95%  CrIs (thin lines)
 #| fig-width: 12
 #| fig-height: 8
 
@@ -2025,7 +2025,7 @@ tmp |>
     x = "Blurring Level (or difference)",
     y = "Parameter value", 
   ) +
-  stat_halfeye(colour="black", .width = c(0.66, 0.90), point_interval = "mean_qi") + 
+  stat_halfeye(colour="black", .width = c(0.95), point_interval = "mean_qi") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
   theme_minimal(base_size=16)
