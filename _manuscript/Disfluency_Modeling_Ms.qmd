@@ -733,22 +733,25 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 
 ```{r}
 #| eval: false
-
 prior_exp1 <- c(prior("normal(0,10)", class = "b", coef = ""))
-fit_exg1 <- brm(
-bform_exg1, data = blur_rt_new,
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4,
-                    prior = prior_exp1,
-                    family = exgaussian(),
-                    init = 0,
-                    cores = 4, 
-sample_prior = T, 
-save_pars = save_pars(all=T),
-control = list(adapt_delta = 0.8), 
-backend="cmdstanr", 
-threads = threading(2))
+
+fit_exg1a <- brm(
+  bform_exg1, data = blur_rt_new,
+  warmup = 1000,
+  iter = 5000,
+  prior = prior_exp1,
+  family = three_param_exgauss,
+  stanvars = three_param_exg_stanvars,
+  init = 0,
+  cores = 4, 
+  file="mod_exgauss_1b", 
+  chains=4, 
+  seed=666, 
+  sample_prior = T, 
+  save_pars = save_pars(all=T),
+  control = list(adapt_delta = 0.8), 
+  backend="cmdstanr", 
+  threads = threading(2))
 
 ```
 
