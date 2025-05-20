@@ -13,6 +13,7 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 - **`create_env_dev.R`**: Script to set up the nix environment
 - **`default.nix`**: Configuration file for the Nix package manager.
 - **`.project`**: Project configuration file.
+- - **`exguass_reparam.R`**: correct brms family to get mean of guassian and not mean of dist
 
 ## Directories
 
