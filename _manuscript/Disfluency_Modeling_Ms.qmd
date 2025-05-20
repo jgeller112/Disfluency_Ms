@@ -1498,34 +1498,30 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 ```{r}
 #| eval: false
 #| 
-prior1b <- c(prior("normal(0,10)", class = "b", coef = ""), 
-            prior("lkj(2)", class = "cor"),
-            prior("student_t(3, 0, 0.02)", class = "sd"))                
+prior1b <- c(prior("normal(0,10)", class = "b", coef = ""))               
 
-fit_exg1 <- brm(
-bform_exg1, data = blur_rt_new,
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4,
-                    prior = prior1b,
-                    family = exgaussian(),
-                    init = 0,
-                    cores = 4, 
-sample_prior = T, 
-save_pars = save_pars(all=T),
-control = list(adapt_delta = 0.8), 
-backend="cmdstanr", 
-threads = threading(2))
-
+fit_exg1b <- brm(
+  bform_exg1b, data = blur_rt_new,
+  warmup = 1000,
+  iter = 5000,
+  prior = prior1b,
+  family = three_param_exgauss,
+  stanvars = three_param_exg_stanvars,
+  init = 0,
+  cores = 4, 
+  file="mod_exgauss_1b", 
+  chains=4, 
+  seed=666, 
+  sample_prior = T, 
+  save_pars = save_pars(all=T),
+  control = list(adapt_delta = 0.8), 
+  backend="cmdstanr", 
+  threads = threading(2))
 
 ```
 
 ```{r}
-#load rdata for model 
-#load_github_data("https://osf.io/uxc2f/download")
-
-
-fit_exg1 <- read_rds("https://osf.io/9jr4z/download")
+fit_exg1 <- read_rds("https://osf.io/2jh86/download")
 
 
 ```
