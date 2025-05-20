@@ -734,10 +734,7 @@ beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
 ```{r}
 #| eval: false
 
-prior_exp1 <- c(prior("normal(0,10)", class = "b", coef = ""), 
-            prior("lkj(2)", class = "cor"),
-            prior("student_t(3, 0, 0.02)", class = "sd"))                
-
+prior_exp1 <- c(prior("normal(0,10)", class = "b", coef = ""))
 fit_exg1 <- brm(
 bform_exg1, data = blur_rt_new,
 warmup = 1000,
@@ -764,7 +761,7 @@ threads = threading(2))
 #here::here("Expt1", "BRM_ACC_RT", #"blmm_rt_context_05-25-23.RData"))
 
 # no intercept model - easier to fit priors on all levels of factor 
-fit_c <- read_rds("https://osf.io/9jr4z/download")
+fit_c <- read_rds("https://osf.io/6c4mn/download")
 
 ```
 
