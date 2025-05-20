@@ -14,6 +14,7 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 - **`default.nix`**: Configuration file for the Nix package manager.
 - **`.project`**: Project configuration file.
 - **`exguass_reparm.R`**: correct brms family to get mean of guassian and not mean of dist
+- **grateful-report.html**: R packages used in paper citations
 
 ## Directories
 
