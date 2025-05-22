@@ -511,31 +511,35 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 ### Data analysis plan
 
-All models were fit in R [v.4.4.2; @R] using the Stan modeling language [@grant2017] via the `brms` package [@brms]. We used maximal random-effects structures justified by the design [@barr2013], including random intercepts for participants and items, and random slopes for blurring level.
+All models were fit in R [v.4.4.3; @R] using the Stan modeling language [@grant2017] via the `brms` package [@brms]. [^1]We used maximal random-effects structures justified by the design [@barr2013].
+
+[^1]: We used the following R packages: brms v. 2.21.0 (Bürkner 2017, 2018, 2021), cmdstanr v. 0.8.1 (Gabry et al. 2024), colorspace v. 2.1.1 (Zeileis, Hornik, and Murrell 2009; Stauffer et al. 2009; Zeileis et al. 2020), cowplot v. 1.1.3 (Wilke 2024), data.table v. 1.17.0 (T. Barrett et al. 2025), easystats v. 0.7.4 (Lüdecke et al. 2022), emmeans v. 1.10.4 (Lenth 2024), flextable v. 0.9.6 (Gohel and Skintzos 2024), ggdist v. 3.3.2 (Kay 2024b, 2024a), ggeffects v. 1.7.0 (Lüdecke 2018), ggokabeito v. 0.1.0 (M. Barrett 2021), ggrepel v. 0.9.6 (Slowikowski 2024), ggtext v. 0.1.2 (Wilke and Wiernik 2022), here v. 1.0.1 (Müller 2020), hypr v. 0.2.8 (Schad et al. 2019; Rabe et al. 2020), knitr v. 1.50 (Xie 2014, 2015, 2025), modelbased v. 0.10.0 (Makowski et al. 2020), parameters v. 0.24.2 (Lüdecke et al. 2020), rmarkdown v. 2.29 (Xie, Allaire, and Grolemund 2018; Xie, Dervieux, and Riederer 2020; Allaire et al. 2024), tidybayes v. 3.0.7 (Kay 2024c), tidylog v. 1.1.0 (Elbers 2024), tidyverse v. 2.0.0 (Wickham et al. 2019).
 
 We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples (except for the diffusion model, which used 2,000 iterations to reduce computation time). Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and ESS [@vehtari2021]. Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) [@brms]. Default (non-informative) priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio(ER)) calculations for two sided-hypotheses against a point null. Full prior specifications are available in the Quarto source file on GitHub.
 
 We report posterior means and 90% credible intervals (CrIs) for one-sided hypotheses, and 95% CrIs for two-sided hypotheses. Estimated marginal means were extracted using a combination of `emmeans` [@emmeans], `bayestestR` [@bayestestR], and `brms` [@brms].
 
-Additionally, we report the posterior probability (`Post. Probability`) that an effect lies in a particular direction and ER,which is a generalization of the Bayes factor for directional hypotheses. An ER > 3 indicates moderate to strong evidence for the hypothesis; ER < 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI,  $P(\delta > 0)$ approached 1, and ER was > 3. 
+Additionally, we report the posterior probability (`Post. Probability`) that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, $P(\delta > 0)$ approached 1, and ER was \> 3.
 
 #### Accuracy
 
-Accuracy (coded as correct vs. incorrect) was modeled using a Bayesian logistic regression with a Bernoulli distribution. We specified a Cauchy(0, 0.35) prior for population-level effects, as used in @kinoshita2023.
+Accuracy (coded as correct vs. incorrect) was modeled using a Bayesian logistic regression with a Bernoulli distribution.
 
 #### Ex-Gaussian model
 
-We modeled response times with an ex-Gaussian distribution, allowing the Gaussian mean/location ($\mu$), the Guassian standard deviation (\$\\sigma\$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. We applied weakly informative priors (e.g., \$N(0,10)\$) on $\mu$, $\sigma$, and $\beta$ coefficients, with default priors for other parameters. To visualize distributional shifts, we also generated delta plots.
+We modeled response times with an ex-Gaussian distribution[^2], allowing the Gaussian mean/location ($\mu$), the Guassian standard deviation (\$\\sigma\$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. To visualize distributional shifts, we generated quantile and delta plots [@balota2008; @dejong1994].
+
+[^2]: The common paramtertization used
 
 #### Diffusion model
 
-We fit a hierarchical Bayesian Wiener diffusion model [@vandekerckhove2011] with accuracy coding, estimating drift rate (information processing efficiency), boundary separation (response caution; fixed at 0.5), and non-decision time. Weakly informative priors were used.
+We fit a hierarchical Bayesian Wiener diffusion model [@vandekerckhove2011] with accuracy coding, estimating drift rate (v), boundary separation (response caution; fixed at 0.5), and non-decision time (\$T\_{er}\$).
 
 #### Recognition memory
 
-Recognition memory data were analyzed using a Bayesian generalized linear multilevel model (Bernoulli distribution with a probit link). Following Signal Detection Theory (SDT; [@green1966]), correct responses can either be participant responses ("old" vs. "new") were modeled as a function of item status ("old" vs. "new") and blurring level. We specified a Cauchy(0, 0.35) prior for population-level effects.
+Following recent trends [@zloteanu2024] recognition memory data were analyzed using a Bayesian generalized linear multilevel model (Bernoulli distribution with a probit link). Here the response of the participant ("say old" vs. "say new") are modeled as function of item status (" is old" vs. " is new") and condition.
 
-Bayesian GLMMs provide a more precise and flexible approach than traditional SDT analyses. In this framework, the interaction between item status and a predictor of interest corresponds to *d′*, while the main effects reflect response criterion. For a detailed discussion of Bayesian SDT modeling, see [@zloteanu2024]. Note that our model parameterization reflects *–c* (i.e., reversed sign), though for visualization purposes we use the conventional parameterization, where positive values indicate more conservative responding and negative values indicate a more liberal bias.
+Bayesian GLMMs provide a more precise and flexible approach than traditional SDT analyses. Following Signal Detection Theory [SDT; @green1966], participant responses can be classified as hits, correct rejections, misses, or false alarms, depending on the item status ("old" vs. "new"). In the probit regression framework, the interaction between item status and a predictor of interest corresponds directly tp *d′*, while the main effects reflect response criterion [@decarlo1998; for a detailed discussion of Bayesian SDT modeling see @zloteanu2024]. Note that the model parameterization reflects *–c* (i.e., reversed sign) and this is what is reported in the paper. For visualization purposes we use the conventional parameterization, where positive values indicate more conservative responding and negative values indicate a more liberal bias.
 
 ### Results and Discussion
 
@@ -543,10 +547,11 @@ All models presented no divergences, and all chains mixed well and produced comp
 
 #### Accuracy
 
+For accuracy, we constructed contrast codes for the variables Blur using the hypr package in R (Schad et al., 2019), applying ANOVA-style (effects) coding. For the Blur variable, we defined two orthogonal contrasts to capture key comparisons of interest. Comparison 1 contrasted High Blur and Low Blur, with High Blur coded as 1/3 and Low Blur as –2/3 (with Clear implicitly coded as 1/3). Comparison 2 contrasted High Blur and Clear, with High Blur coded as 1/3 and Clear as –2/3 (with Low Blur coded as 1/3). These contrasts allowed us to estimate both main effects and interaction terms for High Blur versus each of the other two levels. To capture the remaining comparison between **Low** Blur and Clear, we fit a second model in which the contrast coding was re-centered. For the Frequency variable, we used a single contrast comparing High Frequency to Low Frequency, with High Frequency coded as 1/2 and Low Frequency as –1/2. This contrast structure enabled us to extract all relevant main effects and interactions across conditions. 
+
 ```{r}
 
 blur_acc <- read_csv("https://osf.io/xv5bd/download")
-
 
 ```
 
@@ -702,6 +707,8 @@ Model estimates can be found in @tbl-acc1a. Clear words were better identified (
 
 #### RTs: Ex-Gaussian
 
+Given the amount of data and the complexity of the model, we suppressed the intercept for each parameter and explicitly modeled the mean of each level of the blurring factor [see @Singmann2017 for similar approach]. This approach allowed us to estimate condition-specific means directly. We then calculated the differences between levels manually using the `hypothesis()` function in `brms`.
+
 ```{r}
 #load data from osf
 rts <- read_csv("https://osf.io/xv5bd/download")
@@ -720,7 +727,7 @@ blur_rt_new <- blur_rt |>
 
 ```
 
-The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`
+The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)` .
 
 ```{r}
 #| eval: false
@@ -1318,19 +1325,19 @@ Given the important theoretical implications of these findings, Experiment 1b se
 
 ### Transparency and Openness
 
-This study was not pregregistered. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiment 1b can be found at https://osf.io/6sy7k/
+This study was not pregregistered. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiment 1b can be found at https://osf.io/6sy7k/.
 
 ### Participants
 
-We used the same sample size as in Experiment 1a (N = 216). All participants were recruited through the Rutgers University subject pool (SONA system). The exclusion criteria were the same as in Experiment 1a. To ensure equal numbers of participants across lists, we randomly sampled participants into each list.
+We used the same sample size procedure as in Experiment 1a (*N* = 216). All participants were recruited through the Rutgers University subject pool (SONA system). The exclusion criteria were the same as in Experiment 1a.
 
-### Apparatus, stimuli, design, procedure, and analysis
+### Apparatus, Stimuli, Design, Procedure, and Analysis
 
 Similar to Experiment 1a, the experiment was run using PsychoPy [@peirce2019] and hosted on Pavlovia (www.pavlovia.org). You can see an example of the experiment by navigating to this website: https://run.pavlovia.org/Jgeller112/ldt_dd_l1_jol.
 
 We used the same stimuli from Experiment 1a. The main difference between Experiment 1a and 1b was all items were presented in a clear, Arial font. To make it more similar to Experiment 1a each set of words presented as clear, low blur, and high blur at study were yoked to a set of new words that were counterbalanced across lists. Therefore, instead of there being one false alarm rate there were 3, one for each blurring level. This ensured each word was compared to studied clear, studied high blurred, and studied low blurred words.
 
-We fit the same statistical models as Experiment 1a.
+The same model specifications and analyses used in Experiment 1a were used in Experiment 1b.
 
 ### Results
 
@@ -1452,7 +1459,7 @@ acc_exp1b
 
 ```
 
-A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% CrI [`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% CrI [`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`], ER = `r c$hypothesis$Evid.Ratio`.
+A summary of posterior estimates are located in @tbl-acc1b. Clear words were better identified ($M$ = .987) compared to high blur words ($M$ = .962), $b$ = `r a$hypothesis$Estimate`, 95% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words were better identified ($M$ = .987) than high blurred words, $b$ = `r b$hypothesis$Estimate`, 95% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. However, the evidence was weak for there being no significant difference in the identification accuracy between clear and low blurred words, b = `r c$hypothesis$Estimate`, 95% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`.
 
 #### RTs: Ex-Gaussian
 
@@ -1574,13 +1581,13 @@ tab |>
 
 ```
 
-A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant1b. Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low blur words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant1b. Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low blur words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 Analyses of the $\sigma$ and $\beta$ parameters yielded a similar pattern. Variance was higher for high blurred words compared to clear words, *b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`, and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(e$hypothesis$Evid.Ratio)`.
 
-Finally, there was greater skewing for high blurred words compared to clear words, *b* = `r round(g$hypothesis$Estimate, 3)`, 90% CrI \[`r round(g$hypothesis$CI.Lower, 3)`, `r round(g$hypothesis$CI.Upper, 3)`\], ER = `r round(g$hypothesis$Evid.Ratio, 3)`, and low blurred words, *b* = `r round(h$hypothesis$Estimate, 3)`, 90% CrI [`r round(h$hypothesis$CI.Lower, 3)`, `r round(h$hypothesis$CI.Upper, 3)`], ER = `r  process_ER_column(h$hypothesis$Evid.Ratio)`. 
+Finally, there was greater skewing for high blurred words compared to clear words, *b* = `r round(g$hypothesis$Estimate, 3)`, 90% CrI \[`r round(g$hypothesis$CI.Lower, 3)`, `r round(g$hypothesis$CI.Upper, 3)`\], ER = `r round(g$hypothesis$Evid.Ratio, 3)`, and low blurred words, *b* = `r round(h$hypothesis$Estimate, 3)`, 90% CrI \[`r round(h$hypothesis$CI.Lower, 3)`, `r round(h$hypothesis$CI.Upper, 3)`\], ER = `r  process_ER_column(h$hypothesis$Evid.Ratio)`.
 
-Low blurred words compared to clear words only differed on the $\mu$ parameter, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI [`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`, with greater shifting for low blurred words. For $\beta$ and $\sigma$, the 95% CrI crossed zero and the ER was greater than 100.
+Low blurred words compared to clear words only differed on the $\mu$ parameter, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`, with greater shifting for low blurred words. For $\beta$ and $\sigma$, the 95% CrI crossed zero and the ER was greater than 100.
 
 #### Diffusion Model
 
@@ -1712,7 +1719,7 @@ tab |>
 
 ```
 
-A summary of the diffusion model results can be found in @tbl-diffexpt1b. High-blurred words had a lower drift rate than clear words, *b* = `r a$hypothesis$Estimate`, 90% CrI [`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r b$hypothesis$Estimate`, 90% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was no difference in drift rate between low-blurred words and clear words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
+A summary of the diffusion model results can be found in @tbl-diffexpt1b. High-blurred words had a lower drift rate than clear words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was no difference in drift rate between low-blurred words and clear words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`.
 
 Non-decision time was higher for high-blurred words compared to clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`, and low-blurred words, *b* = `r e$hypothesis$Estimate`, 90% CrI \[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r process_ER_column(e$hypothesis$Evid.Ratio)`. Low-blurred words had a higher non-decision time than clear words, *b* = `r f$hypothesis$Estimate`, 90% CrI \[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
 
@@ -2070,6 +2077,8 @@ We used the same procedure as Experiments 1b. The main difference is that instea
 
 ### Results
 
+To fit models to the data from Experiment 2, we constructed contrast codes for the variables Blur and Frequency using the hypr package in R (Schad et al., 2019), applying ANOVA-style (effects) coding. For the Blur variable, we defined two orthogonal contrasts to capture key comparisons of interest. Comparison 1 contrasted High Blur and Low Blur, with High Blur coded as 1/3 and Low Blur as –2/3 (with Clear implicitly coded as 1/3). Comparison 2 contrasted High Blur and Clear, with High Blur coded as 1/3 and Clear as –2/3 (with Low Blur coded as 1/3). These contrasts allowed us to estimate both main effects and interaction terms for High Blur versus each of the other two levels. To capture the remaining comparison between Low Blur and Clear, we fit a second model in which the contrast coding was re-centered. For the Frequency variable, we used a single contrast comparing High Frequency to Low Frequency, with High Frequency coded as 1/2 and Low Frequency as –1/2. This contrast structure enabled us to extract all relevant main effects and interactions across conditions.
+
 #### Accuracy
 
 ```{r}
@@ -2233,6 +2242,8 @@ The model summary can be found in @tbl-acc2. Clear words were better identified 
 There were no interactions between blurring and word frequency—all CrI included 0; however, evidence for this lack of difference was ambiguous (ER ≈ 1).
 
 #### RTs: Ex-Gaussian
+
+Given the complexity of the model, we employed stronger priors to facilitate convergence. For the $\mu$ parameter, we specified a normal prior centered at 0.6 seconds with a standard deviation of 0.5, which accommodates plausible RTs. For the $\beta$ parameter, we used a more constrained prior: $\text{Normal}(0, 0.25)$. Default priors were retained for all remaining parameters in the model.
 
 ```{r}
 #| label: tbl-freqeffect
@@ -2861,7 +2872,7 @@ tb1 <- tab |>
 
 ##### Sensitivity
 
-Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), $b$ = `r a$hypothesis$Estimate`, 90% CrI\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, $\beta$ = `r c$hypothesis$Estimate`, 95% CrI\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 90% CrI\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, $\beta$ = `r e$hypothesis$Estimate`, 95% CrI\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, $\beta$ = -0.14, 90% CrI [-0.21, -0.07 ]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, $\beta$ = `r f$hypothesis$Estimate`, 90% CrI\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this interaction post-hoc, high frequency-high blurred words were better recognized than low-frequency-blurred words. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% CrI\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
+Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words (see @fig-m2-emmeans), $b$ = `r a$hypothesis$Estimate`, 90% CrI\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`, and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was no recognition memory difference between clear and low blur words, $\beta$ = `r c$hypothesis$Estimate`, 95% CrI\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r d$hypothesis$Estimate`, 90% CrI\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. clear) and frequency, $\beta$ = `r e$hypothesis$Estimate`, 95% CrI\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`, with better memory for high frequency-high blurred words, $\beta$ = -0.14, 90% CrI \[-0.21, -0.07 \]. There was some evidence of an interaction between blurring and frequency for high blurred words vs. low blurred words, $\beta$ = `r f$hypothesis$Estimate`, 90% CrI\[`r f$hypothesis$CI.Lower`, `r f$hypothesis$CI.Upper`\], ER = `r f$hypothesis$Evid.Ratio`. Looking at this interaction post-hoc, high frequency-high blurred words were better recognized than low-frequency-blurred words. There was also an interaction between frequency and low blurred vs. clear words, \$\\beta\$= `r g$hypothesis$Estimate`, 95% CrI\[`r g$hypothesis$CI.Lower`, `r g$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. This interaction arose from low-frequency clear words being better remembered than low-frequency low blurred words.
 
 ### Discussion
 
