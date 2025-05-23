@@ -171,14 +171,12 @@ library(tidybayes)
 library(hypr)
 library(colorspace)
 library(ragg)
-library(cowplot)
 library(ggtext)
 library(ggdist)
 library(flextable)
 library(officer)
 library(cmdstanr)
 library(tinytable)
-
 
 options(timeout = 5000)
 ```
@@ -1001,15 +999,12 @@ formula <- bf(rt | dec(corr) ~ 0 + blur +
               ndt ~ 0 + blur + (1 + blur|p|participant) + (1+blur|i|string),
               bias = .5)
 
-
-bprior <- prior(normal(0, 1), class = b) +
-  prior(normal(0, 1), class = b, dpar = ndt)+
-  prior(normal(0, 1), class = sd) +
-  prior(normal(0, 1), class = sd, dpar = ndt) + 
-  prior("normal(0, 0.3)", class = "sd", group = "participant")+ 
+bprior <- prior("normal(0, 1)", class = "b") +
+  prior("normal(0, 1)", class = "b", dpar = "ndt") +
+  prior("normal(0, 1)", class = "sd") +
+  prior("normal(0, 1)", class = "sd", dpar = "ndt") +
+  prior("normal(0, 0.3)", class = "sd", group = "participant") +
   prior("normal(0, 0.3)", class = "sd", group = "string")
-
-
 ```
 
 ```{r}
