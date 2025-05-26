@@ -78,7 +78,7 @@ author-note:
     authorship-agreements: ~
 abstract: "Perceptual disfluency, induced by blurring or difficult-to-read typefaces, can sometimes enhance memory retention, but the underlying mechanisms remain unclear. To investigate this, we manipulated blurring levels (clear, low blur, high blur) during encoding and assessed recognition performance in a surprise memory test. In Experiments 1a and 1b, response latencies from a lexical decision task were analyzed using ex-Gaussian distribution modeling and drift diffusion modeling. Results showed that blurring differentially influenced parameters oe the model, with high blur affecting both early and late-stage processes, while low blur primarily influenced early-stage processes. Recognition test results further revealed that high-blur words were remembered better than both clear and low-blurred words.Experiment 2 employed a semantic categorization task with a word frequency manipulation to further examine the locus of the perceptual disfluency effect. Similar to Experiments 1a and 1b, high blur influenced both early and late-stage processes, while low blur primarily affected early-stage processes. Low-frequency words exhibited greater shifting and skewing in distributional parameters, yet only high-frequency, highly blurred words demonstrated an enhanced memory effect. These findings suggest that both early and late cognitive processes contribute to the mnemonic benefits associated with perceptual disfluency.Overall, this study demonstrates that distributional and computational analyses provide powerful tools for dissecting encoding mechanisms and their effects on memory, offering valuable insights into models of perceptual disfluency."
 
-keywords: [disfluency, LDT, DDM, x-Gaussian, distributional analyses, word recognition]
+keywords: [disfluency, LDT, DDM, ex-Gaussian, distributional analyses, word recognition]
 floatsintext: true
 numbered-lines: true
 bibliography: references.bib
@@ -777,7 +777,7 @@ fit_c <- read_rds("https://osf.io/6c4mn/download")
 
 ```{r}
 #| label: tbl-exgauss1a
-#| tbl-cap: "Summary of posterior fixed effect estimates for Ex-Gaussian parameter hypotheses in Experiment 1a"
+#| tbl-cap: "Summary of posterior fixed effect estimates for ex-Gaussian parameter hypotheses in Experiment 1a"
 #| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 
 # Compute hypothesis tests
@@ -818,10 +818,7 @@ tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob` = "Post.Prob") |>
     select(Hypothesis, Parameter,Mean, SE, `90% CrI`,ER, `Posterior Prob`)|>
   flextable() |>
-  set_table_properties(layout = "autofit") |>
   theme_apa()
-
-
 ```
 
 A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`, and low blur words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
@@ -1530,7 +1527,6 @@ fit_exg1b <- brm(
 ```{r}
 fit_exg1 <- read_rds("https://osf.io/2jh86/download")
 
-
 ```
 
 ```{r}
@@ -2045,15 +2041,21 @@ One way to test more directly the accounts of perceptual disfluency would be to 
 
 In tasks like semantic categorization and pronunciation, the interaction between word frequency and stimulus degradation (in this case, perceptual disfluency) leads to an over-additive effect [@yap2007]. By the logic of additive factors [@sternberg1969], if factors do interact, they are believed to be associated with similar processing stages. The interplay between perceptual disfluency and word frequency originates from perceptual disfluency hindering initial processing and word identification. This leads to a magnification of the word frequency effect. Perceptual disfluencies like handwritten cursive [@barnhart2010; @perea2016] and research on letter rotation in words [@fernández-lópez2022] have shown a magnification of the word frequency effect.
 
-In Experiment 2, we manipulated word frequency (high vs. low frequency words) and perceptual blur (i.e., clear, low, and high) within a semantic categorization task. Mirroring Experiments 1a and 1b, the categorization task preceded a surprise memory recognition test. Our goal here was to evaluate the compensatory processing and stage-specific theories as both theories offer predictions about memory performance.
+In Experiment 2, we manipulated word frequency (high vs. low frequency words) and perceptual blur (i.e., clear, low blur, and high blur) within a semantic categorization task. Mirroring Experiments 1a and 1b, the categorization task preceded a surprise memory recognition test. Our goal here was to evaluate the compensatory processing and stage-specific theories as both theories offer predictions about memory performance.
 
-In Experiment 2, we opted to forgo using the DDM. Instead we focus on ex-Gaussian parameters during encoding. Both the compensatory processing and stage specific accounts predict an interaction of word frequency and blurring on $\mu$ and $\tau$ where the word frequency effect is largest for high blurred words. Where both accounts differ is in terms of memory performance.
+In Experiment 2, we chose not to use the DDM due to its substantial computational demands, particularly given the size and complexity of the current dataset. Instead, we focused on the ex-Gaussian decomposition of RTs during encoding.  This approach is grounded in findings from Experiments 1a and 1b, where we observed that larger values of $\tau$ were systematically associated with lower drift rates in the DDM, suggesting that $\tau$ can serve as an indirect marker of increased processing demands  or decision difficulty.  
 
-The compensatory processing account predicts items receiving the most top-down processing during encoding should be better remembered. On a recognition test, this account would predict items low in frequency should show a disfluency effect due to low frequency items receiving more top-down processing during encoding.
+The compensatory and stage specific accounts of disfluency make contrasting predictions about the joint influence of blurring and word frequency. The compensatory processing account posits that perceptual difficulty elicits increased top-down support during lexical access, particularly for low-frequency words. This account would likely predict an interaction between blurring and word frequency on $\mu$, reflecting slowed encoding under high-effort conditions. It assumes little or no effect on $\tau$. All hard-to-read stimuli should receive increased attention during encoding.  Consequently, the compensatory view predicts better memory for blurred, low-frequency words due to greater top-down engagement during encoding.
 
-The stage specific account, on the other hand, is influenced by extra attentional or control processes taking place during and after word recognition. Here, memory performance relies not only on the type of processing during encoding but also on limited-capacity resources such as cognitive control.
+In contrast, the stage-specific account posits that the effects of blurring and word frequency extend beyond encoding and into later, resource-demanding stages of processing. It predicts interactions between blurring and frequency on both $\mu$ and $\tau$, as difficult stimuli not only slow early processing but also impose greater demands on post-lexical mechanisms such as cognitive control and decision-making.
 
-Low frequency words, like high blurred words, routinely attract attention during encoding [see evidence from pupillometry; @kuchinke2007]. Thus the benefits of perceptual disfluency may be less effective for these items. High frequency items on the other hand should be more likely to benefit from a manipulation that enhances attention to, and encoding of, the item. The presence of low frequency words could make perceptual disfluency redundant in this regard. In this regard, we might not see a perceptual disfluency effect for low frequency items. @ptok2019 argued that the memory benefits for conflict encoding phenomena are limited to tasks that are relatively fluent, automatic, and encoding poor. Any additional demands placed on the participants imposed by the task could reduce the disfluency effect. As evidence for this, @ptok2020 showed manipulating endogenous attention (by using a chinrest) eliminated the memory benefit from semantic interference during encoding. Similarly, @geller2021 manipulated attention through a test expectancy manipulation (i.e., being told about an upcoming memory test or not) which presumably oriented participants to study all words for the upcoming memory test, regardless of disfluency. This resulted in the elimination of the disfluency effect. Lastly, @westerman1997 (Experiment 3), showed, with a masking manipulation, that changing encoding instructions from reading the target word (more automatic) to spelling the target word eliminated the perceptual disfluency effect. In Experiment 2, we examine how word frequency interacts with perceptual disfluency and how this affects memory.
+With respect to memory, this account assumes that not all items benefit equally from perceptual disfluency. Low-frequency words—like highly blurred words—already tend to attract increased attention during encoding [see pupillometry evidence; @kuchinke2007]. As a result, the attentional boost provided by disfluency may be redundant for these items, thereby reducing or eliminating the memory advantage. In contrast, high-frequency words—which are processed more automatically—may benefit more from disfluency manipulations that enhance attention and depth of encoding.
+
+Consistent with this view, @ptok2019 argued that memory benefits from disfluency or conflict arise primarily under conditions that are otherwise fluent and encoding-poor. When tasks already demand attention or effort, disfluency effects are likely to diminish. For example, @ptok2020 found that manipulating endogenous attention (e.g., by using a chinrest) eliminated memory benefits from semantic interference. Similarly, @geller2021 showed that instructing participants to expect a memory test—thereby orienting them to study all items—also eliminated the disfluency effect. In a related finding, @westerman1997 (Experiment 3) demonstrated that increasing encoding effort uniformly—by requiring participants to spell instead of read target words—likewise eliminated the disfluency benefit.
+
+Critically, if an interaction emerges specifically on $\tau$—and we do observe a memory benefit—this would support the stage-specific account. Such a pattern would indicate that disfluency effects are driven not by compensatory processing  but by increased demands on limited-capacity control processes engaged after lexical access.
+
+Importantly, not all items may benefit equally from perceptual disfluency. Low-frequency words, like highly blurred words, already tend to attract greater attention during encoding [see evidence from pupillometry; @kuchinke2007]. As such, the disfluency manipulation may be weakened for these items, limiting its effect. High-frequency words, on the other hand, may benefit more from a manipulation that increases attention to the stimulus and enhances encoding. In this view, disfluency effects on memory may be more pronounced for high-frequency items than for low-frequency ones. Supporting this interpretation, @ptok2019 argued that memory benefits of conflict or disfluency during encoding are most likely to emerge under relatively fluent, automatic, and encoding-poor conditions. When tasks are already attentionally demanding, disfluency effects may be attenuated or eliminated. For instance, @ptok2020 found that manipulating endogenous attention (e.g., using a chinrest) eliminated memory benefits from semantic interference. Similarly, @geller2021 showed that orienting participants to expect a memory test—thereby enhancing overall attention to all items—eliminated the disfluency effect. And in a classic study, @westerman1997 demonstrated that changing encoding instructions from reading to spelling the word (which increases effort uniformly) also removed the disfluency benefit.
 
 ## Method
 
@@ -2230,7 +2232,6 @@ acc_exp2 <- tab |>
     rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob` = "Post.Prob") |>
     select(Hypothesis, Mean, SE, `90% CrI`,ER, `Posterior Prob`)|>  
   flextable()  |>
-  set_table_properties(layout = "autofit") |>
   theme_apa()
 
 acc_exp2
@@ -2292,7 +2293,6 @@ p_rt_out$frequency<- as.factor(p_rt_out$frequency)
 
 contrasts(p_rt_out$frequency) <-contr.hypothesis(freqc)
 
-
 ```
 
 ```{r}
@@ -2330,9 +2330,9 @@ threads = threading(2))
 
 ```{r}
 
-fit_sc <- read_rds("https://osf.io/kdv38/download")
+fit_sc <- read_rds("https://osf.io/rfwmv/download")
 
-fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
+fit_sc_lc <- read_rds("https://osf.io/sjr2x/download")
 
 ```
 
@@ -2345,25 +2345,24 @@ fit_sc_lc <- read_rds("https://osf.io/49bgx/download")
 # Alternative: download the files manually and load them
 # 1. (create a /model/ folder and download the file below)
 # 2. Run:
-# download.file("https://osf.io/kdv38/download", "./models/fit_sc.RData",  mode = "wb")
-# download.file("https://osf.io/49bgx/download", "./models/fit_sc_lc.RData",  mode = "wb")
+# download.file("https://osf.io/rfwmv/download", "./models/fit_sc.RData",  mode = "wb")
+# download.file("https://osf.io/sjr2x/download", "./models/fit_sc_lc.RData",  mode = "wb")
 fit_sc <- read_rds("./models/fit_sc.RData")
 fit_sc_lc <- read_rds("./models/fit_sc_lc.RData")
 ```
 
 ```{r}
 #| label: tbl-expt2summary
-#| tbl-cap: "Summary of posterior fixed effect estimates for Posterior Ex-Guassian parameter hypothses  in Experiment 2"
-#| apa-note: "95% CrI for equivalency tests"
-
+#| tbl-cap: "Summary of posterior fixed effect estimates for posterior ex-Guassian parameter hypotheses in Experiment 2"
+#| apa-note: "95% CrI for equivalency tests. Sigma and Beta parameters are on the log (logit) scale."
 
 # Run hypothesis tests and ensure consistent formatting
 a = hypothesis(fit_sc , "blur1 > 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 b = hypothesis(fit_sc , "blur2 > 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-c = hypothesis(fit_sc_lc, "blur1 = 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+c = hypothesis(fit_sc_lc, "blur1 > 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 d = hypothesis(fit_sc, "frequency1 < 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-e = hypothesis(fit_sc, "blur1:frequency1 < 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
-f = hypothesis(fit_sc, "blur2:frequency1 < 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+e = hypothesis(fit_sc, "blur1:frequency1 = 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
+f = hypothesis(fit_sc, "blur2:frequency1 = 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 g = hypothesis(fit_sc_lc, "blur1:frequency1 = 0", dpar="mu")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "mu")
 
 h = hypothesis(fit_sc , "sigma_blur1 > 0")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "sigma")
@@ -2380,23 +2379,21 @@ q = hypothesis(fit_sc_lc, "beta_blur1 = 0", dpar="beta")$hypothesis |> mutate(ac
 r = hypothesis(fit_sc, "beta_frequency1 > 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
 s = hypothesis(fit_sc, "beta_blur1:frequency1 < 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
 t = hypothesis(fit_sc , "beta_blur2:frequency1 < 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 < 0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
+u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 =  0", dpar="beta")$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
 
 # Combine all results into a single table
 tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) |>
   mutate(Evid.Ratio = as.numeric(Evid.Ratio)) |>
-  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0 ",  "(High Blur-Clear) - (High - Low) < 0", "(High Blur-Low Blur) - (High - Low) < 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (High-Low) < 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear) - (High-Low) < 0", "(High Blur-Low Blur) - (High-Low) < 0", "(Low Blur-Clear) - (High-Low) <  0")) |> 
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0 ",  "(High Blur-Clear)*(High - Low) = 0", "(High Blur-Low Blur)* (High - Low) = 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear)*(High - Low) = 0", "(High Blur-Low Blur)*(High-Low) = 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear)*(High-Low) < 0", "(High Blur-Low Blur)*(High-Low) < 0", "(Low Blur-Clear)*(High-Low) =  0")) |> 
   select(-Star) |>
   mutate(`90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
   rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob` = "Post.Prob") |>
    rename("Mean" = "Estimate") |>
-  select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, `Posterior Prob`)
-
-# Format and display the table
-tab |>
-  flextable() |>
- set_table_properties(layout = "autofit") |>
+  select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, `Posterior Prob`) |> 
+  flextable() |> 
   theme_apa()
+
+tab
 
 ```
 
@@ -2410,7 +2407,7 @@ There was no difference in shifting between low blurred words and clear words, $
 
 For word frequency, there was evidence for less shifting in the high frequency compared to low frequency conditions, $b$ = `r d$Estimate`, 90% CrI \[`r d$CI.Lower`, `r d$CI.Upper`\], ER = `r d$Evid.Ratio`.
 
-Regarding the interaction between frequency and blurring, there was an amplified word frequency effect for high blurred words compared to clear words, $b$ = `r e$Estimate`, 90% CrI \[`r e$CI.Lower`, `r e$CI.Upper`\], ER = `r e$Evid.Ratio`, and low blurred words, $b$ = `r f$Estimate`, 95% CrI \[`r f$CI.Lower`, `r f$CI.Upper`\], ER = `r f$Evid.Ratio`, with greater shifting for low frequency words.
+Regarding the interaction between frequency and blurring, we observed no  word frequency effect for high blurred words compared to clear words, $b$ = `r e$Estimate`, 90% CrI \[`r e$CI.Lower`, `r e$CI.Upper`\], ER = `r e$Evid.Ratio`, and low blurred words, $b$ = `r f$Estimate`, 95% CrI \[`r f$CI.Lower`, `r f$CI.Upper`\], ER = `r f$Evid.Ratio`, with greater shifting for low frequency words.
 
 There was strong evidence for no amplification of the word frequency effect for the low blurred vs. clear comparison, $b$ = `r g$Estimate`, 95% CrI \[`r g$CI.Lower`, `r g$CI.Upper`\], ER = `r g$Evid.Ratio`.
 
@@ -2472,8 +2469,13 @@ v=vincentiles |>
   ungroup()
 
 
+v$blur<- factor(v$blur, level=c("HB", "LB", "C"))
+
+
 p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
-  facet_grid(~frequency) +
+  facet_grid(~frequency, labeller = labeller(frequency = c(
+    "HIGH" = "High Frequency",
+    "LOW" = "Low Frequency"))) + 
   geom_line(size = 1) +
   geom_point(size = 3) +
   theme_bw() +
@@ -2483,14 +2485,18 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
     plot.title = element_text(face = "bold", size = 20)
   ) +
   scale_y_continuous(breaks = seq(500, 1600, 100)) +
-  theme(legend.title = element_blank()) +
   coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
   geom_label_repel(data = v, aes(x = q, y = MRT, label = round(MRT, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5) +
   labs(title = "Quantile Plots", x = "Quantiles", y = "Response latencies in ms") +
-  ggokabeito::scale_colour_okabe_ito()
+  ggokabeito::scale_colour_okabe_ito(
+    name = "Blur Condition",
+    labels = c("C" = "Clear", "HB" = "High Blur", "LB" = "Low Blur")
+  )
 
+```
 
+```{r}
 p1 <- ggplot(v, aes(x = q, y = MRT, colour = frequency)) +
   facet_grid(~blur) +
   geom_line(size = 1) +
@@ -2638,8 +2644,8 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 ```{r}
 #| label: fig-quantiledeltaexp2
 #| fig-cap: "Group RT distributions in the blurring and word frequency manipulations in word stimuli. A. Quantile plots with each point represents the average RT quantiles (.1, .3, .5, .7,and .9) in each condition. B. Delta plots obatined by computing the quantiles for each participant and subsequently averaging the obtained values for each quantile over the participants and subtracting the values from each condition."
-#| fig-width: 14
-#| fig-height: 10
+#| fig-width: 15
+#| fig-height: 12
 
 bottom <- cowplot::plot_grid(p1, p2,p3, 
                    ncol = 3, 
@@ -2652,7 +2658,7 @@ bottom <- cowplot::plot_grid(p1, p2,p3,
 cowplot::plot_grid(p, bottom, 
                    ncol=1, nrow=2)
 
-ggsave(filename='./figures/figure_kde3.png',width=12,height=14, dpi=300)
+ggsave(filename='./figures/figure_kde3.png',width=15,height=12, dpi=500)
 
 ```
 
