@@ -2330,7 +2330,7 @@ threads = threading(2))
 
 ```{r}
 
-fit_sc <- read_rds("https://osf.io/rfwmv/download")
+fit_sc <- read_rds("https://osf.io/mcxqe/download")
 
 fit_sc_lc <- read_rds("https://osf.io/sjr2x/download")
 
