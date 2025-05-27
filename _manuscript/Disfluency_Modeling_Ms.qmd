@@ -1297,7 +1297,11 @@ tmp |>
                .width = c(0.95), point_interval = "mean_qi") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=16)
+  theme_minimal(base_size=16) + 
+  theme(
+    strip.background = element_rect(fill = "black", color = "black"),
+    strip.text = element_text(color = "white", face = "bold")
+  )
 
 ggsave("expt1a-dprime.png", width=19, height=8, dpi=300)
 
@@ -2027,7 +2031,11 @@ tmp |>
   stat_halfeye(colour="black", .width = c(0.95), point_interval = "mean_qi") + 
     facet_grid(Parameter~t, scales = "free") + 
     geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=16)
+  theme_minimal(base_size=16) + 
+   theme(
+    strip.background = element_rect(fill = "black", color = "black"),
+    strip.text = element_text(color = "white", face = "bold")
+  )
 
 ggsave("expt1b-dprime.png", width=19, height=8, dpi=300)
 
@@ -2043,9 +2051,9 @@ In tasks like semantic categorization and pronunciation, the interaction between
 
 In Experiment 2, we manipulated word frequency (high vs. low frequency words) and perceptual blur (i.e., clear, low blur, and high blur) within a semantic categorization task. Mirroring Experiments 1a and 1b, the categorization task preceded a surprise memory recognition test. Our goal here was to evaluate the compensatory processing and stage-specific theories as both theories offer predictions about memory performance.
 
-In Experiment 2, we chose not to use the DDM due to its substantial computational demands, particularly given the size and complexity of the current dataset. Instead, we focused on the ex-Gaussian decomposition of RTs during encoding.  This approach is grounded in findings from Experiments 1a and 1b, where we observed that larger values of $\tau$ were systematically associated with lower drift rates in the DDM, suggesting that $\tau$ can serve as an indirect marker of increased processing demands  or decision difficulty.  
+In Experiment 2, we chose not to use the DDM due to its substantial computational demands, particularly given the size and complexity of the current dataset. Instead, we focused on the ex-Gaussian decomposition of RTs during encoding. Findings from Experiments 1a and 1b suggest a relationship between the ex-Guass and DDM parameters, insofar there was a positive association  between $\mu$ and $T_{er}$ and a negative association between $\beta$ and $v$. Given this, we use these parameters as an indirect marker of early and late processes. 
 
-The compensatory and stage specific accounts of disfluency make contrasting predictions about the joint influence of blurring and word frequency. The compensatory processing account posits that perceptual difficulty elicits increased top-down support during lexical access, particularly for low-frequency words. This account would likely predict an interaction between blurring and word frequency on $\mu$, reflecting slowed encoding under high-effort conditions. It assumes little or no effect on $\tau$. All hard-to-read stimuli should receive increased attention during encoding.  Consequently, the compensatory view predicts better memory for blurred, low-frequency words due to greater top-down engagement during encoding.
+The compensatory and stage specific accounts of disfluency make contrasting predictions about the joint influence of blurring and word frequency. The compensatory processing account posits that perceptual difficulty elicits increased top-down support during lexical access, particularly for low-frequency words. This account would likely predict an interaction between blurring and word frequency on $\mu$, reflecting slowed encoding under high-effort conditions. It assumes little or no effect on $\tau$. Stimuli that are lower in frequency and hard to read  should receive increased attention during encoding.  Consequently, the compensatory view predicts better memory for blurred, low-frequency words due to greater top-down engagement during encoding.
 
 In contrast, the stage-specific account posits that the effects of blurring and word frequency extend beyond encoding and into later, resource-demanding stages of processing. It predicts interactions between blurring and frequency on both $\mu$ and $\tau$, as difficult stimuli not only slow early processing but also impose greater demands on post-lexical mechanisms such as cognitive control and decision-making.
 
@@ -2053,9 +2061,7 @@ With respect to memory, this account assumes that not all items benefit equally 
 
 Consistent with this view, @ptok2019 argued that memory benefits from disfluency or conflict arise primarily under conditions that are otherwise fluent and encoding-poor. When tasks already demand attention or effort, disfluency effects are likely to diminish. For example, @ptok2020 found that manipulating endogenous attention (e.g., by using a chinrest) eliminated memory benefits from semantic interference. Similarly, @geller2021 showed that instructing participants to expect a memory test—thereby orienting them to study all items—also eliminated the disfluency effect. In a related finding, @westerman1997 (Experiment 3) demonstrated that increasing encoding effort uniformly—by requiring participants to spell instead of read target words—likewise eliminated the disfluency benefit.
 
-Critically, if an interaction emerges specifically on $\tau$—and we do observe a memory benefit—this would support the stage-specific account. Such a pattern would indicate that disfluency effects are driven not by compensatory processing  but by increased demands on limited-capacity control processes engaged after lexical access.
-
-Importantly, not all items may benefit equally from perceptual disfluency. Low-frequency words, like highly blurred words, already tend to attract greater attention during encoding [see evidence from pupillometry; @kuchinke2007]. As such, the disfluency manipulation may be weakened for these items, limiting its effect. High-frequency words, on the other hand, may benefit more from a manipulation that increases attention to the stimulus and enhances encoding. In this view, disfluency effects on memory may be more pronounced for high-frequency items than for low-frequency ones. Supporting this interpretation, @ptok2019 argued that memory benefits of conflict or disfluency during encoding are most likely to emerge under relatively fluent, automatic, and encoding-poor conditions. When tasks are already attentionally demanding, disfluency effects may be attenuated or eliminated. For instance, @ptok2020 found that manipulating endogenous attention (e.g., using a chinrest) eliminated memory benefits from semantic interference. Similarly, @geller2021 showed that orienting participants to expect a memory test—thereby enhancing overall attention to all items—eliminated the disfluency effect. And in a classic study, @westerman1997 demonstrated that changing encoding instructions from reading to spelling the word (which increases effort uniformly) also removed the disfluency benefit.
+Critically, if an interaction emerges on $\tau$—and we do observe a memory benefit—this would support the stage-specific account. Such a pattern would indicate that disfluency effects are driven not by compensatory processing, but by increased demands on limited-capacity control processes engaged after lexical access.
 
 ## Method
 
@@ -2225,7 +2231,7 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypot
 tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 acc_exp2 <- tab |> 
-    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur-Low Blur < 0", "Low Blur - Clear = 0","High - Low ",  "(High Blur-Clear) - (Low Frequency-High Frequency) < 0", "(High Blur-Low Blur) - (Low Frequency-High Frequency) < 0", "(Low Blur-Clear) - (Low Frequency-High Frequency) =  0")) |>
+    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur-Low Blur < 0", "Low Blur - Clear = 0","High - Low ",  "(High Blur-Clear)*(High-Low) < 0", "(High Blur-Low Blur)* ((High-Low) < 0", "(Low Blur-Clear)*(High-Low) =  0")) |>
    mutate(
         mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
         `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
@@ -2384,7 +2390,7 @@ u = hypothesis(fit_sc_lc, "beta_blur1:frequency1 =  0", dpar="beta")$hypothesis 
 # Combine all results into a single table
 tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u) |>
   mutate(Evid.Ratio = as.numeric(Evid.Ratio)) |>
-  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0 ",  "(High Blur-Clear)*(High - Low) = 0", "(High Blur-Low Blur)* (High - Low) = 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear)*(High - Low) = 0", "(High Blur-Low Blur)*(High-Low) = 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear)*(High-Low) < 0", "(High Blur-Low Blur)*(High-Low) < 0", "(Low Blur-Clear)*(High-Low) =  0")) |> 
+  mutate(Hypothesis = c("High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0 ",  "(High Blur-Clear)*(High - Low) = 0", "(High Blur-Low Blur)*(High - Low) = 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear)*(High - Low) = 0", "(High Blur-Low Blur)*(High-Low) = 0", "(Low Blur-Clear) - (High-Low) =  0", "High Blur - Clear > 0", "High Blur-Low Blur > 0", "Low Blur - Clear = 0","High - Low < 0",  "(High Blur-Clear)*(High-Low) < 0", "(High Blur-Low Blur)*(High-Low) < 0", "(Low Blur-Clear)*(High-Low) =  0")) |> 
   select(-Star) |>
   mutate(`90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
   rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob` = "Post.Prob") |>
@@ -2821,7 +2827,11 @@ tmp |>
   guides(slab_alpha = "none") +
   facet_grid(Parameter ~ t, scales = "free") +
   ggokabeito::scale_fill_okabe_ito() + 
-    theme_minimal(base_size=16) 
+    theme_minimal(base_size=16) + 
+   theme(
+    strip.background = element_rect(fill = "black", color = "black"),
+    strip.text = element_text(color = "white", face = "bold")
+  )
 
 ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
 
