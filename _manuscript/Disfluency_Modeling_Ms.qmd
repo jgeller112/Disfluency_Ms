@@ -2250,7 +2250,7 @@ There were no interactions between blurring and word frequency—all CrI include
 
 #### RTs: Ex-Gaussian
 
-Given the complexity of the model, we employed stronger priors to facilitate convergence. For the $\mu$ parameter, we specified a normal prior centered at 0.6 seconds with a standard deviation of 0.5, which accommodates plausible RTs. For the $\beta$ parameter, we used a more constrained prior: $\text{Normal}(0, 0.25)$. Default priors were retained for all remaining parameters in the model.
+Given the complexity of the model, we employed stronger priors to facilitate convergence. For the \$\\mu\$ parameter, we specified the same prior used in Experiments 1a and 1b. For the \$\\beta\$ parameter, we applied a more constrained prior: \$\\text{Normal}(0, 0.25)\$. Default priors were retained for all remaining model parameters. To ensure reliable convergence in the model examining the contrast between low blur and clear conditions and their interaction with word frequency, we increased the number of iterations to 6,000.
 
 ```{r}
 #| label: tbl-freqeffect
