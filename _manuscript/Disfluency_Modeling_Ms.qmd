@@ -2080,15 +2080,17 @@ In Experiment 2, we manipulated word frequency (High vs. Low frequency words) an
 
 In Experiment 2, we opted not to use the DDM due to its substantial computational demands, particularly given the size and complexity of our dataset. Instead, we focused on the ex-Gaussian decomposition of RTs during encoding. Findings from Experiments 1a and 1b revealed systematic associations between ex-Gaussian and DDM parameters: specifically, a positive relationship between $\mu$ and non-decision time ($T_{er}$), and a negative relationship between $\beta$ and drift rate ($v$). Based on these observed correspondences, we interpret the ex-Gaussian parameters as indirect markers of early (encoding-related) and late (decision-related) processing stages.
 
-The compensatory and stage-specific accounts of disfluency make contrasting predictions about the joint influence of blurring and word frequency. The compensatory processing account posits that perceptual difficulty elicits increased top-down support during lexical access, particularly for low-frequency words, and this is what causes a mnmnmomic benefit for disfluent stimuli. This account would likely predict an interaction between blurring and word frequency on $\mu$, reflecting slowed encoding under high-effort conditions. It assumes little or no effect on $\tau$. Stimuli that are lower in frequency and hard to read should receive increased attention during encoding. Consequently, the compensatory view predicts better memory for blurred, low-frequency words due to greater top-down engagement during encoding.
+The compensatory and stage-specific accounts of disfluency make contrasting predictions about the joint influence of blurring and word frequency. The **compensatory processing account** posits that perceptual difficulty increases top-down processing during word recognition, especially for low-frequency words. This enhanced support is thought to improve encoding quality and drive better memory for disfluent stimuli. Because the account is focused on lexical-level processes, it predicts an interaction between blurring and word frequency on \$\\mu\$, reflecting slower but more effortful word recognition under degraded conditions. Importantly, the compensatory view assumes little or no effect on \$\\tau\$, which is typically associated with later, extra-lexical processing. Thus, stimuli that are hard to perceive and low in frequency should recruit more lexical-level attention, resulting in improved memory specifically for blurred, low-frequency words.
 
-In contrast, the stage-specific account posits that the effects of blurring and word frequency extend beyond encoding and into later, resource-demanding stages of processing. This account would likely predict interactions between blurring and frequency on $\tau$, as more difficult stimuli impose greater demands on post-lexical mechanisms such as cognitive control and decision-making.
+The stage-specific account allows for the possibility that perceptual disfluency and lexical difficulty may interact to engage greater extra- or post-lexical processing, particularly when both factors are present—such as in the case of blurred, low-frequency words. While each manipulation alone may be resolved through more effortful lexical access (reflected in changes to \$\\mu\$), their combination might exceed the limits of lexical-level compensation, thereby recruiting additional control or decision-related processes.
 
-With respect to memory, this account assumes that not all items benefit equally from perceptual disfluency. Low-frequency words—like highly blurred words—already tend to attract increased attention during encoding [see pupillometry evidence; @kuchinke2007]. As a result, the attentional boost provided by disfluency may be redundant for these items, thereby reducing or eliminating the memory advantage. In contrast, high-frequency words—which are processed more automatically—may benefit more from disfluency manipulations that enhance attention and depth of encoding.
+Accordingly, this view predicts a potential interaction between blurring and word frequency on \$\\tau\$, reflecting increased engagement of late-stage, resource-limited mechanisms. If blurred, low-frequency stimuli are associated with especially long response time tails, this may indicate that processing demands extend beyond initial encoding and into later stages of cognitive control or response selection. However, this increased engagement may not always lead to a memory advantage. When both perceptual and lexical demands are high, limited cognitive resources could become overtaxed, potentially attenuating or eliminating any downstream mnemonic effects.
 
-Consistent with this view, @ptok2019 argued that memory benefits from disfluency or conflict arise primarily under conditions that are otherwise fluent and encoding-poor. When tasks already demand attention or effort, disfluency effects are likely to diminish. For example, @ptok2020 found that manipulating endogenous attention (e.g., by using a chinrest) eliminated memory benefits from semantic interference. Similarly, @geller2021 showed that instructing participants to expect a memory test—thereby orienting them to study all items—also eliminated the disfluency effect. In a related finding, @westerman1997 (Experiment 3) demonstrated that increasing encoding effort uniformly—by requiring participants to spell instead of read target words—likewise eliminated the disfluency benefit.
+With respect to memory, the stage-specific account assumes that not all items benefit equally from perceptual disfluency. Low-frequency words—like highly blurred words—already tend to attract increased attention during encoding \[see pupillometry evidence; @kuchinke2007\]. As a result, the attentional boost provided by disfluency may be redundant for these items. In contrast, high-frequency words—which are typically processed more automatically—may benefit more from disfluency manipulations that increase attention and depth of encoding.
 
-Critically, if an interaction emerges on $\tau$—and we do observe a memory benefit—this would support the stage-specific account. Such a pattern would indicate that disfluency effects are driven not by compensatory processing, but by increased demands on limited-capacity control processes engaged after lexical access.
+Consistent with this view, @ptok2019 argued that memory benefits from disfluency or conflict arise primarily under conditions that are otherwise fluent and encoding-poor. When tasks already require sustained attention or effort, these benefits are likely to diminish. For instance, @ptok2020 found that stabilizing participants' gaze with a chinrest—thus increasing endogenous attention—disrupted memory gains from semantic interference. Similarly, @geller2021 showed that informing participants of an upcoming memory test, thereby prompting deliberate encoding, reduced the disfluency effect. In a related study, @westerman1997 (Experiment 3) found that when encoding effort was uniformly high—such as when participants had to spell rather than simply read words—the memory advantage for disfluent stimuli disappeared.
+
+Taken together, the stage-specific account suggests that disfluency effects on memory may depend on the degree to which processing demands extend beyond lexical access and engage post-lexical control mechanisms. If blurring and lexical difficulty interact to increase these demands—as reflected in longer response time tails (i.e., elevated \$\\tau\$)—we may observe downstream consequences for memory. However, any mnemonic benefit is expected to emerge primarily for stimuli that are otherwise processed fluently, such as high-frequency words, and only when cognitive resources remain available to support deeper encoding. The present experiment examines these possibilities by testing whether blurring and word frequency interact to influence early and late components of processing (as indexed by ex-Gaussian parameters) and whether these effects are associated with differences in subsequent memory performance.
 
 ## Method
 
@@ -2322,41 +2324,55 @@ p_rt |> group_by(blur) |>
   autofit() |> 
   theme_apa()
 
+
+
 ```
 
 We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After removing RTs below .2 and above 2.5 we were left with `r dim(p_rt_out)[1]` trials.
 
 ```{r}
-
 ## Contrasts
 #hypothesis
-#set contrasts in df 
-p_rt_out$blur <- as.factor(p_rt_out$blur)
+contrast_matrix <- matrix(
+  c(-0.5,  0,    # C
+     0.5,  0.5,  # HB
+     0,   -0.5), # LB
+  ncol = 2,
+  byrow = TRUE
+)
 
-contrasts(p_rt_out$blur) <-contr.hypothesis(blurC)
+colnames(contrast_matrix) <- c("blur1", "blur2")
+rownames(contrast_matrix) <- c("C", "HB", "LB")
 
-freqc <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
+# Apply to factor
+p_rt_out$blur <- factor(p_rt_out$blur, levels = c("C", "HB", "LB"))
+contrasts(p_rt_out$blur) <- contrast_matrix
 
-p_rt_out$frequency<- as.factor(p_rt_out$frequency)
-
-contrasts(p_rt_out$frequency) <-contr.hypothesis(freqc)
+freqc <- hypr(HIGH ~ LOW, levels = c("HIGH", "LOW"))
+rts_dim$frequency <- as.factor(p_rt_out$frequency)
+contrasts(p_rt_out$frequency) <- contr.hypothesis(freqc)
 
 ```
 
 ```{r}
 #| eval: false
-
-#max model
-bform_exg1 <- bf(
-rt ~  0+ blur + frequency + (1 + blur*frequency |p| participant) + (1 + blur|i| target),
-sigma ~ 0 + blur + frequency + (1 + blur*frequency |p|participant) + (1 + blur |i| target),
-beta ~  0 + blur + frequency  + (1 + blur*frequency |p|participant) + (1 + blur |i| target))
+# Model formula
+bform_ex2 <- bf(
+  rt ~ blur*frequency + (1 + blur * frequency |p| participant) + (1 + blur |i| target),
+  sigma ~  blur*frequency  + (1 + blur * frequency |p| participant) + (1 + blur |i| target),
+  beta ~ blur*frequency + (1 + blur * frequency |p| participant) + (1 + blur |i| target)
+)
 ```
 
 ```{r}
 #| eval: false
 #|
-prior_exp1 <- c(set_prior("normal(0,10)", class = "b", coef=""))
+
+prior <- c(
+  prior(normal(0, 10), class = "b"), 
+  prior(normal(0,1), dpar="sigma"), 
+  prior(normal(0, 0.25), class = "b", dpar = "beta")
+)
 
 fit_exg1 <- brm(
 bform_exg1, data = p_rt_out,
@@ -2365,21 +2381,69 @@ warmup = 1000,
                     chains = 4,
                     family = exgaussian(),
                     init = 0,
+                    prior=prior, 
                     cores = 4,
 control = list(adapt_delta = 0.8), 
 sample_prior = T, 
+seed=666, 
 save_pars = save_pars(all=T), 
 backend="cmdstanr", 
-file = "blmm_sc_wf",
 threads = threading(2))
 
 
 ```
 
 ```{r}
+#low blur vs. clear 
 
+rts_dim <- rts_wf %>%
+  filter(corr == 1, category == "NONAN") %>%
+  filter(rt >= 0.2 & rt <= 2.5)
+
+blurC <- hypr(LB ~ C, levels = c("C", "HB", "LB"))
+rts_dim$blur <- as.factor(rts_dim$blur)
+contrasts(rts_dim$blur) <- contr.hypothesis(blurC)
+
+freqc <- hypr(HIGH ~ LOW, levels = c("HIGH", "LOW"))
+rts_dim$frequency <- as.factor(rts_dim$frequency)
+contrasts(rts_dim$frequency) <- contr.hypothesis(freqc)
+```
+
+```{r}
+#| eval: false
+
+prior <- c(
+  prior(normal(0, .2), class = "b"), 
+  prior(normal(0,1), dpar="sigma"), 
+  prior(normal(0, 0.25), class = "b", dpar = "beta")
+)
+
+fit_exg_lbc <- brm(
+bform_exg1, data =rts_dim,
+warmup = 1000,
+                    iter = 5000,
+                    chains = 4,
+                    family = exgaussian(),
+                    init = 0,
+                    prior=prior, 
+                    cores = 4,
+seed=666, 
+control = list(adapt_delta = 0.8), 
+sample_prior = T, 
+save_pars = save_pars(all=T), 
+backend="cmdstanr", 
+threads = threading(2))
+
+
+
+```
+
+```{r}
+
+#highblurvs clear highblur vslowblur
 fit_sc <- read_rds("https://osf.io/3vtjq/download")
 
+#lowblur vs. clear
 fit_sc_lc <- read_rds("https://osf.io/sjr2x/download")
 
 ```
@@ -2456,29 +2520,29 @@ tab
 
 @tbl-expt2summary provides a model summary. @fig-quantiledeltaexp2 visualizes RTs as quantile and delta plots highlighting how blurring and word frequency affected processing during word recognition.
 
-### $\mu$
+### Shifting (𝜇)
 
-High-blurred words exhibited greater shifting than clear words, $b$ = `r a$Estimate`, 90% CrI \[`r a$CI.Lower`, `r a$CI.Upper`\], ER = `r a$Evid.Ratio`; as did low-blurred words, $b$ = `r b$Estimate`, 90% CrI \[`r b$CI.Lower`, `r b$CI.Upper`\], ER = `r b$Evid.Ratio`. However, there was no evidence of a difference between low-blurred and clear words, $b$ = `r c$Estimate`, 90% CrI \[`r c$CI.Lower`, `r c$CI.Upper`\], ER = `r c$Evid.Ratio`.
+High-blurred words showed greater central tendency shifts (𝜇) compared to clear words, *b* = `r a$Estimate`, 90% CrI \[`r a$CI.Lower`, `r a$CI.Upper`\], ER = `r a$Evid.Ratio`. They also showed more shifting than low-blurred words, b = `r b$Estimate`, 90% CrI \[`r b$CI.Lower`, `r b$CI.Upper`\], ER = `r b$Evid.Ratio`. Low-blurred words were also associated with greater shifting than clear words, b = `r c$Estimate`, 90% CrI \[`r c$CI.Lower`, `r c$CI.Upper`\], ER = `r c$Evid.Ratio`.
 
-For word frequency, high-frequency words showed less shifting than low-frequency words, $b$ = `r d$Estimate`, 90% CrI \[`r d$CI.Lower`, `r d$CI.Upper`\], ER = `r d$Evid.Ratio`. This effect also appeared in the low-blurred vs. clear model, $b$ = `r v$Estimate`, 90% CrI \[`r v$CI.Lower`, `r v$CI.Upper`\], ER = `r v$Evid.Ratio`.
+There was a consistent effect of word frequency: high-frequency words exhibited less shifting than low-frequency words, b = `r d$Estimate`, 90% CrI \[`r d$CI.Lower`, `r d$CI.Upper`\], ER = `r d$Evid.Ratio`. This pattern also appeared in the low-blurred vs. clear contrast, b = `r v$Estimate`, 90% CrI \[`r v$CI.Lower`, `r v$CI.Upper`\], ER = `r v$Evid.Ratio`.
 
-There was no interaction between word frequency and blur for high-blurred vs. clear words, $b$ = `r e$Estimate`, 90% CrI \[`r e$CI.Lower`, `r e$CI.Upper`\], ER = `r e$Evid.Ratio`, or low-blurred vs. clear words, $b$ = `r f$Estimate`, 95% CrI \[`r f$CI.Lower`, `r f$CI.Upper`\], ER = `r f$Evid.Ratio`. Likewise, there was no amplification of the word frequency effect in the low-blur vs. clear comparison, $b$ = `r g$Estimate`, 95% CrI \[`r g$CI.Lower`, `r g$CI.Upper`\], ER = `r g$Evid.Ratio`.
+The posterior distributions for blur × frequency interactions were centered near zero, and the associated evidence ratios provided little support for interaction effects, suggesting that blur and frequency contributed additively to shifts in central tendency.
 
-### $\sigma$
+### Variability (𝜎)
 
-High-blurred words exhibited greater variance than clear words, $b$ = `r h$Estimate`, 90% CrI \[`r h$CI.Lower`, `r h$CI.Upper`\], ER = `r h$Evid.Ratio`, as did low-blurred words, $b$ = `r i$Estimate`, 90% CrI \[`r i$CI.Lower`, `r i$CI.Upper`\], ER = `r i$Evid.Ratio`. Weak evidence was found for greater variance in low-blurred vs. clear words, $b$ = `r j$Estimate`, 90% CrI \[`r j$CI.Lower`, `r j$CI.Upper`\], ER = `r j$Evid.Ratio`.
+There was evidence for greater variability (𝜎) in response times for high-blurred relative to clear words, b = `r h$Estimate`, 90% CrI \[`r h$CI.Lower`, `r h$CI.Upper`\], ER = `r h$Evid.Ratio`. A similar trend was observed for low-blurred compared to clear words, b = `r i$Estimate`, 90% CrI \[`r i$CI.Lower`, `r i$CI.Upper`\], ER = `r i$Evid.Ratio`. However, the contrast between low-blurred and clear words yielded only weak evidence, b = `r j$Estimate`, 90% CrI \[`r j$CI.Lower`, `r j$CI.Upper`\], ER = `r j$Evid.Ratio`.
 
-No difference in $\sigma$ was observed between high- and low-frequency words, $b$ = `r k$Estimate`, 90% CrI \[`r k$CI.Lower`, `r k$CI.Upper`\], ER = `r k$Evid.Ratio`, which also held in the low-blurred vs. clear model, $b$ = `r w$Estimate`, 90% CrI \[`r w$CI.Lower`, `r w$CI.Upper`\], ER = `r w$Evid.Ratio`.
+There was little to no evidence for a frequency effect on variability, b = `r k$Estimate`, 90% CrI \[`r k$CI.Lower`, `r k$CI.Upper`\], ER = `r k$Evid.Ratio`, which was also the case in the low-blurred vs. clear contrast, b = `r w$Estimate`, 90% CrI \[`r w$CI.Lower`, `r w$CI.Upper`\], ER = `r w$Evid.Ratio`.
 
-Evidence for blur × frequency interactions on $\sigma$ was mixed (ER \> 1).
+Evidence for blur × frequency interactions on 𝜎 was mixed, with some contrasts yielding ERs modestly greater than 1, but posterior distributions remained broadly overlapping with zero.
 
-### $\beta$
+### Skew (𝛽)
 
-High-blurred words showed greater skew than clear words, $b$ = `r o$Estimate`, 90% CrI \[`r o$CI.Lower`, `r o$CI.Upper`\], ER = `r o$Evid.Ratio`, as did low-blurred words, $b$ = `r p$Estimate`, 90% CrI \[`r p$CI.Lower`, `r p$CI.Upper`\], ER = `r p$Evid.Ratio`. There was strong evidence for no difference in skew between low-blurred and clear words, $b$ = `r q$Estimate`, 95% CrI \[`r q$CI.Lower`, `r q$CI.Upper`\], ER = `r q$Evid.Ratio`.
+Posterior estimates indicated greater skew (𝛽) for high-blurred words relative to clear words, b = `r o$Estimate`, 90% CrI \[`r o$CI.Lower`, `r o$CI.Upper`\], ER = `r o$Evid.Ratio`, and also relative to low-blurred words, b = `r p$Estimate`, 90% CrI \[`r p$CI.Lower`, `r p$CI.Upper`\], ER = `r p$Evid.Ratio`. In contrast, the difference in skew between low-blurred and clear words was minimal, with strong evidence for no effect, b = `r q$Estimate`, 95% CrI \[`r q$CI.Lower`, `r q$CI.Upper`\], ER = `r q$Evid.Ratio`.
 
-There was no evidence that low-frequency words showed greater skew than high-frequency words, $b$ = `r r$Estimate`, 95% CrI \[`r r$CI.Lower`, `r r$CI.Upper`\], ER = `r r$Evid.Ratio`. However, in the low-blurred vs. clear model, low-frequency words did show greater skewing, $b$ = `r z$Estimate`, 90% CrI \[`r z$CI.Lower`, `r z$CI.Upper`\], ER = `r w$Evid.Ratio`.
+There was strong evidence that low-frequency words showed more rightward skew than high-frequency words in both the high-blurred vs. low-blurred and high-blurred vs. clear contrasts, b = `r r$Estimate`, 95% CrI \[`r r$CI.Lower`, `r r$CI.Upper`\], ER = `r r$Evid.Ratio`. A similar frequency effect was present in the low-blurred vs. clear contrast, b = `r z$Estimate`, 90% CrI \[`r z$CI.Lower`, `r z$CI.Upper`\], ER = `r w$Evid.Ratio`.
 
-The word frequency effect on skew was amplified for the high-blurred vs. clear words, $b$ = `r s$Estimate`, 90% CrI \[`r s$CI.Lower`, `r s$CI.Upper`\], ER = `r s$Evid.Ratio`, and low-blurred vs. clear words, $b$ = `r t$Estimate`, 90% CrI \[`r t$CI.Lower`, `r t$CI.Upper`\], ER = `r t$Evid.Ratio`, with greater skewing for low- than high-frequency words. No interaction was found in the low-blurred vs. clear contrast, $b$ = `r u$Estimate`, 95% CrI \[`r u$CI.Lower`, `r u$CI.Upper`\], ER = `r u$Evid.Ratio`.
+The interaction between blur and frequency on 𝛽 was supported in the high-blurred vs. low-blurred comparison, b = `r s$Estimate`, 90% CrI \[`r s$CI.Lower`, `r s$CI.Upper`\], ER = `r s$Evid.Ratio`, where the frequency effect on skew appeared more pronounced. However, no meaningful interaction was detected in the high-blurred vs. clear or low-blurred vs. clear contrasts, b = `r t$Estimate`, 90% CrI \[`r t$CI.Lower`, `r t$CI.Upper`\], ER = `r t$Evid.Ratio`, and b = `r u$Estimate`, 95% CrI \[`r u$CI.Lower`, `r u$CI.Upper`\], ER = `r u$Evid.Ratio`.
 
 ```{r}
 
