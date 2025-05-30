@@ -1925,7 +1925,7 @@ threads = threading(2))
 
 ```{r}
 
-fit_mem_noc <- read_rds("https://osf.io/zv5pd/download")
+fit_mem_noc <- read_rds("https://osf.io/yfzke/download")
 
 ```
 
@@ -2095,11 +2095,11 @@ The animal word stimuli used by @fernández-lópez2022 varied in length (M = 5.3
 
 We used the same procedure as Experiments 1b. The main difference is that instead of making a word/non-word decision, participants made a semantic categorization judgement (i.e., "is an animal" or "is not an animal"). You can view the task here: https://run.pavlovia.org/Jgeller112/hf_lf_sem_1.
 
-### Results
+## Results
 
-To fit models to the data from Experiment 2, we constructed contrast codes for the variables Blur and Frequency using the hypr package in R (Schad et al., 2019), applying ANOVA-style (effects) coding. For the Blur variable, we defined two models that contained three orthogonal contrasts to capture key comparisons of interest. In model 1, comparison 1 contrasted High Blur and Low Blur, with High Blur coded as 0.5 and Low Blur as 0.5 (with Clear coded as 0). Comparison 2 contrasted High Blur and Clear, with High Blur coded as 0.5 and Clear as -0.5 (with Low Blur coded as 0). These contrasts allowed us to estimate both main effects and interaction terms. For the Frequency variable, we used a single contrast comparing High Frequency to Low Frequency, with High Frequency coded as 0.5 and Low Frequency as –0.5. Additionally, we fit a second model to capture the Low Blur (0.5) and Clear (-0.05) comparison. This contrast structure enabled us to extract all relevant main effects and interactions across conditions.
+To fit models to the data from Experiment 2, we constructed contrast codes for the variables Blur and Frequency,  applying ANOVA-style (effects) coding. For the Blur variable, we defined two contrasts to capture key comparisons of interest. Comparison 1 contrasted High Blur with Low Blur and Clear, with High Blur coded as 0.5 and Low Blur as -0.5 and Clear coded as -.5. Comparison 2 contrasted Low Blur and Clear, with Low Blur coded as 0.5 and Clear as -0.5 (with High Blur coded as 0). For the Frequency variable, we used a single contrast comparing High Frequency to Low Frequency, with High Frequency coded as 0.5 and Low Frequency as –0.5. These contrasts allowed us to estimate both main effects and interaction terms.
 
-#### Accuracy
+### Accuracy
 
 ```{r}
 rts_wf <- read_csv("https://osf.io/29hnd/download")
@@ -2192,89 +2192,66 @@ emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |>
 #| apa-note: "95% CrI for equivalency tests"
 
 
-a = hypothesis(fit_acc_sc , "blur1 < 0")
+# Run hypothesis tests
+a <- hypothesis(fit_acc_sc, "blur1 < 0")  # High Blur < (Low Blur + Clear)/2
+b <- hypothesis(fit_acc_sc, "blur2 = 0")  # Low Blur = Clear
+c <- hypothesis(fit_acc_sc, "frequency1 = 0")  # No frequency effect
+d <- hypothesis(fit_acc_sc, "blur1:frequency1 = 0")  # No interaction: HB vs. (LB + C)/2 × Freq
+e <- hypothesis(fit_acc_sc, "blur2:frequency1 = 0")  # No interaction: LB vs. C × Freq
 
-# Ensure rounding applies only to numeric columns
-a$hypothesis <- a$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
+# Helper to round hypothesis results
+round_hypothesis <- function(hyp) {
+  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp
+}
 
-b = hypothesis(fit_acc_sc , "blur2 < 0")
+# Apply rounding
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+c <- round_hypothesis(c)
+d <- round_hypothesis(d)
+e <- round_hypothesis(e)
 
-# Ensure rounding applies only to numeric columns
-b$hypothesis <- b$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
+# Combine and format table
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis) |>
+  mutate(
+    Hypothesis = c(
+      "High Blur < (Low Blur + Clear)/2",
+      "Low Blur = Clear",
+      "High Freq = Low Freq",
+      "Blur × Frequency (High vs. Low/Clear) = 0",
+      "Blur × Frequency (Low vs. Clear) = 0"
+    ),
+    `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")
+  ) |>
+  rename(
+    Mean = Estimate,
+    SE = Est.Error,
+    ER = Evid.Ratio,
+    `Posterior Prob` = Post.Prob
+  ) |>
+  select(Hypothesis, Mean, SE, `90% CrI`, ER, `Posterior Prob`)
 
-c = hypothesis(fit_acc_sc_lb, "blur1 < 0")
-
-
-# Ensure rounding applies only to numeric columns
-c$hypothesis <- c$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
-
-
-d= hypothesis(fit_acc_sc, "frequency1 = 0")
-
-
-# Ensure rounding applies only to numeric columns
-d$hypothesis <- d$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
-
-
-e = hypothesis(fit_acc_sc_lb, "frequency1 = 0")
-
-
-# Ensure rounding applies only to numeric columns
-e$hypothesis <- e$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
-
-f = hypothesis(fit_acc_sc, "blur1:frequency1 = 0")
-
-
-# Ensure rounding applies only to numeric columns
-f$hypothesis <- f$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
-
-g = hypothesis(fit_acc_sc , "blur2:frequency1 = 0")
-
-
-# Ensure rounding applies only to numeric columns
-g$hypothesis <- g$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
-
-h = hypothesis(fit_acc_sc_lb, "blur1:frequency1 = 0")
-
-# Ensure rounding applies only to numeric columns
-h$hypothesis <- h$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
-
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis, g$hypothesis,h$hypothesis ) |>
-    mutate(Evid.Ratio=as.numeric(Evid.Ratio))|>
-   rename("Mean" = "Estimate") |>
-  select(-Star)
-
-tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
-
-acc_exp2 <- tab |> 
-    mutate(Hypothesis = c("High Blur - Clear < 0", "High Blur-Low Blur < 0", "Low Blur - Clear = 0","HF - LF = 0","HF - LF = 0 (LB-C)", "(High Blur-Clear)*(HF-LF) < 0", "(High Blur-Low Blur)*(HF-LF) < 0", "(Low Blur-Clear)*(HF-LF) =  0")) |>
-   mutate(
-        mutate(mutate(across(where(is.numeric), ~ round(.x, 3)))),
-        `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")) |>
-    rename("SE" = "Est.Error", "ER" = "Evid.Ratio", `Posterior Prob` = "Post.Prob") |>
-    select(Hypothesis, Mean, SE, `90% CrI`,ER, `Posterior Prob`)|>  
-  flextable()  |>
+# Create flextable
+acc_exp2 <- flextable(tab) |>
   theme_apa()
 
 acc_exp2
 
+
 ```
 
-The model summary can be found in @tbl-acc2. Clear words were better identified than high-blur words, $b$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low-blur words were also better identified than high-blur words, $b$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. There was weak evidence for a difference between clear and low-blur words, $b$ = `r c$hypothesis$Estimate`, 95% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. There was no frequency effect for the High blur vs. Clear/High blur vs. Low blur model: $b$ = `r d$hypothesis$Estimate`, 95% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`, or the Low blur vs. clear model: $b$ = `r e$hypothesis$Estimate`, 95% CrI \[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = \`r e$hypothesis$Evid.Ratio although the evidence for the absence of a difference was weak.
+The full model summary is presented in @tbl-acc2. There was strong evidence that high-blurred words were associated with lower accuracy compared to the average of low-blurred and clear words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI [`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`.
 
-There were no interactions between blurring and word frequency—all CrI included 0; however, evidence for this lack of difference was ambiguous (ER ≈ 1).
+There was little evidence for a difference between low-blurred and clear words: $\beta$ = `r b$hypothesis$Estimate`, 90% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. The credible interval spanned zero, and the evidence ratio suggested only weak support for either hypothesis.
 
-#### RTs: Ex-Gaussian
+We also found no evidence for a frequency effect in the high-blur vs. clear/low-blur model: $\beta$ = `r c$hypothesis$Estimate`, 95% CrI [`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`], ER = `r c$hypothesis$Evid.Ratio`.
 
-Given the complexity of the model, we employed stronger priors to facilitate convergence. For the \$\\mu\$ parameter, we specified the same prior used in Experiments 1a and 1b. For the \$\\beta\$ parameter, we applied a more constrained prior: \$\\text{Normal}(0, 0.25)\$. Default priors were retained for all remaining model parameters. To ensure reliable convergence in the model examining the contrast between low blur and clear conditions and their interaction with word frequency, we increased the number of iterations to 6,000.
+Finally, interaction terms between blurring and word frequency yielded posterior distributions centered near zero, with 90% CrIs that included zero. Evidence ratios for these terms were approximately 1, indicating substantial uncertainty and no clear preference for either the null or alternative hypothesis.
+
+### RTs: Ex-Gaussian
+
+Given the complexity of the model, we employed stronger priors to facilitate convergence. For the \$\\mu\$ parameter, we specified the same prior used in Experiments 1a and 1b. For the \$\\beta\$ parameter, we applied a more constrained prior: \$\\text{Normal}(0, 0.25)\$. Default priors were retained for all remaining model parameters.
 
 ```{r}
 #| label: tbl-freqeffect
@@ -2320,9 +2297,6 @@ contrast_matrix <- matrix(
   ncol = 2,
   byrow = TRUE
 )
-
-colnames(contrast_matrix) <- c("blur1", "blur2")
-rownames(contrast_matrix) <- c("C", "HB", "LB")
 
 # Apply to factor
 p_rt_out$blur <- factor(p_rt_out$blur, levels = c("C", "HB", "LB"))
@@ -2500,7 +2474,7 @@ tab
 
 @tbl-expt2summary provides a model summary. @fig-quantiledeltaexp2 visualizes RTs as quantile and delta plots highlighting how blurring and word frequency affected processing during word recognition.
 
-### Shifting (𝜇)
+#### Shifting (𝜇)
 
 High-blurred words showed greater central tendency shifts (𝜇) compared to clear words, *b* = `r a$Estimate`, 90% CrI \[`r a$CI.Lower`, `r a$CI.Upper`\], ER = `r a$Evid.Ratio`. They also showed more shifting than low-blurred words, b = `r b$Estimate`, 90% CrI \[`r b$CI.Lower`, `r b$CI.Upper`\], ER = `r b$Evid.Ratio`. Low-blurred words were also associated with greater shifting than clear words, b = `r c$Estimate`, 90% CrI \[`r c$CI.Lower`, `r c$CI.Upper`\], ER = `r c$Evid.Ratio`.
 
@@ -2508,7 +2482,7 @@ There was a consistent effect of word frequency: high-frequency words exhibited 
 
 The posterior distributions for blur × frequency interactions were centered near zero, and the associated evidence ratios provided little support for interaction effects, suggesting that blur and frequency contributed additively to shifts in central tendency.
 
-### Variability (𝜎)
+#### Variability (𝜎)
 
 There was evidence for greater variability (𝜎) in response times for high-blurred relative to clear words, b = `r h$Estimate`, 90% CrI \[`r h$CI.Lower`, `r h$CI.Upper`\], ER = `r h$Evid.Ratio`. A similar trend was observed for low-blurred compared to clear words, b = `r i$Estimate`, 90% CrI \[`r i$CI.Lower`, `r i$CI.Upper`\], ER = `r i$Evid.Ratio`. However, the contrast between low-blurred and clear words yielded only weak evidence, b = `r j$Estimate`, 90% CrI \[`r j$CI.Lower`, `r j$CI.Upper`\], ER = `r j$Evid.Ratio`.
 
@@ -2516,7 +2490,7 @@ There was little to no evidence for a frequency effect on variability, b = `r k$
 
 Evidence for blur × frequency interactions on 𝜎 was mixed, with some contrasts yielding ERs modestly greater than 1, but posterior distributions remained broadly overlapping with zero.
 
-### Skew (𝛽)
+#### Skew (𝛽)
 
 Posterior estimates indicated greater skew (𝛽) for high-blurred words relative to clear words, b = `r o$Estimate`, 90% CrI \[`r o$CI.Lower`, `r o$CI.Upper`\], ER = `r o$Evid.Ratio`, and also relative to low-blurred words, b = `r p$Estimate`, 90% CrI \[`r p$CI.Lower`, `r p$CI.Upper`\], ER = `r p$Evid.Ratio`. In contrast, the difference in skew between low-blurred and clear words was minimal, with strong evidence for no effect, b = `r q$Estimate`, 95% CrI \[`r q$CI.Lower`, `r q$CI.Upper`\], ER = `r q$Evid.Ratio`.
 
@@ -2750,7 +2724,7 @@ ggsave(filename='./figures/figure_kde3.png',width=15,height=12, dpi=500)
 
 ```
 
-#### Recognition Memory
+### Recognition Memory
 
 To aid in model convergence, we used a binomial (probit) family rather than a Bernoulli family when modeling our results. While both approaches are appropriate for binary outcomes, the binomial model allowed us to aggregate responses within each condition, reducing the number of observations and easing computational demands. This aggregation improved sampling efficiency and stability, particularly given the complexity of the full factorial structure. However, as a trade-off, we were unable to model random intercepts and slopes for individual items, since aggregation collapses trial-level variability.
 
@@ -2960,11 +2934,16 @@ tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 ```
 
-##### Sensitivity
+#### Sensitivity
 
-Similar to Experiments 1a and 1a, there was better memory recognition for high blurred words compared to clear words and low blurred words (see @fig-m2-emmeans), $b$ = `r a$hypothesis$Estimate`, 90% CrI\[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`.  There was no recognition memory difference between clear and low blur words, $\beta$ = `r b$hypothesis$Estimate`, 95% CrI\[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`. Low frequency words were better recognized than high frequency words, $\beta$ = `r c$hypothesis$Estimate`, 90% CrI\[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. There was strong evidence for an interaction between high blurred words (vs. low blur/clear) and frequency, suggesting that the memory benefit was selectively enhanced for high-frequency words under conditions of high blur, $\beta$ = `r d$hypothesis$Estimate`, 95% CrI\[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. There was also strong evidence for an interaction between blurring and frequency for high low blurred words vs. clear words, $\beta$ = `r e$hypothesis$Estimate`, 90% CrI\[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`, with clear words showing improved recognition for low-frequency items relative to high-frequency ones.
+Consistent with Experiments 1a and 1b, sensitivity in recognition memory was higher for high-blurred words compared to both clear and low-blurred words (see @fig-m2-emmeans), $\beta$ = `r a$hypothesis$Estimate`, 90% CrI [`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`], ER = `r a$hypothesis$Evid.Ratio`. The difference in recognition between clear and low-blurred words was negligible, with strong evidence in favor of the null hypothesis: $\beta$ = `r b$hypothesis$Estimate`, 95% CrI [`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`], ER = `r b$hypothesis$Evid.Ratio`.
 
-### Discussion
+Low-frequency words were more likely to be recognized than high-frequency words, $\beta$ = `r c$hypothesis$Estimate`, 90% CrI [`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`], ER = `r c$hypothesis$Evid.Ratio`. Crucially, there was strong evidence for an interaction between blur and frequency, such that high-frequency words showed a selective memory benefit under high-blur conditions: $\beta$ = `r d$hypothesis$Estimate`, 95% CrI [`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`], ER = `r d$hypothesis$Evid.Ratio`.
+
+A second interaction emerged for the comparison between low-blur and clear words: $\beta$ = `r e$hypothesis$Estimate`, 90% CrI [`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`], ER = `r e$hypothesis$Evid.Ratio`. In this case, recognition was better for low-frequency than high-frequency words when stimuli were presented clearly.
+
+
+## Discussion
 
 Experiment 2 probed how late‐stage processing underlies the mnemonic boost that disfluent stimuli sometimes confer—and how that boost interacts with word frequency. Looking at accuracy, we did not see any differecens between the levels of blurring, or any interactions with frequency. We did see an accuracy difference between high frequency and low frequency words. This largely corresponds with what @fernández-lópez2022 found.
 
