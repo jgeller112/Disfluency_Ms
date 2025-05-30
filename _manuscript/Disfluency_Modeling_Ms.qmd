@@ -2148,7 +2148,7 @@ contrasts(blur_acc_wf$frequency) <-contr.hypothesis(freqc)
 #| 
 prior_expsc <- c(set_prior("cauchy(0,.35)", class = "b"))
 
-fit_acc_wf <- brm(corr ~ blur*frequency + (1+blur*frequency|participant) + (1+blur*frequency|target), data=blur_acc_wf, 
+fit_acc_wf <- brm(corr ~ blur*frequency + (1+blur*frequency|participant) + (1+blur|target), data=blur_acc_wf, 
 warmup = 1000,
                     iter = 5000,
                     chains = 4, 
@@ -2291,9 +2291,9 @@ We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After
 ## Contrasts
 #hypothesis
 contrast_matrix <- matrix(
-  c(-0.5,  0,    # C
-     0.5,  0.5,  # HB
-     0,   -0.5), # LB
+  c(-0.5,  -0.5,    # C
+     0.5,  0,  # HB
+     -0.5,  0.5), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -2303,7 +2303,7 @@ p_rt_out$blur <- factor(p_rt_out$blur, levels = c("C", "HB", "LB"))
 contrasts(p_rt_out$blur) <- contrast_matrix
 
 freqc <- hypr(HIGH ~ LOW, levels = c("HIGH", "LOW"))
-rts_dim$frequency <- as.factor(p_rt_out$frequency)
+p_rt_out$frequency <- as.factor(p_rt_out$frequency)
 contrasts(p_rt_out$frequency) <- contr.hypothesis(freqc)
 
 ```
@@ -2347,58 +2347,10 @@ threads = threading(2))
 
 ```
 
-```{r}
-#low blur vs. clear 
-
-rts_dim <- rts_wf %>%
-  filter(corr == 1, category == "NONAN") %>%
-  filter(rt >= 0.2 & rt <= 2.5)
-
-blurC <- hypr(LB ~ C, levels = c("C", "HB", "LB"))
-rts_dim$blur <- as.factor(rts_dim$blur)
-contrasts(rts_dim$blur) <- contr.hypothesis(blurC)
-
-freqc <- hypr(HIGH ~ LOW, levels = c("HIGH", "LOW"))
-rts_dim$frequency <- as.factor(rts_dim$frequency)
-contrasts(rts_dim$frequency) <- contr.hypothesis(freqc)
-```
 
 ```{r}
-#| eval: false
-
-prior <- c(
-  prior(normal(0, .2), class = "b"), 
-  prior(normal(0,1), dpar="sigma"), 
-  prior(normal(0, 0.25), class = "b", dpar = "beta")
-)
-
-fit_exg_lbc <- brm(
-bform_exg1, data =rts_dim,
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4,
-                    family = exgaussian(),
-                    init = 0,
-                    prior=prior, 
-                    cores = 4,
-seed=666, 
-control = list(adapt_delta = 0.8), 
-sample_prior = T, 
-save_pars = save_pars(all=T), 
-backend="cmdstanr", 
-threads = threading(2))
-
-
-
-```
-
-```{r}
-
 #highblurvs clear highblur vslowblur
 fit_sc <- read_rds("https://osf.io/3vtjq/download")
-
-#lowblur vs. clear
-fit_sc_lc <- read_rds("https://osf.io/sjr2x/download")
 
 ```
 
