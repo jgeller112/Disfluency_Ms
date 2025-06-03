@@ -69,7 +69,7 @@ author-note:
     deceased: ~
   disclosures:
     # Example: This study was registered at X (Identifier Y).
-    study-registration: "Experiment 1A and 2 were preregisted: https://osf.io/q3fjn; https://osf.io/kjq3t."
+    study-registration: "Experiment 1a and 2 were preregisted: https://osf.io/q3fjn; https://osf.io/kjq3t."
     # Acknowledge and cite data/materials to be shared.
     data-sharing: Data, code, and materials for this manuscript can be found at  https://osf.io/6sy7k/. 
     related-report: ~
@@ -2833,7 +2833,7 @@ tmp |>
     strip.text = element_text(color = "white", face = "bold")
   )
 
-ggsave("dprime_expt2.png", width=10, height=12, dpi=500)
+ggsave("dprime_expt2.png", width=12, height=8, dpi=500)
 
 ```
 
@@ -2897,7 +2897,7 @@ This asymmetry suggests that modest perceptual disfluency can amplify processing
 
 # General Discussion
 
-Interfering with stimulus perception during encoding can sometimes improve later explicit memory. The mixed data on perceptual disfluency has called into question the utility of such manipulations in the learning domain. One of the main aims of the current set of experiments was to examine the underlying mechanisms of the perceptual disfluency effect to better understand when perceptual disfluency aids memory and when it does not. To this end, our study delved into the impact of one type of perceptual disfluency--blurring (i.e., low blurring and high blurring)--on the process of encoding, as assessed through a LDT (Experiments 1a and 1b), and a semantic categorization task (Experiment 2). RT distributions were analyzed with an ex-Gaussian model and DDM (Experiments 1a and 1b) to better understand how perceptual disfluency affects encoding. These models offered a comprehensive descriptive and theoretical framework through which to examine the perceptual disfluency effect.
+Interfering with stimulus perception during encoding can sometimes improve later explicit memory. The mixed data on perceptual disfluency has called into question the utility of such manipulations in the learning domain. One of the main aims of the current set of experiments was to examine the underlying mechanisms of the perceptual disfluency effect to better understand when perceptual disfluency aids memory and when it does not. To this end, our study delved into the impact of one type of perceptual disfluency--blurring (i.e., low blurring and high blurring)--on the process of encoding, as assessed through a LDT (Experiments 1a and 1b), and a semantic categorization task (Experiment 2). RT distributions were analyzed with an ex-Gaussian model (Experiments 1a, 1b, 2) and DDM (Experiments 1a and 1b) to better understand how perceptual disfluency affects encoding. These models offered a comprehensive descriptive and theoretical framework through which to examine the perceptual disfluency effect.
 
 To recapitulate our findings, during encoding, high blurred words showed greater distributional shifting and skewing compared to clear and low blurred words. In addition, DDM fits indicated high blurred words had a higher $T_{er}$ and lower $v$. Conversely, low blurred words compared to clear words showed greater distributional shifting, but there was no difference in skewing. DDM fits showed higher $T_{er}$, but had no effect on $v$.
 
