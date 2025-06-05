@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(beta_blur1:frequency1) < 0,-0.139,0.051,-0.222,-0.056,332.333,0.997,*,Beta

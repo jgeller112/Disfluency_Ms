@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(beta_frequency1) < 0,-0.065,0.03,-0.114,-0.016,67.182,0.985,*,Beta

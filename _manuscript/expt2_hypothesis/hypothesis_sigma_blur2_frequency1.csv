@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(sigma_blur2:frequency1) < 0,-0.031,0.06,-0.129,0.065,2.307,0.698,,Sigma

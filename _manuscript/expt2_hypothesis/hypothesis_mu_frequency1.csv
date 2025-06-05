@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(frequency1) < 0,-0.018,0.005,-0.026,-0.011,Inf,1,*,Mu

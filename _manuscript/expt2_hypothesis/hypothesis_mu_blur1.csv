@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(blur1) > 0,0.172,0.005,0.164,0.18,Inf,1,*,Mu

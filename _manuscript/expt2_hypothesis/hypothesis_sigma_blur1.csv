@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(sigma_blur1) > 0,0.635,0.044,0.562,0.706,Inf,1,*,Sigma

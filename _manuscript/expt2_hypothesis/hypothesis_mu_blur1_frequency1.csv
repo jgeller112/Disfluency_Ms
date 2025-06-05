@@ -1,0 +1,2 @@
+Hypothesis,Estimate,Est.Error,CI.Lower,CI.Upper,Evid.Ratio,Post.Prob,Star,Parameter
+(blur1:frequency1) = 0,-0.006,0.007,-0.02,0.009,1024.587,0.999,,Mu
