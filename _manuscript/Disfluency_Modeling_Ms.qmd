@@ -2296,8 +2296,12 @@ threads = threading(2))
 ```
 
 ```{r}
+
+#| eval: false
+
 #highblurvs clear highblur vslowblur
-fit_sc <- read_rds(here::here("_manuscript", "models", "fit_sc_exg.rds"))
+#long time to load 
+fit_sc <- read_rds("http://osf.io/uwcjf/download")
 
 ```
 
@@ -2321,41 +2325,24 @@ fit_sc_lc <- read_rds("./models/fit_sc_lc.RData")
 #| tbl-cap: "Summary of posterior fixed effect estimates for posterior ex-Guassian parameter hypotheses in Experiment 2"
 #| apa-note: "95% CrI for equivalency tests. Sigma and Beta parameters are on the log (logit) scale."
 
-# Run hypotheses and attach correct parameter labels
-a <- hypothesis(fit_sc , "blur1 > 0", dpar = "mu")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Mu")
+# Read CSVs from the folder and assign to objects
+a <- read_csv("expt2_hypothesis/hypothesis_mu_blur1.csv")
+b <- read_csv("expt2_hypothesis/hypothesis_mu_blur2.csv")
+c <- read_csv("expt2_hypothesis/hypothesis_mu_frequency1.csv")
+d <- read_csv("expt2_hypothesis/hypothesis_mu_blur1_frequency1.csv")
+e <- read_csv("expt2_hypothesis/hypothesis_mu_blur2_frequency1.csv")
 
-b <- hypothesis(fit_sc , "blur2 > 0", dpar = "mu")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Mu")
+f <- read_csv("expt2_hypothesis/hypothesis_sigma_blur1.csv")
+g <- read_csv("expt2_hypothesis/hypothesis_sigma_blur2.csv")
+h <- read_csv("expt2_hypothesis/hypothesis_sigma_frequency1.csv")
+i <- read_csv("expt2_hypothesis/hypothesis_sigma_blur1_frequency1.csv")
+j <- read_csv("expt2_hypothesis/hypothesis_sigma_blur2_frequency1.csv")
 
-c <- hypothesis(fit_sc , "frequency1 < 0", dpar = "mu")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Mu")
-d <- hypothesis(fit_sc , "blur1:frequency1 = 0", dpar = "mu")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Mu")
-e <- hypothesis(fit_sc , "blur2:frequency1 = 0", dpar = "mu")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Mu")
-
-f <- hypothesis(fit_sc , "sigma_blur1 > 0")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Sigma")
-g <- hypothesis(fit_sc , "sigma_blur2 < 0")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Sigma")
-h <- hypothesis(fit_sc , "sigma_frequency1 < 0")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Sigma")
-i <- hypothesis(fit_sc , "sigma_blur1:frequency1 > 0")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Sigma")
-j <- hypothesis(fit_sc , "sigma_blur2:frequency1 < 0")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Sigma")
-
-k <- hypothesis(fit_sc , "beta_blur1 > 0", dpar = "beta")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "beta")
-l <- hypothesis(fit_sc , "beta_blur2 = 0", dpar = "beta")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Beta")
-m <- hypothesis(fit_sc , "beta_frequency1 < 0", dpar = "beta")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Beta")
-n <- hypothesis(fit_sc , "beta_blur1:frequency1 < 0", dpar = "Beta")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Beta")
-o <- hypothesis(fit_sc , "beta_blur2:frequency1 > 0", dpar = "Beta")$hypothesis |> 
-  mutate(across(where(is.numeric), ~ round(.x, 3)), Parameter = "Beta")
+k <- read_csv("expt2_hypothesis/hypothesis_beta_blur1.csv")
+l <- read_csv("expt2_hypothesis/hypothesis_beta_blur2.csv")
+m <- read_csv("expt2_hypothesis/hypothesis_beta_frequency1.csv")
+n <- read_csv("expt2_hypothesis/hypothesis_beta_blur1_frequency1.csv")
+o <- read_csv("expt2_hypothesis/hypothesis_beta_blur2_frequency1.csv")
 
 # Combine and label all results
 tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) |>
@@ -2392,8 +2379,6 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) |>
   theme_apa()
 
 tab
-
-
 
 ```
 
