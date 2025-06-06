@@ -54,7 +54,7 @@ author:
        name: "Harrisburg University of Science and Technology"
        department: Department of Cognitive Analytics (Analytics)
   - name: Dominique Makowski 
-    orcid: 0000-0002-9689-4189
+    orcid: 0000-0001-5375-9967
     roles: 
       - editing
       - validation
@@ -263,7 +263,7 @@ Lastly, from a statistical standpoint, RTs present significant challenges. Speci
 
 A perfect example of this comes from the Stroop task [@stroop1935] . The classic Stroop finding shows words presented in an incongruent color font (the word "red" printed in "blue" font) increases RTs compared to words in a baseline condition (e.g., XXXXX presented in a color font). The Stroop interference effect is something you can bet your house on. A more inconsistent finding is seeing facilitation (shortened RTs) when the word and color are congruent (i.e., "Green" presented in "Green") compared to a baseline condition.
 
-One alternative for this conundrum is to examine RT distributions using mathematical models that capture the nuances of the RT distribution and consider various statistical properties, such as the location (\$\\mu\$) , spread ($\sigma$) , and skewness ($\tau$) of the distribution. One popular choice is the ex-Gaussian distribution [@balota2011; @ratcliff1978]. As the name suggests, the ex-Gaussian distribution decomposes RTs into three parameters: mu (μ) representing the mean of the Gaussian component, sigma (σ) representing the standard deviation of that Gaussian component, and tau (τ) representing the mean and standard deviation of an exponential component capturing the tail of the distribution. The algebraic mean of ex-Gaussian is a combination of $\mu$ + $\tau$ and the sd is $\sqrt{\sigma^2 + \tau^2}$ . Together the three parameters represent different aspects of the distribution's location and shape.
+One alternative for this conundrum is to examine RT distributions using mathematical models that capture the nuances of the RT distribution and consider various statistical properties, such as the location (\$\\mu\$) , spread ($\sigma$), and skewness ($\tau$) of the distribution. One popular choice is the ex-Gaussian distribution [@balota2011; @ratcliff1978]. As the name suggests, the ex-Gaussian distribution decomposes RTs into three parameters: mu (μ) representing the mean of the Gaussian component, sigma (σ) representing the standard deviation of that Gaussian component, and tau (τ) representing the mean and standard deviation of an exponential component capturing the tail of the distribution. The algebraic mean of ex-Gaussian is a combination of $\mu$ + $\tau$ and the sd is $\sqrt{\sigma^2 + \tau^2}$ . Together the three parameters represent different aspects of the distribution's location and shape.
 
 @heathcote1991 explored the facilitation-inhibition asymmetry in the Stroop task with an ex-Gaussian model and found both facilitation (from congruent trials) and interference (from incongruent trials) on $\mu$. For $\sigma$, the analysis showed interference, but no facilitation. For $\tau$, there was interference for both congruent and incongruent conditions. Comparing this to a mean RT analysis, they showed the standard interference Stroop effect, but no facilitation. Given that the algerbraic mean of the ex-Gaussian is $\mu$ + $\tau$, the failure to observe a facilitation effect in the standard mean analysis likely arose from facilitation on $\mu$ and interference on $\tau$ canceling each other out. A finding such as this would be impossible looking solely at mean RTs.
 
@@ -419,7 +419,7 @@ This study complies with transparency and openness guidelines. The preregistered
 
 ### Participants
 
-We preregistered a sample size of 216. All participants were recruited through the university subject pool (SONA). A design with a sample size of 216 can detect effect sizes of δ ≥ 0.2 with a probability of at least 0.90, assuming a one-sided criterion for detection that allows for a maximum Type I error rate of α = 0.05. Per our exclusion criteria, we retained participants that were native English speakers, were over the age of 17, had overall accuracy on the LDT greater than 80%, and did not complete the experiment more than once. Due to our exclusion criteria, we oversampled participants. To ensure equal number of participants in each list we randomly chose 36 participants from each list to reach our target sample size.
+We preregistered a sample size of 216. All participants were recruited through the university subject pool (SONA). A design with a sample size of 216 can detect effect sizes of $\delta \geq 0.2$ with a probability of at least 0.90, assuming a one-sided criterion for detection that allows for a maximum Type I error rate of $\alpha = 0.05$. Per our exclusion criteria, we retained participants that were native English speakers, were over the age of 17, had overall accuracy on the LDT greater than 80%, and did not complete the experiment more than once. Due to our exclusion criteria, we oversampled participants. To ensure equal number of participants in each list we randomly chose 36 participants from each list to reach our target sample size.
 
 ### Apparatus and stimuli
 
@@ -1236,7 +1236,7 @@ Given the important theoretical implications of these findings, Experiment 1B se
 
 ### Transparency and Openness
 
-This study was not pregregistered. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiment 1B can be found at https://osf.io/6sy7k/.
+This study was not preregistered. All raw and summary data, materials, and R scripts for pre-processing, analysis, and plotting for Experiment 1B can be found at https://osf.io/6sy7k/.
 
 ### Participants
 
@@ -1996,7 +1996,7 @@ Critically, in tasks such as semantic categorization and pronunciation, word fre
 
 In Experiment 2, we manipulated word frequency (high vs. low) and visual blur (clear, low blur, high blur) within a semantic categorization task, followed by a surprise recognition memory test.
 
-The stage-specific account allows for the possibility that perceptual disfluency and lexical difficulty may interact to engage greater extra- or post-lexical processing, particularly when both factors are present—such as in the case of blurred, low-frequency words. While each manipulation alone may be resolved through more effortful lexical access (reflected in changes to \$\\mu\$), their combination might exceed the limits of lexical-level compensation, thereby recruiting additional control or decision-related processes.
+The stage-specific account allows for the possibility that perceptual disfluency and lexical difficulty may interact to engage greater extra- or post-lexical processing, particularly when both factors are present—such as in the case of blurred, low-frequency words. While each manipulation alone may be resolved through more effortful lexical access (reflected in changes to $\mu$), their combination might exceed the limits of lexical-level compensation, thereby recruiting additional control or decision-related processes.
 
 Accordingly, this view predicts a potential interaction between blurring and word frequency on $\beta$, reflecting increased engagement of late-stage, resource-limited mechanisms. If blurred, low-frequency stimuli are associated with especially long response time tails, this may indicate that processing demands extend beyond initial encoding and into later stages of cognitive control or response selection. However, this increased engagement may not always lead to a memory advantage. When both perceptual and lexical demands are high, limited cognitive resources could become overtaxed, potentially attenuating or eliminating any downstream mnemonic effects.
 
@@ -2844,7 +2844,7 @@ To recapitulate our findings, during encoding, high blurred words showed greater
 
 Turning to recognition memory, high blurred words were more likely to be recognized at test compared to clear words and low blurred words. This pattern arose regardless if context was reinstated at test (Experiment 1B). This pattern replicates the results from @rosner2015. In addition, we showed word frequency (Experiment 2) also modulates the disfluency effect. Namely, low frequency words did not show a disfluency effect.
 
-These findings have several implications. At a theoretical level, the current data suggests that in order for perceptual disfluency to benefit memory it has to be disfluent enough to affect both early and late stages of processing. A manipulation that only produces a general slowing of responses is not sufficient to enact an mnemonic effect. However, an important caveat to this is that processes during encoding of the word itself are not enough to produce an menominc benefit. In Experiment 2, we did not observe better memory for low frequency-high blurred words which are the hardest and presumably receive the most top-down processing. We only observed a disfluency effect for high frequency-high blurred words. This points to the importance of control processes and processing limitations in producing the disfluency effect.
+These findings have several implications. At a theoretical level, the current data suggests that in order for perceptual disfluency to benefit memory it has to be disfluent enough to affect both early and late stages of processing. A manipulation that only produces a general slowing of responses is not sufficient to enact an mnemonic effect. However, an important caveat to this is that processes during encoding of the word itself are not enough to produce an mnemonic benefit. In Experiment 2, we did not observe better memory for low frequency-high blurred words which are the hardest and presumably receive the most top-down processing. We only observed a disfluency effect for high frequency-high blurred words. This points to the importance of control processes and processing limitations in producing the disfluency effect.
 
 We argue the current findings align more closely with the stage-specific account proposed by @ptok2019. While the account was proposed to explain memory effects that require conflict during encoding, like the semantic interference effect, we feel that it is a useful theoretical framework to explain the current findings. In fact, @ptok2019 and @ptok2020 suggested a connection between their framework and perceptual disfluency effects and desirable difficulties, more broadly.
 
