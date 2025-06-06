@@ -98,10 +98,8 @@ language:
   title-block-correspondence-note: "Correspondence concerning this article should be addressed to"
   title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"
 format:
-  #apaquarto-docx: default
-  apaquarto-pdf: 
-    documentmode: doc
-
+  apaquarto-typst: default
+  
 execute: 
   echo: false
   freeze: auto
@@ -162,6 +160,7 @@ library(tidylog)
 library(tidybayes)
 library(hypr)
 library(colorspace)
+library(webshot2)
 library(ragg)
 library(cowplot)
 library(ggtext)
@@ -316,7 +315,6 @@ Typically, there are four observable patterns in the graphical depiction. No obs
 
 ```{r}
 #| echo: false
-#| 
 open_section <- prop_section(type = "continuous")
 block_section(open_section)
 ```
@@ -324,8 +322,7 @@ block_section(open_section)
 ```{r}
 #| label: tbl-predictions
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
-#| apa-twocolumn: true
-#| eval: false
+
 # Create data frame with updated recognition memory predictions
 data <- data.frame(
     Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
@@ -396,8 +393,6 @@ ft <- flextable(data) |>
   bold(part = "header") |>
   set_caption("Note: ↑ = Increase, × = No difference, ↓ = Decrease")
 
-
-
 # Print the table
 ft
 ```
@@ -410,73 +405,6 @@ close_section <- prop_section(
     type = "continuous")
 block_section(close_section)
 ```
-
-```{r}
-
-#| label: tbl-predictions
-#| tbl-cap: "Mapping model predictions to theoretical constructs"
-#| results: 'asis'
-
-library(knitr)
-library(kableExtra)
-library(dplyr)
-
-data <- data.frame(
-  Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
-  Description = rep(c(
-    "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing", 
-    "Perceptual disfluency affects the word recognition process", 
-    "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
-  ), each = 2),
-  Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
-  Contrast = c("High blur vs. Low blur/Clear", "Low blur vs. Clear",
-               "High blur vs. Low blur/Clear", "Low blur vs. Clear",
-               "High blur vs. Low blur/Clear", "Low blur vs. Clear"),
-  ExGaussianPredictions = c(
-    "μ: ×\nτ: ↑", "μ: ×\nτ: ↑",
-    "μ: ↑\nτ: ×", "μ: ×\nτ: ×",
-    "μ: ↑\nτ: ↑", "μ: ×\nτ: ×"
-  ),
-  DDMPredictions = c(
-    "Ter: ×\nv: ↑", "Ter: ×\nv: ↑",
-    "Ter: ↑\nv: ×", "Ter: ×\nv: ×",
-    "Ter: ↑\nv: ↑", "Ter: ×\nv: ×"
-  ),
-  QuantilePlots = c(
-    "Late Difference", "Late Difference", 
-    "Complete Shift", "No Difference", 
-    "Complete Shift + Late Differences", "No Difference"
-  ), 
-  RecognitionMemoryPredictions = c(
-    "High > Low/Clear", "Low > Clear",
-    "High > Low/Clear", "×",
-    "High > Low/Clear", "×"
-  ),
-  stringsAsFactors = FALSE
-) %>%
-  mutate(
-    Account = ifelse(duplicated(Account), "", Account),
-    Description = ifelse(duplicated(Description), "", Description),
-    Loci = ifelse(duplicated(Loci), "", Loci)
-  )
-
-# Create kable table
-kbl(data, booktabs = TRUE, 
-    col.names = c("Account", "Description", "Loci", "Contrast", 
-                  "Ex-Gaussian Predictions", "Drift Diffusion Predictions", 
-                  "Quantile Plots", "Recognition Memory Predictions"),
-    align = c("l", "l", "l", "l", "c", "c", "c", "c"),
-    escape = FALSE, longtable = TRUE) %>%
-  kable_styling(latex_options = c("hold_position", "repeat_header"), 
-                font_size = 9, 
-                position = "center", 
-                full_width = TRUE) %>%
-  landscape() %>%
-  add_footnote("↑ = Increase, × = No difference, ↓ = Decrease", notation = "none")
-
-
-```
-
 
 
 # Experiment 1A: Context Reinstatement
@@ -528,15 +456,9 @@ We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 pos
 
 We report posterior means and 90% credible intervals (CrIs) for one-sided hypotheses (preregistered differences), and 95% CrIs for two-sided hypotheses (against zero). Estimated marginal means were extracted using a combination of `emmeans` [@emmeans], `bayestestR` [@bayestestR], and `brms` [@brms].
 
-Additionally, we report the posterior probability (`Post. Probability`) that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, $P(\delta > 0)$ approached 1, and ER was \> 3.
+Additionally, we report the posterior probability (`Post. Probability`) that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, The posterior probability approached 1, and ER was \> 3.
 
-For all models (excluding the diffusion decision models), we applied ANOVA-style (effects) coding using contrast variables. For the Blur factor in Experiments 1A, 1B, and 2, we defined two orthogonal contrasts to capture the primary comparisons of interest:
-
-Contrast 1 compared High Blur against the average of Clear and Low Blur, coding High Blur as 0.5 and both Clear and Low Blur as –0.5.
-
-Contrast 2 isolated the difference between Low Blur and Clear, with Low Blur coded as 0.5, Clear as –0.5, and High Blur as 0.
-
-In Experiment 2, we also included a Frequency factor, with High Frequency coded as 0.5 and Low Frequency as –0.5.
+For all models (excluding the diffusion decision models), we applied ANOVA-style (effects) coding using contrast variables. For the Blur factor in Experiments 1A, 1B, and 2, we defined two orthogonal contrasts to capture the primary comparisons of interest. Contrast 1 compared High Blur against the average of Clear and Low Blur, coding High Blur as 0.5 and both Clear and Low Blur as –0.5. Contrast 2 isolated the difference between Low Blur and Clear, with Low Blur coded as 0.5, Clear as –0.5, and High Blur as 0. In Experiment 2, we also included a Frequency factor, with High Frequency coded as 0.5 and Low Frequency as –0.5.
 
 Although these contrasts deviate from our preregistered comparisons, we believe they offer a more targeted test of our hypotheses. For transparency, we provide all pairwise comparisons in the accompanying visualizations.
 
@@ -643,7 +565,7 @@ acc_c<-read_rds("https://osf.io/xkgqj/download")
 
 ```{r}
 #| label: tbl-acc1A
-#| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1A
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the Bayesian accuracy model (Experiment 1A)."
 #| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 
 # Run hypotheses
@@ -663,7 +585,7 @@ b <- round_hypothesis(b)
 tab <- bind_rows(a$hypothesis, b$hypothesis) |>
   mutate(
     Hypothesis = c(
-      "High Blur < (Low Blur + Clear)/2",
+      "High Blur < (Low Blur + Clear)",
       "Low Blur < Clear"
     ),
     `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")
@@ -743,25 +665,26 @@ fit_exg1A <- brm(
 
 ```{r}
 #load rdata for model 
-# no intercept model - easier to fit priors on all levels of factor 
-fit_c <- read_rds("https://osf.io/m4nv5/download")
+# no intercept model - easier to fit priors on all levels of factor
+download.file("https://osf.io/m4nv5/download", destfile = "data/fit_sc.rds", mode = "wb")
+fit_sc <- readRDS("data/fit_sc.rds")
 
 ```
 
 ```{r}
 #| label: tbl-exgauss1A
-#| tbl-cap: "Summary of posterior fixed effect estimates for ex-Gaussian parameter hypotheses in Experiment 1A"
-#| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 1A)."
+#| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale."
 
 # Define hypothesis tests
-a <- hypothesis(fit_c, "blur1 > 0")
-b <- hypothesis(fit_c, "blur2 > 0")
+a <- hypothesis(fit_sc, "blur1 > 0")
+b <- hypothesis(fit_sc, "blur2 > 0")
 
-c <- hypothesis(fit_c, "sigma_blur1 > 0")
-d <- hypothesis(fit_c, "sigma_blur2 = 0")
+c <- hypothesis(fit_sc, "sigma_blur1 > 0")
+d <- hypothesis(fit_sc, "sigma_blur2 = 0")
 
-e <- hypothesis(fit_c, "beta_blur1 > 0")
-f <- hypothesis(fit_c, "beta_blur2 = 0")
+e <- hypothesis(fit_sc, "beta_blur1 > 0")
+f <- hypothesis(fit_sc, "beta_blur2 = 0")
  
 # Round all numeric columns in each result
 round_hypothesis <- function(hyp) {
@@ -960,7 +883,7 @@ ggsave(filename='./figures/figure_kde.png',width=10,height=12)
 
 ### RTs: DDM
 
-We suppressed intercepts when modeling DDM parameters \[see [@diffusio2017] and calculated all comparisons manually.
+We suppressed intercepts when modeling DDM parameters [see [@diffusio2017] and calculated all comparisons manually.
 
 ```{r}
 
@@ -1051,16 +974,16 @@ fit_wiener <- read_rds("https://osf.io/hqauz/download")
 
 ```{r}
 #| label: tbl-diffexpt1A
-#| tbl-cap: "Summary of posterior fixed effect estimates for DDM parameter hypotheses in Experiment 1A"
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the DDM (Experiment 1A)"
 #| apa-note: "95% CrI for equivalency tests"
 
 
 # Define contrasts using averages and differences
-a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC) / 2) > 0", dpar = "mu")
-b <- hypothesis(fit_wiener, "blurLB - blurC > 0", dpar = "mu")
+a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC / 2)) < 0")
+b <- hypothesis(fit_wiener, "blurLB - blurC =  0")
 
 c <- hypothesis(fit_wiener, "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0", dpar = "ndt")
-d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC > 0", dpar = "ndt")
+d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC >  0", dpar = "ndt")
 
 # Round numeric columns
 round_hypothesis <- function(hyp) {
@@ -1078,8 +1001,8 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
   mutate(
     Parameter = c("v", "v", "T_er", "T_er"),
     Hypothesis = c(
-      "High Blur < (Low Blur + Clear)",
-      "Low Blur > Clear",
+      "High Blur > (Low Blur + Clear)",
+      "Low Blur  = Clear",
       "High Blur > (Low Blur + Clear)",
       "Low Blur = Clear"
     ),
@@ -1184,7 +1107,7 @@ b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3))
 
 #### Exploratory
 
-##### Bias
+#### Bias
 
 ```{r}
 a <- hypothesis(fit_mem1 , "blurblur1 < 0")
@@ -1403,7 +1326,8 @@ acc_means <- emmeans(fit_acc_noc, specs="blur", type="response")
 
 ```{r}
 #| label: tbl-acc1B
-#| tbl-cap: Summary of posterior fixed effect estimates for accuracy hypotheses in Experiment 1B #| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the Bayesian accuracy model (Experiment 1B)"
+#| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 
 # Run hypotheses
 a <- hypothesis(fit_acc_noc, "blur1 < 0")  # High Blur < (Low Blur + Clear)/2
@@ -1519,19 +1443,19 @@ fit_exg1B <- read_rds("https://osf.io/ajwe4/download")
 
 ```{r}
 #| label: tbl-exgauss1B
-#| tbl-cap: "Summary of posterior fixed effect estimates for Ex-Guassian parmater hypotheses in Experiment 1B"
-#| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 1B)."
+#| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale." 
 
 
 # Define hypothesis tests
-a <- hypothesis(fit_c, "blur1 > 0")
-b <- hypothesis(fit_c, "blur2 > 0")
+a <- hypothesis(fit_exg1B, "blur1 > 0")
+b <- hypothesis(fit_exg1B, "blur2 > 0")
 
-c <- hypothesis(fit_c, "sigma_blur1 > 0")
-d <- hypothesis(fit_c, "sigma_blur2 = 0")
+c <- hypothesis(fit_exg1B, "sigma_blur1 > 0")
+d <- hypothesis(fit_exg1B, "sigma_blur2 = 0")
 
-e <- hypothesis(fit_c, "beta_blur1 > 0")
-f <- hypothesis(fit_c, "beta_blur2 = 0")
+e <- hypothesis(fit_exg1B, "beta_blur1 > 0")
+f <- hypothesis(fit_exg1B, "beta_blur2 = 0")
  
 # Round all numeric columns in each result
 round_hypothesis <- function(hyp) {
@@ -1668,13 +1592,13 @@ fit_wiener <- read_rds("https://osf.io/gy5ab/download")
 
 ```{r}
 #| label: tbl-diffexpt1B
-#| tbl-cap: "Summary of posterior fixed effect estimates for DDM parameter hypotheses in Experiment 1B"
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the DDM (Experiment 1B)"
 #| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 
 
 # Define contrasts using averages and differences
-a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC)/2) < 0", dpar = "mu")
-b <- hypothesis(fit_wiener, "blurLB - blurC < 0", dpar = "mu")
+a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC)/2) < 0")
+b <- hypothesis(fit_wiener, "blurLB - blurC = 0")
 
 c <- hypothesis(fit_wiener, "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0", dpar = "ndt")
 d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC > 0", dpar = "ndt")
@@ -1696,7 +1620,7 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
     Parameter = c("v", "v", "T_er", "T_er"),
     Hypothesis = c(
       "High Blur < (Low Blur + Clear)",
-      "Low Blur < Clear",
+      "Low Blur = Clear",
       "High Blur > (Low Blur + Clear)",
       "Low Blur = Clear"
     ),
@@ -2196,7 +2120,7 @@ emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |>
 
 ```{r}
 #| label: tbl-acc2
-#| tbl-cap: "Summary of posterior fixed effect for accuracy hypothses in Experiment 2"
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the Bayesian accuracy model (Experiment 2)"
 #| apa-note: "95% CrI for equivalency tests"
 
 
@@ -2370,8 +2294,8 @@ fit_sc <- read_rds("http://osf.io/uwcjf/download")
 
 ```{r}
 #| label: tbl-expt2summary
-#| tbl-cap: "Summary of posterior fixed effect estimates for posterior ex-Guassian parameter hypotheses in Experiment 2"
-#| apa-note: "95% CrI for equivalency tests. Sigma and Beta parameters are on the log (logit) scale."
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 2)."
+#| apa-note: "95% CrI for equivalency tests.Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale."
 
 # Read CSVs from the folder and assign to objects
 a <- read_csv("expt2_hypothesis/hypothesis_mu_blur1.csv")
@@ -2398,23 +2322,23 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) |>
     ER = as.numeric(Evid.Ratio),
     `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]"),
     Hypothesis = c(
-      "High Blur (vs. Clear/Low Blur) > 0",
-      "Low Blur - Clear > 0",
-      "High Frequency - Low Frequency < 0",
-      "High Blur (vs. Low Blur/Clear) × Frequency  = 0 ",
-      "Low Blur (vs. Clear) × Frequency = 0",
+      "High Blur  > (vs. Clear/Low Blur) ",
+      "Low Blur >  Clear",
+      "High Frequency <  Low Frequency ",
+      "High Blur (vs. Low Blur/Clear) × Frequency",
+      "Low Blur (vs. Clear) × Frequency",
       
-      "High Blur (vs. Clear/Low Blur) > 0",
-      "Low Blur - Clear < 0",
-      "High Frequency  - Low Frequency < 0",
-      "High Blur (vs. Low Blur/Clear) = 0",
-      "Low Blur (vs. Clear) × Frequency = 0",
+      "High Blur  > (vs. Clear/Low Blur)",
+      "Low Blur <  Clear",
+      "High Frequency < Low Frequency",
+      "High Blur (vs. Low Blur/Clear) x Frequency",
+      "Low Blur (vs. Clear) × Frequency",
       
-      "High Blur (vs. Clear/Low Blur) > 0",
-      "Low Blur (vs. Clear) > 0",
-      "High Frequency - Low Frequency < 0",
-      "High Blur (vs. Low Blur/Clear) × Frequency >  0",
-      "Low Blur (vs. Clear) × Frequency <  0 "
+      "High Blur >  (vs. Clear/Low Blur)",
+      "Low Blur >  (vs. Clear)",
+      "High Frequency < Low Frequency",
+      "High Blur (vs. Low Blur/Clear) × Frequency",
+      "Low Blur (vs. Clear) × Frequency "
     )
   ) |>
   select(Hypothesis, Parameter, Estimate, Est.Error, `90% CrI`, ER, Post.Prob) |>
@@ -2938,7 +2862,7 @@ Furthermore, our distrbution modeling of RTs appears to be a more sensitive meth
 
 While we applied the DDM to inform processes during encoding, there is one case of the DDM being applied to the study of perceptual disfluency during retrieval. In one recent study, @hu2022 examined RTs during retrieval. @hu2022 were primarily interested in how perceptual disfluency manipulated with Sans Forgetica typeface influenced DDM parameters and confidence judgments during recognition. At test, they found a non-significant difference in mean RTs between Sans Forgetica typeface and Arial typeface. However, looking at the DDM parameters, Sans Forgetica and Airal typefaces differed on $T_{er}$, but not drift rate. They also looked at how parameters of the DDM were related to confidence judgments. Higher $T_{er}$ was related to lower confidence and higher drift rate was associated with higher confidence. While their focus was on retrieval and not encoding, this corresponds with what we observed for our low blurred words in our experiments--a weak manipulation affected non-decision time, but not drift rate. Overall, this further highlights the utility of the the DDM in studying perceptual disfluency (and other encoding conflict effects) during encoding and at test.
 
-Finally, at a practical level, we do show that blurring can benefit later memory. However, caution needs to be taken here. First, the current experiments were conducted online using simple materials (i.e., list learning). It is unclear how these effects would generalize to a classroom setting or more educational realistic materials (see @geller2020). Second, participants were not told about the upcoming recognition test. @geller2021 has showed that low test expectancy is an important moderator for this effect. Third, while we did not establish a region of practical equivalence, the size of the disfluency effect appears to be be small in nature. Looking at the default region of proximal equivalence (ROPE) from the `bayestestr` package (here -0.10 -.10 in standardized units) many of the critical contrasts either were completely inside this region or overlapped this region, suggesting negligible differences. For more applied work, this might be well below the smallest effect size of interest. Now this is not to say all research on perceptual disfluency is superfluous. As noted in @geller2021A, a fruitful avenue for future work might be to investigate how perceptual influenced effects processing in every day life where memory is largely incidental [@castel2015].
+Finally, at a practical level, we do show that blurring can benefit later memory. However, caution needs to be taken here. First, the current experiments were conducted online using simple materials (i.e., list learning). It is unclear how these effects would generalize to a classroom setting or more educational realistic materials (see @geller2020). Second, participants were not told about the upcoming recognition test. @geller2021 has showed that low test expectancy is an important moderator for this effect. Third, while we did not establish a region of practical equivalence, the size of the disfluency effect appears to be be small in nature. Looking at the default region of proximal equivalence (ROPE) from the `bayestestr` package (here -0.10 -.10 in standardized units) many of the critical contrasts either were completely inside this region or overlapped this region, suggesting negligible differences. For more applied work, this might be well below the smallest effect size of interest. Now this is not to say all research on perceptual disfluency is superfluous. As noted in @geller2021, a fruitful avenue for future work might be to investigate how perceptual influenced effects processing in every day life where memory is largely incidental [@castel2015].
 
 These results provide some context for the large number of replication failures. Many of the studies looking at disfluency do not take care in ensuring the disfluency manipulation is actually disfluent. Most times, studies use only two levels (disfluent/fluent) and perform analyses that may not be well suited for the type of data they have. As we have hopefully shown here, it is important to take into account the entire RT distribution. By examining the RT distributions of different levels of disfluency we obtained a richer better understanding of the stages or loci manipulations have during encoding. It is our hope that learning and memory researches will begin to use these tools to help understand encoding processes involved in perceptual disfluency effects but also encoding contexts where there is considerable conflict.
 
