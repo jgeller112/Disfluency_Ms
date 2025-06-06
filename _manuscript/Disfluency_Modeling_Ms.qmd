@@ -1057,7 +1057,7 @@ contrasts(mem_c$blur) <- contrast_matrix
 #| eval: false 
 #| 
 #priors for sdt model
-sdt_priors <- c(set_prior("normal(0,1)", class = "b"))
+sdt_priors <- c(set_prior("cauchy(0,0.35)", class = "b"))
 ```
 
 ```{r}
@@ -1839,7 +1839,7 @@ contrasts(mem_nc$isold) <- matrix(c(-0.5, 0.5), ncol = 1)
 #| 
 
 # weak prior
-sdt_priors <- c(set_prior("normal(0,1)", class = "b"))
+sdt_priors <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 fit_mem_nc <- brm(sayold ~ isold*blur + (1+isold*blur|participant) + (1+isold*blur|string), data=mem_nc, 
 warmup = 1000,
@@ -2814,9 +2814,7 @@ tab[, -1] <- t(apply(tab[, -1], 1, round, digits = 3))
 
 Consistent with Experiments 1A and 1B, sensitivity in recognition memory was higher for high-blurred words compared to both clear and low-blurred words (see @fig-m2-emmeans), $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r a$hypothesis$Evid.Ratio`. The difference in recognition between clear and low-blurred words was negligible, with strong evidence in favor of the null hypothesis: $\beta$ = `r b$hypothesis$Estimate`, 95% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r b$hypothesis$Evid.Ratio`.
 
-Low-frequency words were more likely to be recognized than high-frequency words, $\beta$ = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Crucially, there was strong evidence for an interaction between blur and frequency, such that high-frequency words showed a selective memory benefit under high-blur conditions: $\beta$ = `r d$hypothesis$Estimate`, 95% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`.
-
-A second interaction emerged for the comparison between low-blur and clear words: $\beta$ = `r e$hypothesis$Estimate`, 90% CrI \[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`. In this case, recognition was better for low-frequency than high-frequency words when stimuli were presented clearly.
+Low-frequency words were more likely to be recognized than high-frequency words, $\beta$ = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r c$hypothesis$Evid.Ratio`. Crucially, there was strong evidence for an interaction between blur and frequency, such that high-frequency words showed a selective memory benefit under high-blur conditions: $\beta$ = `r d$hypothesis$Estimate`, 95% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r d$hypothesis$Evid.Ratio`. A second interaction emerged for the comparison between low-blur and clear words: $\beta$ = `r e$hypothesis$Estimate`, 90% CrI \[`r e$hypothesis$CI.Lower`, `r e$hypothesis$CI.Upper`\], ER = `r e$hypothesis$Evid.Ratio`. In this case, recognition was also better for high-frequency words when stimuli were presented with low blur. 
 
 ## Discussion
 
