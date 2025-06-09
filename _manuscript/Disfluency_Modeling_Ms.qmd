@@ -102,7 +102,6 @@ format:
   
 execute: 
   echo: false
-  freeze: auto
   warning: false
   message: false
   fig-align: center
@@ -312,58 +311,51 @@ In addition to ex-Gaussian and DDM analyses, we will provide a graphical descrip
 Typically, there are four observable patterns in the graphical depiction. No observable difference occurs when the conditions do not show any noticeable distinction. Late differences emerge when increasing differences appear later in the sequence, suggesting that the conditions diverge over time. A complete shift indicates a consistent difference across all quantiles, signaling an overall shift in the distribution. Finally, early differences reveal distinctions early in the reaction time distribution, suggesting an initial divergence between conditions. maps these patterns onto existing theoretical models of disfluency.
 
 ```{r}
-open_section <- prop_section(type = "continuous")
-block_section(open_section)
-```
-
-```{r}
 #| label: tbl-predictions
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
 
-# Create data frame with updated recognition memory predictions
 data <- data.frame(
-    Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
-    Description = rep(c(
-        "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing", 
-        "Perceptual disfluency affects the word recognition process", 
-        "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
-    ), each = 2),
-    Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
-    Contrast = c("High Blur vs. Low Blur/Clear", "Low Blur vs. Clear",
-                 "High Blur vs. Low Blur/Clear", "Low Blur vs. Clear",
-                 "High Blur vs. Low Blur/Clear", "Low Blur vs. Clear"),
-    ExGaussianPredictions = c(
-        "μ: ×\nτ: ↑", "μ: ×\nτ: ↑",              # Meta-cognitive
-        "μ: ↑\nτ: ×", "μ: ×\nτ: ×",              # Compensatory-processing
-        "μ: ↑\nτ: ↑", "μ: ×\nτ: ×"               # Stage-specific
-    ),
-    DDMPredictions = c(
-        "Tₑᵣ: ×\nv: ↑", "Tₑᵣ: ×\nv: ↑",         # Meta-cognitive
-        "Tₑᵣ: ↑\nv: ×", "Tₑᵣ: ×\nv: ×",         # Compensatory-processing
-        "Tₑᵣ: ↑\nv: ↑", "Tₑᵣ: ×\nv: ×"          # Stage-specific
-    ),
-    QuantilePlots = c(
-        "Late Difference",
-        "Late Difference", 
-        "Complete Shift", 
-        "No Difference", 
-        "Complete Shift + Late Differences", 
-        "No Difference"
-    ), 
-    RecognitionMemoryPredictions = c(
-        "High > Low/Clear", "Low > Clear",      # Meta-cognitive (updated)
-        "High > Low/Clear", "×",               # Compensatory-processing
-        "High > Low/Clear", "×"                # Stage-specific
-    ),
-    stringsAsFactors = FALSE
-) |>
-    dplyr::mutate(
-        Account = ifelse(duplicated(Account), "", Account),
-        Description = ifelse(duplicated(Description), "", Description),
-        Loci = ifelse(duplicated(Loci), "", Loci)
-    )
+  Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
+  Description = rep(c(
+    "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing", 
+    "Perceptual disfluency affects the word recognition process", 
+    "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
+  ), each = 2),
+  Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
+  Contrast = c("High Blur vs. Low Blur/Clear", "Low Blur vs. Clear",
+               "High Blur vs. Low Blur/Clear", "Low Blur vs. Clear",
+               "High Blur vs. Low Blur/Clear", "Low Blur vs. Clear"),
+  ExGaussianPredictions = c(
+    "μ: ×\nτ: ↑", "μ: ×\nτ: ↑",                # Meta-cognitive
+    "μ: ↑\nτ: ×", "μ: ↑\nτ: ×",                # Compensatory-processing (updated)
+    "μ: ↑\nτ: ↑", "μ: ↑\nτ: ×"                 # Stage-specific
+  ),
+  DDMPredictions = c(
+    "Ter: ×\nv: ↑", "Ter: ×\nv: ↑",           # Meta-cognitive
+    "Ter: ↑\nv: ×", "Ter: ↑\nv: ×",           # Compensatory-processing (updated)
+    "Ter: ↑\nv: ↑", "Ter: ×\nv: ×"            # Stage-specific
+  ),
+  QuantilePlots = c(
+    "Late Difference",
+    "Late Difference", 
+    "Complete Shift", 
+    "No Difference", 
+    "Complete Shift + Late Differences", 
+    "No Difference"
+  ), 
+  RecognitionMemoryPredictions = c(
+  "High > Low/Clear", "Low > Clear",        # Meta-cognitive
+  "High > Low/Clear", "Low  ≥ Clear",   # Compensatory-processing (updated)
+  "High > Low/Clear", "×"                   # Stage-specific
+),
+  stringsAsFactors = FALSE
+) |> 
+  dplyr::mutate(
+    Account = ifelse(duplicated(Account), "", Account),
+    Description = ifelse(duplicated(Description), "", Description),
+    Loci = ifelse(duplicated(Loci), "", Loci)
+  )
 
-# Create flextable with symbol note
 ft <- flextable(data) |>
   set_header_labels(
     Account = "Account",
@@ -388,17 +380,11 @@ ft <- flextable(data) |>
   width(j = "QuantilePlots", width = 1.5) |>
   width(j = "RecognitionMemoryPredictions", width = 1.5) |>
   bold(part = "header")
-# Print the table
+
 ft
+
 ```
 
-```{r}
-
-close_section <- prop_section(
-    page_size = page_size(orient = "landscape"), 
-    type = "continuous")
-block_section(close_section)
-```
 
 
 # Experiment 1A: Context Reinstatement
