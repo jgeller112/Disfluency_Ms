@@ -327,12 +327,12 @@ data <- data.frame(
                "High Blur vs. Low Blur/Clear", "Low Blur vs. Clear"),
   ExGaussianPredictions = c(
     "μ: ×\nτ: ↑", "μ: ×\nτ: ↑",                # Meta-cognitive
-    "μ: ↑\nτ: ×", "μ: x\nτ: ×",                # Compensatory-processing (updated)
+    "μ: ↑\nτ: ×", "μ: x\nτ: x",                # Compensatory-processing (updated)
     "μ: ↑\nτ: ↑", "μ: ↑\nτ: ×"                 # Stage-specific
   ),
   DDMPredictions = c(
     "Ter: ×\nv: ↑", "Ter: ×\nv: ↑",           # Meta-cognitive
-    "Ter: ↑\nv: ×", "Ter: ↑\nv: ×",           # Compensatory-processing (updated)
+    "Ter: ↑\nv: ×", "Ter: x\nv: ×",           # Compensatory-processing (updated)
     "Ter: ↑\nv: ↑", "Ter: ×\nv: ×"            # Stage-specific
   ),
   QuantilePlots = c(
