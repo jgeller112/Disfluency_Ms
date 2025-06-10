@@ -98,7 +98,7 @@ language:
   title-block-correspondence-note: "Correspondence concerning this article should be addressed to"
   title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"
 format:
-  apaquarto-docx: default
+  apaquarto-typst: default
   
 execute: 
   echo: false
@@ -327,7 +327,7 @@ data <- data.frame(
                "High Blur vs. Low Blur/Clear", "Low Blur vs. Clear"),
   ExGaussianPredictions = c(
     "μ: ×\nτ: ↑", "μ: ×\nτ: ↑",                # Meta-cognitive
-    "μ: ↑\nτ: ×", "μ: ↑\nτ: ×",                # Compensatory-processing (updated)
+    "μ: ↑\nτ: ×", "μ: x\nτ: ×",                # Compensatory-processing (updated)
     "μ: ↑\nτ: ↑", "μ: ↑\nτ: ×"                 # Stage-specific
   ),
   DDMPredictions = c(
@@ -345,8 +345,8 @@ data <- data.frame(
   ), 
   RecognitionMemoryPredictions = c(
   "High > Low/Clear", "Low > Clear",        # Meta-cognitive
-  "High > Low/Clear", "Low  ≥ Clear",   # Compensatory-processing (updated)
-  "High > Low/Clear", "×"                   # Stage-specific
+  "High > Low/Clear", "Low  =  Clear",   # Compensatory-processing (updated)
+  "High > Low/Clear", "Low  =  Clear"                   # Stage-specific
 ),
   stringsAsFactors = FALSE
 ) |> 
