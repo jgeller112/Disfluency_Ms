@@ -7,3 +7,9 @@
 *.RData
 *.rds
 *.csv
+_manuscript/Disfluency_Modeling_Ms.rmarkdown
+_manuscript/Disfluency_Modeling_Ms_cache/.DS_Store
+/_manuscript/Disfluency_Modeling_Ms_cache
+/_manuscript/Disfluency_Modeling_Ms_files
+_manuscript/figures/.DS_Store
+_manuscript/.DS_Store
