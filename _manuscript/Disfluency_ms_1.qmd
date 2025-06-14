@@ -98,12 +98,7 @@ language:
   title-block-correspondence-note: "Correspondence concerning this article should be addressed to"
   title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"
 format:
-  apaquarto-typst:
-    keep-typ: true
-    list-of-figures: false
-    list-of-tables: false
-    toc: false
-    papersize: "us-letter"
+  apaquarto-docx: default
 execute: 
   echo: false
   warning: false
@@ -113,7 +108,11 @@ execute:
   keep-with-next: true
   code-overflow: wrap
   cache: true
+  ft-align: center
   out-width: 50%
+knitr:
+  opts_chunk: 
+    dev: "ragg_png"
 ---
 
 ```{r}
@@ -221,6 +220,58 @@ theme_update(
 source(here::here("exguass_reparm.R"))
 
 # load ex-gauss family with more traditional mu, sigma, tau
+```
+
+```{r}
+# check if data is in folder, otherwise download itAdd commentMore actions
+check_and_download <- function(filename, url, data_dir = "data") {
+  # Construct full file path
+  file_path <- file.path(data_dir, filename)
+  
+  # Check if file exists
+  if (!file.exists(file_path)) {
+    message("File not found, downloading: ", filename)
+    
+    # Create directory if it doesn't exist
+    if (!dir.exists(data_dir)) {
+      dir.create(data_dir, recursive = TRUE)
+    }
+    
+    # Download the file
+    download.file(url, destfile = file_path, mode = "wb")
+    message("Download complete: ", file_path)
+  } else {
+    message("File already exists: ", file_path)
+  }
+  
+  return(file_path)
+}
+
+data_files <- tribble(
+  ~filename,                                 ~url,
+  "cleaned_context_rt.csv",                 "https://osf.io/xv5bd/download",
+  "weiner_diff_1.rds",                       "https://osf.io/hqauz/download",
+  "blmm_sdt_context.csv",                    "https://osf.io/xjvc7/download",
+  "cleaned_nocontext_rt.csv",               "https://osf.io/excgd/download",
+  "cond_blmm_sdt_contextnot.csv",           "https://osf.io/jw2gx/download",
+  "SC_blmm_sdt.csv",                         "https://osf.io/eapu5/download",
+  "fit_acc_context_1a.rds",                   "https://osf.io/xkgqj/download",
+  "fit_sc.rds",                    "https://osf.io/m4nv5/download", 
+  "blmm_sdt_expt1a_priors_hblbc2.rds", "https://osf.io/dbfwa/download",
+  "fit_acc_weak_nocontext.rds", "https://osf.io/p9xat/download",
+  "ex_gauss_1b.rds", "https://osf.io/ajwe4/download",
+  "weiner_diff_noc (1).rds",  "https://osf.io/gy5ab/download",
+  "blmm_sdt_nc_hblbc.rds", "https://osf.io/yfzke/download",
+  "SC_rt_cleaned.csv", "https://osf.io/29hnd/download", 
+  "acc_blmm_sc_hblbc_moreints.rds", "https://osf.io/2yb7g/download",
+  # "mod_exgauss_HBLBC.rds", "http://osf.io/uwcjf/download",
+  "blmm_sdt_sc_hblbC.rds", "https://osf.io/kh43z/download"
+)
+
+# This assumes your dataframe has columns filename and url
+pwalk(data_files, function(filename, url) {
+  check_and_download(filename, url)
+})
 ```
 
 We live in a world that, even for adults, is, "blooming and buzzing with confusion" [@james1890, p.488]. Despite this noise, we possess the remarkable ability to accomplish perceptual tasks, such as deciphering unclear and unsegmented handwritten cursive words, or actively participating in conversations amidst the chaos of a noisy bar. The ability to deal with a noisy, confusing world, has been a topic of research at the interface between education and cognitive psychology. Decades of work has demonstrated a relationship between encoding difficulty and long-term memory. While making learning harder runs counter to people's beliefs, a host of memory and learning effects show that making encoding more effortful (and thus, more errorful), under certain circumstances, can be beneficial for memory. This effect has popularly become known as the "desirable difficulties" principle [@bjork_making_2011]. Well-documented examples of desirable difficulties include spacing out encoding across multiple sessions rather than massing study during a single session [see @carpenter2022], studying concepts in an interleaved fashion rather than a blocked fashion [@rohrer2007], and generating or retrieving information rather than simply re-reading or studying the information again [@roediger2006; @slamecka1978].
@@ -2563,13 +2614,13 @@ Low-frequency words were more likely to be recognized than high-frequency words,
 
 ## Discussion
 
-Experiment 2 probed how late‐stage processing underlies the mnemonic boost that disfluent stimuli sometimes confer and how that boost interacts with word frequency. Looking at accuracy, we did not see any differences between the levels of blurring, or any interactions with frequency. We did see an accuracy difference between high frequency and low frequency words. This results largely corresponds with results found in @fernández-lópez2022. In line with Experiments 1A and 1B, we observed systematic effects of visual blurring on the response time distribution. High blur led to greater shifting and skewing of the distribution compared to both low blur and clear conditions, while low blur produced more shifting than clear text. Additionally, word frequency significantly affected both the location ($\mu$) and skewness ($\beta$) parameters: low-frequency words were associated with slower responses and increased positive skew. Critically, we observed a significant interaction between blurring and word frequency on the $\beta$ parameter. As seen in @tbl-freq and @fig-quantiledeltaexp2, under high blur, the frequency effect was magnified, with low-frequency words exhibiting a substantially longer tail compared to both low and no blur conditions—indicating more pronounced delays in late-stage processing. This aligns with to work on other perceptual disfluencies like, handwritten cursive [@barnhart2010; @vergara-martínez2021]
+Experiment 2 probed how late-stage processing contributes to the mnemonic boost sometimes conferred by disfluent stimuli, and how this boost interacts with word frequency. Using a word frequency manipulation in combination with a semantic categorization task, we found non-additive effects of frequency and blurring on response time distributions. Specifically, the word frequency effect was magnified for highly blurred words (relative to clear and low-blurred words) and increased across the quantiles (see @tbl-freq), yielding a steeper slope compared to clear and low blurred words (see @fig-quantiledeltaexp2). This magnification was reflected in the $\beta$ parameter, suggesting that when stimuli are degraded by blur and vary in word frequency, late-stage processing during word recognition is substantially impacted. A similar pattern has been reported for other disfluent stimuli, such as hard-to-read handwritten cursive words [@barnhart2010; @vergara-martínez2021].
 
 Turning to memory, both blurred conditions elicited a perceptual disfluency effect relative to their respective baselines. High-frequency words showed a clear memory benefit under both high and low blur, whereas low-frequency words did not. This pattern is particularly striking when considered alongside the response time data. High blur produced a significant interaction on the $\beta$ parameter, with low-frequency words showing a disproportionately longer tail—indicative of greater late-stage processing difficulty. Yet, despite this increased effort, low-frequency words did not exhibit a corresponding memory advantage. In contrast, high-frequency words, which showed relatively smaller $\beta$ increases, did benefit from the disfluency.
 
 The present findings suggest that late-stage processing may be necessary but not sufficient for disfluency-based memory benefits. In our study, high blurring magnified the word frequency effect on $\beta$, indicating more prolonged or effortful late-stage processing—particularly for low-frequency words. However, memory benefits were observed only for high-frequency words, implying that this added processing must be paired with robust lexical access to translate into improved encoding.
 
-Interestingly, low blur words also interacted with frequency, producing a memory advantage for high-frequency words. While this result may initially seem counter intuitive, given that low blur did not significantly increase $\beta$, a closer look reveals a more nuanced picture. Although the 95% credible interval for the blur–frequency interaction on $\beta$ included zero, the evidence ratio (ER = 19.10) provided substantial evidence for a positive effect. Intriguingly, the direction of the effect was reversed from the typical pattern: under low blur, high-frequency words exhibited greater late-stage processing than low-frequency words.
+Interestingly, low blur words also interacted with frequency, producing a memory advantage for high-frequency words. While this result may initially seem counter intuitive, given that low blurred words did not significantly increase $\beta$, a closer look reveals a more nuanced picture. Although the 95% credible interval for the blur–frequency interaction on $\beta$ included zero, the evidence ratio (ER = 19.10) provided substantial evidence for a positive effect. Intriguingly, the direction of the effect was reversed from the typical pattern: under low blur, high-frequency words exhibited greater late-stage processing than low-frequency words.
 
 This finding suggests that high-frequency words may have been more impaired by low blurring, possibly because the disfluency disrupted the otherwise automatic processing of these familiar items, prompting additional extra-lexical processing. Yet, rather than hindering performance, this modest disruption may have facilitated deeper encoding, yielding a selective memory benefit. In contrast, low-frequency words may not have been processed deeply enough to benefit from the added perceptual difficulty. This finding highlights that memory benefits from disfluency are not solely a function of increased processing effort, but rather emerge when perceptual challenge intersects with lexical accessibility in a way that supports enriched encoding.
 
