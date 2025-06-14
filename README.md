@@ -90,7 +90,6 @@ Once in the shell, You can:
 quarto render "~/_manuscript/Disfluency_Modeling_Ms.qmd"
 ```
 
-
 or 
 
 2. Launch your IDE in the correct environment in run code and analyses:
@@ -114,7 +113,7 @@ Finally, it’s also possible to forget {rix} and instead run everything using R
 
   - R 4.4.1 (or later) and RStudio.
 
-  - Quarto 1.6.1 (or later)
+  - Quarto 1.5.54 or earlier (if you want to produce a typst pdf). 
   
   - A C++ compiler and GNU Make. Complete instructions for macOS, Windows, and Linux are available at CmdStan’s documentation. In short, do this:
 
