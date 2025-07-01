@@ -99,9 +99,11 @@ language:
   title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"
 word-count: true
 format:
- #apaquarto-docx: default
-  apaquarto-typst: 
-    papersize: "a4"
+ apaquarto-docx: default
+ apaquarto-html: default
+ apaquarto-pdf:
+    documetmode: man
+  
 execute: 
   echo: false
   warning: false
@@ -140,12 +142,14 @@ required_packages <- c(
   "ragg",
   "tidybayes",
   "tidylog",
-  "tinytable", 
+  "tinytable",
   "tidyverse"
 )
 
 install_missing <- setdiff(required_packages, rownames(installed.packages()))
-if (length(install_missing) > 0) install.packages(install_missing)
+if (length(install_missing) > 0) {
+  install.packages(install_missing)
+}
 ```
 
 ```{r}
@@ -174,7 +178,7 @@ library(cmdstanr)
 library(tinytable)
 library(tibble)
 
-options(timeout = 5000)
+options(timeout = 10000)
 ```
 
 ```{r}
@@ -189,7 +193,6 @@ process_ER_column <- function(x) ifelse(is.infinite(x), "Inf", x)
 #| label: ggplot theme
 #| echo: false
 
-
 # Set up your theme
 bold <- element_text(face = "bold", color = "black", size = 16) #axis bold
 theme_set(theme_minimal(base_size = 16, base_family = "Times New Roman"))
@@ -199,20 +202,34 @@ theme_update(
   axis.title.x = element_text(color = "grey30", margin = margin(t = 7)),
   axis.title.y = element_text(color = "grey30", margin = margin(r = 7)),
   axis.text = element_text(color = "grey50"),
-  axis.ticks =  element_line(color = "grey92", linewidth = .4),
+  axis.ticks = element_line(color = "grey92", linewidth = .4),
   axis.ticks.length = unit(.6, "lines"),
   legend.position = "top",
-  plot.title = element_text(hjust = 0, color = "black", 
-                            family = "Times New Roman",
-                            size = 21, margin = margin(t = 10, b = 35)),
-  plot.subtitle = element_text(hjust = 0, face = "bold", color = "grey30",
-                               family = "Arial", 
-                               size = 14, margin = margin(0, 0, 25, 0)),
+  plot.title = element_text(
+    hjust = 0,
+    color = "black",
+    family = "Times New Roman",
+    size = 21,
+    margin = margin(t = 10, b = 35)
+  ),
+  plot.subtitle = element_text(
+    hjust = 0,
+    face = "bold",
+    color = "grey30",
+    family = "Arial",
+    size = 14,
+    margin = margin(0, 0, 25, 0)
+  ),
   plot.title.position = "plot",
-  plot.caption = element_text(color = "grey50", size = 10, hjust = 1,
-                              family = "Times New Roman", 
-                              lineheight = 1.05, margin = margin(30, 0, 0, 0)),
-  plot.caption.position = "plot", 
+  plot.caption = element_text(
+    color = "grey50",
+    size = 10,
+    hjust = 1,
+    family = "Times New Roman",
+    lineheight = 1.05,
+    margin = margin(30, 0, 0, 0)
+  ),
+  plot.caption.position = "plot",
   plot.margin = margin(rep(20, 4))
 )
 ```
@@ -226,49 +243,67 @@ source(here::here("exguass_reparm.R"))
 ```
 
 ```{r}
+#| eval: false
 # check if data is in folder, otherwise download itAdd commentMore actions
 check_and_download <- function(filename, url, data_dir = "data") {
   # Construct full file path
   file_path <- file.path(data_dir, filename)
-  
+
   # Check if file exists
   if (!file.exists(file_path)) {
     message("File not found, downloading: ", filename)
-    
+
     # Create directory if it doesn't exist
     if (!dir.exists(data_dir)) {
       dir.create(data_dir, recursive = TRUE)
     }
-    
+
     # Download the file
     download.file(url, destfile = file_path, mode = "wb")
     message("Download complete: ", file_path)
   } else {
     message("File already exists: ", file_path)
   }
-  
+
   return(file_path)
 }
 
 data_files <- tribble(
-  ~filename,                                 ~url,
-  "cleaned_context_rt.csv",                 "https://osf.io/xv5bd/download",
-  "weiner_diff_1.rds",                       "https://osf.io/hqauz/download",
-  "blmm_sdt_context.csv",                    "https://osf.io/xjvc7/download",
-  "cleaned_nocontext_rt.csv",               "https://osf.io/excgd/download",
-  "cond_blmm_sdt_contextnot.csv",           "https://osf.io/jw2gx/download",
-  "SC_blmm_sdt.csv",                         "https://osf.io/eapu5/download",
-  "fit_acc_context_1a.rds",                   "https://osf.io/xkgqj/download",
-  "fit_sc.rds",                    "https://osf.io/m4nv5/download", 
-  "blmm_sdt_expt1a_priors_hblbc2.rds", "https://osf.io/dbfwa/download",
-  "fit_acc_weak_nocontext.rds", "https://osf.io/p9xat/download",
-  "ex_gauss_1b.rds", "https://osf.io/ajwe4/download",
-  "weiner_diff_noc (1).rds",  "https://osf.io/gy5ab/download",
-  "blmm_sdt_nc_hblbc.rds", "https://osf.io/yfzke/download",
-  "SC_rt_cleaned.csv", "https://osf.io/29hnd/download", 
-  "acc_blmm_sc_hblbc_moreints.rds", "https://osf.io/2yb7g/download",
+  ~filename,
+  ~url,
+  "cleaned_context_rt.csv",
+  "https://osf.io/xv5bd/download",
+  "weiner_diff_1.rds",
+  "https://osf.io/hqauz/download",
+  "blmm_sdt_context.csv",
+  "https://osf.io/xjvc7/download",
+  "cleaned_nocontext_rt.csv",
+  "https://osf.io/excgd/download",
+  "cond_blmm_sdt_contextnot.csv",
+  "https://osf.io/jw2gx/download",
+  "SC_blmm_sdt.csv",
+  "https://osf.io/eapu5/download",
+  "fit_acc_context_1a.rds",
+  "https://osf.io/xkgqj/download",
+  "fit_sc.rds",
+  "https://osf.io/m4nv5/download",
+  "blmm_sdt_expt1a_priors_hblbc2.rds",
+  "https://osf.io/dbfwa/download",
+  "fit_acc_weak_nocontext.rds",
+  "https://osf.io/p9xat/download",
+  "ex_gauss_1b.rds",
+  "https://osf.io/ajwe4/download",
+  "weiner_diff_noc (1).rds",
+  "https://osf.io/gy5ab/download",
+  "blmm_sdt_nc_hblbc.rds",
+  "https://osf.io/yfzke/download",
+  "SC_rt_cleaned.csv",
+  "https://osf.io/29hnd/download",
+  "acc_blmm_sc_hblbc_moreints.rds",
+  "https://osf.io/2yb7g/download",
   # "mod_exgauss_HBLBC.rds", "http://osf.io/uwcjf/download",
-  "blmm_sdt_sc_hblbC.rds", "https://osf.io/kh43z/download"
+  "blmm_sdt_sc_hblbC.rds",
+  "https://osf.io/kh43z/download"
 )
 
 # This assumes your dataframe has columns filename and url
@@ -367,41 +402,64 @@ Typically, there are four observable patterns in the graphical depiction. No obs
 #| apa-note: "↑ = bigger ; ↓ = smaller;  x = no effect on parameter of interest"
 
 data <- data.frame(
-  Account = rep(c("Meta-cognitive", "Compensatory-processing", "Stage-specific"), each = 2),
-  Description = rep(c(
-    "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing", 
-    "Perceptual disfluency affects the word recognition process", 
-    "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
-  ), each = 2),
-  Loci = rep(c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"), each = 2),
-  Contrast = c("High blur vs. Low blur/Clear", "Low blur vs. Clear",
-               "High blur vs. Low blur/Clear", "Low blur vs. Clear",
-               "High blur vs. Low blur/Clear", "Low blur vs. Clear"),
+  Account = rep(
+    c("Meta-cognitive", "Compensatory-processing", "Stage-specific"),
+    each = 2
+  ),
+  Description = rep(
+    c(
+      "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing",
+      "Perceptual disfluency affects the word recognition process",
+      "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
+    ),
+    each = 2
+  ),
+  Loci = rep(
+    c("Post-lexical", "Lexical/semantic", "Lexical/semantic and Post-lexical"),
+    each = 2
+  ),
+  Contrast = c(
+    "High blur vs. Low blur/Clear",
+    "Low blur vs. Clear",
+    "High blur vs. Low blur/Clear",
+    "Low blur vs. Clear",
+    "High blur vs. Low blur/Clear",
+    "Low blur vs. Clear"
+  ),
   ExGaussianPredictions = c(
-    "μ: ×\nτ: ↑", "μ: ×\nτ:↑ ",                # Meta-cognitive
-    "μ: ↑\nτ: ×", "μ: x\nτ: x",                # Compensatory-processing (updated)
-    "μ: ↑\nτ: ↑", "μ: ↑\nτ: ×"                 # Stage-specific
+    "μ: ×\nτ: ↑",
+    "μ: ×\nτ:↑ ", # Meta-cognitive
+    "μ: ↑\nτ: ×",
+    "μ: x\nτ: x", # Compensatory-processing (updated)
+    "μ: ↑\nτ: ↑",
+    "μ: ↑\nτ: ×" # Stage-specific
   ),
   DDMPredictions = c(
-    "Ter: ×\nv: ↓", "Ter: ×\nv: ↓",           # Meta-cognitive
-    "Ter: ↑\nv: ×", "Ter: x\nv: ×",           # Compensatory-processing (updated)
-    "Ter: ↑\nv: ↓", "Ter: ×\nv: ×"            # Stage-specific
+    "Ter: ×\nv: ↓",
+    "Ter: ×\nv: ↓", # Meta-cognitive
+    "Ter: ↑\nv: ×",
+    "Ter: x\nv: ×", # Compensatory-processing (updated)
+    "Ter: ↑\nv: ↓",
+    "Ter: ×\nv: ×" # Stage-specific
   ),
   QuantilePlots = c(
     "Late Difference",
-    "Late Difference", 
-    "Complete Shift", 
-    "No Difference", 
-    "Complete Shift + Late Differences", 
+    "Late Difference",
+    "Complete Shift",
+    "No Difference",
+    "Complete Shift + Late Differences",
     "No Difference"
-  ), 
+  ),
   RecognitionMemoryPredictions = c(
-  "High > Low/clear", "Low > clear",        # Meta-cognitive
-  "High > Low/clear", "Low  =  clear",   # Compensatory-processing (updated)
-  "High > Low/clear", "Low  =  clear"                   # Stage-specific
-),
+    "High > Low/clear",
+    "Low > clear", # Meta-cognitive
+    "High > Low/clear",
+    "Low  =  clear", # Compensatory-processing (updated)
+    "High > Low/clear",
+    "Low  =  clear" # Stage-specific
+  ),
   stringsAsFactors = FALSE
-) |> 
+) |>
   dplyr::mutate(
     Account = ifelse(duplicated(Account), "", Account),
     Description = ifelse(duplicated(Description), "", Description),
@@ -420,9 +478,21 @@ ft <- flextable(data) |>
     RecognitionMemoryPredictions = "Recognition Memory Predictions"
   ) |>
   merge_v(j = c("Account", "Description", "Loci")) |>
-  align(j = c("Account", "Description", "Loci", "Contrast"), align = "left", part = "body") |>
-  align(j = c("ExGaussianPredictions", "DDMPredictions", "QuantilePlots", "RecognitionMemoryPredictions"), 
-        align = "center", part = "body") |>
+  align(
+    j = c("Account", "Description", "Loci", "Contrast"),
+    align = "left",
+    part = "body"
+  ) |>
+  align(
+    j = c(
+      "ExGaussianPredictions",
+      "DDMPredictions",
+      "QuantilePlots",
+      "RecognitionMemoryPredictions"
+    ),
+    align = "center",
+    part = "body"
+  ) |>
   width(j = "Account", width = 1) |>
   width(j = "Description", width = 2) |>
   width(j = "Loci", width = 1) |>
@@ -515,17 +585,17 @@ All models presented no divergences, and all chains mixed well and produced comp
 ### Accuracy
 
 ```{r}
-#blur_acc <- read_csv("https://osf.io/xv5bd/download")
-blur_acc <- read_csv("data/cleaned_context_rt.csv")
+blur_acc <- read_csv("https://osf.io/xv5bd/download")
+#blur_acc <- read_csv("data/cleaned_context_rt.csv")
 ```
 
 ```{r}
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
-blur_acc <- blur_acc  |>
-    dplyr::filter(lex=="m")
+blur_acc <- blur_acc |>
+  dplyr::filter(lex == "m")
 
-blur_acc_new<- blur_acc |>
+blur_acc_new <- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
 
@@ -539,9 +609,14 @@ The analysis of accuracy is based on `r dim(blur_acc)[1]` data points. After rem
 
 # Create custom contrast matrix manually
 contrast_matrix <- matrix(
-  c(-.5,  -.5,   # C
-     .5,  0,   # HB
-     -.5, .5),  # LB
+  c(
+    -.5,
+    -.5, # C
+    .5,
+    0, # HB
+    -.5,
+    .5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -560,7 +635,8 @@ contrasts(blur_acc_new$blur) <- contrast_matrix
 prior_exp1 <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 #fit model
-fit_acc_weak <- brm(corr ~ blur + (1 + blur | participant) + (1 + blur | string),
+fit_acc_weak <- brm(
+  corr ~ blur + (1 + blur | participant) + (1 + blur | string),
   data = blur_acc_new,
   warmup = 1000,
   iter = 5000,
@@ -573,7 +649,7 @@ fit_acc_weak <- brm(corr ~ blur + (1 + blur | participant) + (1 + blur | string)
   backend = "cmdstanr",
   save_pars = save_pars(all = T),
   sample_prior = T,
-  seed=666,
+  seed = 666,
   threads = threading(4),
   file = "fit_acc_context"
 )
@@ -581,8 +657,8 @@ fit_acc_weak <- brm(corr ~ blur + (1 + blur | participant) + (1 + blur | string)
 
 ```{r}
 # get file from osf
-# acc_c <- read_rds("https://osf.io/xkgqj/download")
-acc_c <- read_rds("data/fit_acc_context_1a.rds")
+acc_c <- read_rds("https://osf.io/xkgqj/download")
+#acc_c <- read_rds("data/fit_acc_context_1a.rds")
 ```
 
 ```{r}
@@ -591,12 +667,13 @@ acc_c <- read_rds("data/fit_acc_context_1a.rds")
 #| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 
 # Run hypotheses
-a <- hypothesis(acc_c, "blur1 < 0")  # high blur < (low blur + clear)/2
-b <- hypothesis(acc_c, "blur2 = 0")  # low blur < clear
+a <- hypothesis(acc_c, "blur1 < 0") # high blur < (low blur + clear)/2
+b <- hypothesis(acc_c, "blur2 = 0") # low blur < clear
 
 # Round numeric outputs
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -622,8 +699,8 @@ tab <- bind_rows(a$hypothesis, b$hypothesis) |>
 
 # Create the flextable
 acc_summary <- flextable(tab) |>
-  theme_apa()  |>
-  width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  theme_apa() |>
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 
 acc_summary
@@ -635,18 +712,18 @@ Model estimates can be found in @tbl-acc1A. High blur words had lower accuracy c
 
 ```{r}
 #load data from osf
-# rts <- read_csv("https://osf.io/xv5bd/download")
-rts <- read_csv("data/cleaned_context_rt.csv")
+rts <- read_csv("https://osf.io/xv5bd/download")
+#rts <- read_csv("data/cleaned_context_rt.csv")
 ```
 
 ```{r}
-blur_rt<- rts |>
+blur_rt <- rts |>
   group_by(participant) |>
-   dplyr::filter(corr==1, lex=="m")#only include nonwords
+  dplyr::filter(corr == 1, lex == "m") #only include nonwords
 
-blur_rt_new <- blur_rt |> 
-  dplyr::filter(rt >= .2 & rt <= 2.5)|> # remove high and low RTs
-    mutate(rt_ms=rt*1000)
+blur_rt_new <- blur_rt |>
+  dplyr::filter(rt >= .2 & rt <= 2.5) |> # remove high and low RTs
+  mutate(rt_ms = rt * 1000)
 ```
 
 The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`).
@@ -654,9 +731,10 @@ The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1
 ```{r}
 #| eval: false
 bform_exg1 <- bf(
-rt ~  blur + (1 + blur |p| participant) + (1 + blur|i| string),
-sigma ~ blur + (1 + blur |p|participant) + (1 + blur |i| string),
-beta ~ blur + (1 + blur |p|participant) + (1 + blur |i| string))
+  rt ~ blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  sigma ~ blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  beta ~ blur + (1 + blur | p | participant) + (1 + blur | i | string)
+)
 ```
 
 ```{r}
@@ -664,28 +742,35 @@ beta ~ blur + (1 + blur |p|participant) + (1 + blur |i| string))
 prior_exp1 <- c(prior("normal(0,10)", class = "b", coef = ""))
 
 fit_exg1A <- brm(
-  bform_exg1, data = blur_rt_new,
+  bform_exg1,
+  data = blur_rt_new,
   warmup = 1000,
   iter = 5000,
   prior = prior_exp1,
   family = three_param_exgauss,
   stanvars = three_param_exg_stanvars,
   init = 0,
-  cores = 4, 
-  file="mod_exgauss_1B", 
-  chains=4, 
-  seed=666, 
-  sample_prior = T, 
-  save_pars = save_pars(all=T),
-  control = list(adapt_delta = 0.8), 
-  backend="cmdstanr", 
-  threads = threading(2))
+  cores = 4,
+  file = "mod_exgauss_1B",
+  chains = 4,
+  seed = 666,
+  sample_prior = T,
+  save_pars = save_pars(all = T),
+  control = list(adapt_delta = 0.8),
+  backend = "cmdstanr",
+  threads = threading(2)
+)
 ```
 
 ```{r}
-#load rdata for model 
+#load rdata for model
 # no intercept model - easier to fit priors on all levels of factor
-# download.file("https://osf.io/m4nv5/download", destfile = "data/fit_sc.rds", mode = "wb")
+
+download.file(
+  "https://osf.io/m4nv5/download",
+  destfile = "data/fit_sc.rds",
+  mode = "wb"
+)
 fit_sc <- readRDS("data/fit_sc.rds")
 ```
 
@@ -703,10 +788,11 @@ d <- hypothesis(fit_sc, "sigma_blur2 = 0")
 
 e <- hypothesis(fit_sc, "beta_blur1 > 0")
 f <- hypothesis(fit_sc, "beta_blur2 = 0")
- 
+
 # Round all numeric columns in each result
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -718,7 +804,14 @@ e <- round_hypothesis(e)
 f <- round_hypothesis(f)
 
 # Combine into one table
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) |> 
+tab <- bind_rows(
+  a$hypothesis,
+  b$hypothesis,
+  c$hypothesis,
+  d$hypothesis,
+  e$hypothesis,
+  f$hypothesis
+) |>
   mutate(
     Parameter = c("Mu", "Mu", "Sigma", "Sigma", "Beta", "Beta"),
     Hypothesis = c(
@@ -742,7 +835,7 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypot
 # Create flextable
 flextable(tab) |>
   theme_apa() |>
-  width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 ```
 
@@ -753,41 +846,47 @@ Analyses of the σ and τ parameters yielded a similar pattern. Variance was hig
 Finally, there was greater skewing for high blurred words compared to clear and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r round(e$hypothesis$Evid.Ratio, 3)`. There was strong evidence for no difference between low blurred and clear words, *b* = `r round(f$hypothesis$Estimate, 3)`, 90% CrI \[`r round(f$hypothesis$CI.Lower, 3)`, `r round(f$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
 
 ```{r}
-#Delta plots (one per subject) 
+#Delta plots (one per subject)
 quibble <- function(x, q = seq(.1, .9, .2)) {
   tibble(x = quantile(x, q), q = q)
 }
 
 data.quantiles <- rts |>
-  dplyr::filter(rt >= .2 | rt <= 2.5) |> 
-  dplyr::group_by(participant,blur,corr) |>
-  dplyr::filter(lex=="m")|>
-  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) |> 
+  dplyr::filter(rt >= .2 | rt <= 2.5) |>
+  dplyr::group_by(participant, blur, corr) |>
+  dplyr::filter(lex == "m") |>
+  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) |>
   tidyr::unnest(RT)
 
 
 data.delta <- data.quantiles |>
-  dplyr::filter(corr==1) |>
+  dplyr::filter(corr == 1) |>
   dplyr::select(-corr) |>
   dplyr::group_by(participant, blur, q) |>
-  dplyr::summarize(RT=mean(x))
+  dplyr::summarize(RT = mean(x))
 
 
 #Delta plots (based on vincentiles)
 vincentiles <- data.quantiles |>
-  dplyr::filter(corr==1) |>
+  dplyr::filter(corr == 1) |>
   dplyr::select(-corr) |>
-  dplyr::group_by(blur,q) |>
-  dplyr::summarize(RT=mean(x)) 
+  dplyr::group_by(blur, q) |>
+  dplyr::summarize(RT = mean(x))
 
-v=vincentiles |>
-  dplyr::group_by(blur,q) |>
-  dplyr::summarise(MRT=mean(RT))
+v = vincentiles |>
+  dplyr::group_by(blur, q) |>
+  dplyr::summarise(MRT = mean(RT))
 
 v <- v |>
-  mutate(blur=ifelse(blur=="HB", "High blur", ifelse(blur=="LB", "Low blur", "Clear")))
+  mutate(
+    blur = ifelse(
+      blur == "HB",
+      "High blur",
+      ifelse(blur == "LB", "Low blur", "Clear")
+    )
+  )
 
-v$blur<- factor(v$blur, level=c("High blur", "Low blur", "Clear"))
+v$blur <- factor(v$blur, level = c("High blur", "Low blur", "Clear"))
 
 p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   geom_line(size = 1) +
@@ -796,78 +895,125 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   theme(legend.title = element_blank()) +
   coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
-  geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
-  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A", colour = "Blur Condition") + # Optional tag for labeling
+  geom_label_repel(
+    data = v,
+    aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(
+    x = "Quantiles",
+    y = "Response latencies in ms",
+    tag = "A",
+    colour = "Blur Condition"
+  ) + # Optional tag for labeling
   theme_minimal(base_size = 16) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
 ```{r}
- v_chb <- v |>
-    dplyr::filter(blur=="Clear" | blur=="High blur") |>
-    dplyr::group_by(q)|>
-     mutate(mean_rt = mean(MRT)*1000) |>
-     ungroup() |> select(-q) |>
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-    mutate(diff=`High blur`*1000-Clear*1000)
- 
-p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) + 
+v_chb <- v |>
+  dplyr::filter(blur == "Clear" | blur == "High blur") |>
+  dplyr::group_by(q) |>
+  mutate(mean_rt = mean(MRT) * 1000) |>
+  ungroup() |>
+  select(-q) |>
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff = `High blur` * 1000 - Clear * 1000)
+
+p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
   theme(legend.position = "none") +
-    theme_minimal(base_size=16)+
-scale_y_continuous(breaks=seq(-10,440,50)) +
-  scale_x_continuous(breaks=seq(600,1300, 100))+
-  coord_cartesian(xlim=c(600 ,1300), ylim = c(-10, 440)) +
-   geom_label_repel(data=v_chb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+
-  labs( title = "Delta Plots: Clear - High blur", x = "", y = "Group differences", tag = "B")
+  theme_minimal(base_size = 16) +
+  scale_y_continuous(breaks = seq(-10, 440, 50)) +
+  scale_x_continuous(breaks = seq(600, 1300, 100)) +
+  coord_cartesian(xlim = c(600, 1300), ylim = c(-10, 440)) +
+  geom_label_repel(
+    data = v_chb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(
+    title = "Delta Plots: Clear - High blur",
+    x = "",
+    y = "Group differences",
+    tag = "B"
+  )
 ```
 
 ```{r}
 v_clb <- v |>
-    dplyr::filter(blur=="Clear" | blur=="Low blur") |>
-    dplyr::group_by(q)|>
-     mutate(mean_rt = mean(MRT)*1000) |>
-     ungroup() |> 
-   select(-q) |>
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-    mutate(diff=`Low blur`*1000-Clear*1000)
- 
-p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) + 
+  dplyr::filter(blur == "Clear" | blur == "Low blur") |>
+  dplyr::group_by(q) |>
+  mutate(mean_rt = mean(MRT) * 1000) |>
+  ungroup() |>
+  select(-q) |>
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff = `Low blur` * 1000 - Clear * 1000)
+
+p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
-  theme(legend.position = "none") + 
-scale_y_continuous(breaks=seq(-10,440,50)) +
-  scale_x_continuous(breaks=seq(600,1300, 100))+
-    coord_cartesian(xlim=c(600 ,1300), ylim = c(-10, 440)) +
-    geom_label_repel(data=v_clb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10) + 
-  labs( title = "Delta Plots: Low blur - Clear", x = "Mean RT per quantile", y = "")
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = seq(-10, 440, 50)) +
+  scale_x_continuous(breaks = seq(600, 1300, 100)) +
+  coord_cartesian(xlim = c(600, 1300), ylim = c(-10, 440)) +
+  geom_label_repel(
+    data = v_clb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(
+    title = "Delta Plots: Low blur - Clear",
+    x = "Mean RT per quantile",
+    y = ""
+  )
 ```
 
 ```{r}
 v_hlb <- v |>
-  dplyr::filter(blur=="High blur" | blur=="Low blur") |>
-  dplyr::group_by(q)|>
-  mutate(mean_rt = mean(MRT)*1000) |>
-     ungroup() |> 
-   select(-q) |>
+  dplyr::filter(blur == "High blur" | blur == "Low blur") |>
+  dplyr::group_by(q) |>
+  mutate(mean_rt = mean(MRT) * 1000) |>
+  ungroup() |>
+  select(-q) |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-  mutate(diff=`High blur`*1000-`Low blur`*1000)
+  mutate(diff = `High blur` * 1000 - `Low blur` * 1000)
 
-p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) + 
+p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 16) + 
-  theme(legend.position = "none") + 
-  scale_y_continuous(breaks=seq(-10,440,50)) +
-    scale_x_continuous(breaks=seq(600,1300, 100))+
-    coord_cartesian(xlim=c(600 ,1300), ylim = c(-10, 440)) +
-    geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+ 
-  labs( title = "Delta Plots: High blur - Low blur", x = "", y = "")
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = seq(-10, 440, 50)) +
+  scale_x_continuous(breaks = seq(600, 1300, 100)) +
+  coord_cartesian(xlim = c(600, 1300), ylim = c(-10, 440)) +
+  geom_label_repel(
+    data = v_hlb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(title = "Delta Plots: High blur - Low blur", x = "", y = "")
 ```
 
 ```{r}
@@ -876,14 +1022,14 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 #| fig-width: 15
 #| fig-height: 10
 
-delta_comb = (p1+p2+p3)
+delta_comb = (p1 + p2 + p3)
 
 combined_plot <- p / delta_comb
 
 combined_plot
- # Automatically labels rows as A, B
+# Automatically labels rows as A, B
 
-ggsave(filename='./figures/figure_kde.png',width=10,height=12)
+ggsave(filename = './figures/figure_kde.png', width = 10, height = 12)
 ```
 
 ### RTs: DDM
@@ -891,57 +1037,74 @@ ggsave(filename='./figures/figure_kde.png',width=10,height=12)
 We suppressed intercepts when modeling DDM parameters [see @diffusio2017] and calculated all comparisons manually.
 
 ```{r}
-blur_rt_diff<- rts |>
+blur_rt_diff <- rts |>
   group_by(participant) |>
-  dplyr::filter(rt >= .2 & rt <= 2.5)|>
-  dplyr::filter(lex=="m")
+  dplyr::filter(rt >= .2 & rt <= 2.5) |>
+  dplyr::filter(lex == "m")
 ```
 
 ```{r}
 #| eval: false
 
-formula <- bf(rt | dec(corr) ~ 0 + blur + 
-                (1 + blur|p|participant) + (1+blur|i|string),  
-              ndt ~ 0 + blur + (1 + blur|p|participant) + (1+blur|i|string),
-              bias = .5)
+formula <- bf(
+  rt | dec(corr) ~
+    0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  ndt ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  bias = .5
+)
 
 
 bprior <- prior(normal(0, 1), class = b) +
-  prior(normal(0, 1), class = b, dpar = ndt)+
+  prior(normal(0, 1), class = b, dpar = ndt) +
   prior(normal(0, 1), class = sd) +
-  prior(normal(0, 1), class = sd, dpar = ndt) + 
-  prior("normal(0, 0.3)", class = "sd", group = "participant")+ 
+  prior(normal(0, 1), class = sd, dpar = ndt) +
+  prior("normal(0, 0.3)", class = "sd", group = "participant") +
   prior("normal(0, 0.3)", class = "sd", group = "string")
 ```
 
 ```{r}
 #| eval: false
-#| 
-make_stancode(formula, 
-              family = wiener(link_bs = "identity", 
-                              link_ndt = "identity",
-                              link_bias = "identity"),
-              data = blur_rt_diff, 
-              prior = bprior)
+#|
+make_stancode(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
 
-tmp_dat <- make_standata(formula, 
-                         family = wiener(link_bs = "identity", 
-                              link_ndt = "identity",
-                              link_bias = "identity"),
-                            data = blur_rt_diff, prior = bprior)
+tmp_dat <- make_standata(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
 str(tmp_dat, 1, give.attr = FALSE)
 
 initfun <- function() {
   list(
     b = rnorm(tmp_dat$K),
-    bs=.5, 
+    bs = .5,
     b_ndt = runif(tmp_dat$K_ndt, 0.1, 0.15),
     sd_1 = runif(tmp_dat$M_1, 0.5, 1),
     sd_2 = runif(tmp_dat$M_2, 0.5, 1),
-    z_1 = matrix(rnorm(tmp_dat$M_1*tmp_dat$N_1, 0, 0.01),
-                 tmp_dat$M_1, tmp_dat$N_1),
-    z_2 = matrix(rnorm(tmp_dat$M_2*tmp_dat$N_2, 0, 0.01),
-                 tmp_dat$M_2, tmp_dat$N_2),
+    z_1 = matrix(
+      rnorm(tmp_dat$M_1 * tmp_dat$N_1, 0, 0.01),
+      tmp_dat$M_1,
+      tmp_dat$N_1
+    ),
+    z_2 = matrix(
+      rnorm(tmp_dat$M_2 * tmp_dat$N_2, 0, 0.01),
+      tmp_dat$M_2,
+      tmp_dat$N_2
+    ),
     L_1 = diag(tmp_dat$M_1),
     L_2 = diag(tmp_dat$M_2)
   )
@@ -951,23 +1114,31 @@ initfun <- function() {
 ```{r}
 #| eval: false
 
-fit_wiener1 <- brm(formula, 
-                  data = blur_rt_diff,
-                  family = wiener(link_bs = "identity", 
-                                  link_ndt = "identity",
-                                  link_bias = "identity"),
-                  prior = bprior, init=initfun,
-                  iter = 2000, warmup = 500, 
-                  chains = 4, cores = 4,
-                  file="weiner_diff_1", 
-                  backend = "cmdstanr", threads = threading(4), 
-                  control = list(max_treedepth = 15))
+fit_wiener1 <- brm(
+  formula,
+  data = blur_rt_diff,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  prior = bprior,
+  init = initfun,
+  iter = 2000,
+  warmup = 500,
+  chains = 4,
+  cores = 4,
+  file = "weiner_diff_1",
+  backend = "cmdstanr",
+  threads = threading(4),
+  control = list(max_treedepth = 15)
+)
 ```
 
 ```{r}
 #diff object on osf
-# fit_wiener <- read_rds("https://osf.io/hqauz/download")
-fit_wiener <- read_rds("data/weiner_diff_1.rds")
+fit_wiener <- read_rds("https://osf.io/hqauz/download")
+#fit_wiener <- read_rds("data/weiner_diff_1.rds")
 ```
 
 ```{r}
@@ -979,12 +1150,17 @@ fit_wiener <- read_rds("data/weiner_diff_1.rds")
 a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC / 2)) < 0")
 b <- hypothesis(fit_wiener, "blurLB - blurC =  0")
 
-c <- hypothesis(fit_wiener, "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0", dpar = "ndt")
+c <- hypothesis(
+  fit_wiener,
+  "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0",
+  dpar = "ndt"
+)
 d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC >  0", dpar = "ndt")
 
 # Round numeric columns
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -1016,15 +1192,15 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
 # Generate flextable
 flextable(tab) |>
   theme_apa() |>
-  width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 ```
 
 A summary of the diffusion model results can be found in @tbl-diffexpt1A. There was strong evidence that high blurred words were associated with a lower drift rate than both clear and low blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high blurred words compared to both clear and low blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`. \### Recognition Memory
 
 ```{r}
-# mem_c <- read_csv("https://osf.io/xjvc7/download")
-mem_c <- read_csv("data/blmm_sdt_context.csv")
+mem_c <- read_csv("https://osf.io/xjvc7/download")
+#mem_c <- read_csv("data/blmm_sdt_context.csv")
 ```
 
 ```{r}
@@ -1032,9 +1208,14 @@ mem_c <- read_csv("data/blmm_sdt_context.csv")
 #hypothesis
 
 contrast_matrix <- matrix(
-  c(-0.5,  0,    # C
-     0.5,  0.5,  # HB
-     0,   -0.5), # LB
+  c(
+    -0.5,
+    0, # C
+    0.5,
+    0.5, # HB
+    0,
+    -0.5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -1048,16 +1229,21 @@ contrasts(mem_c$blur) <- contrast_matrix
 ```
 
 ```{r}
-#| eval: false 
-#| 
+#| eval: false
+#|
 #priors for sdt model
 sdt_priors <- c(set_prior("cauchy(0,0.35)", class = "b"))
 ```
 
 ```{r}
 #| eval: false
-#| 
-fit_mem_c <- brm(sayold ~ isold * blur + (1 + isold * blur | participant) + (1 + isold * blur | string),
+#|
+fit_mem_c <- brm(
+  sayold ~
+    isold *
+      blur +
+      (1 + isold * blur | participant) +
+      (1 + isold * blur | string),
   data = mem_c,
   warmup = 1000,
   iter = 5000,
@@ -1068,7 +1254,7 @@ fit_mem_c <- brm(sayold ~ isold * blur + (1 + isold * blur | participant) + (1 +
   control = list(adapt_delta = 0.9),
   prior = sdt_priors,
   sample_prior = T,
-  seed=666, 
+  seed = 666,
   file = "blmm_sdt_expt1",
   save_pars = save_pars(all = T),
   backend = "cmdstanr",
@@ -1077,17 +1263,19 @@ fit_mem_c <- brm(sayold ~ isold * blur + (1 + isold * blur | participant) + (1 +
 ```
 
 ```{r}
-# fit_mem1 <- read_rds("https://osf.io/dbfwa/download")
-fit_mem1 <- read_rds("data/blmm_sdt_expt1a_priors_hblbc2.rds")
+fit_mem1 <- read_rds("https://osf.io/dbfwa/download")
+#fit_mem1 <- read_rds("data/blmm_sdt_expt1a_priors_hblbc2.rds")
 ```
 
 ```{r}
 #HB > C
-a <- hypothesis(fit_mem1 , "isold1:blur1  > 0")
-b <- hypothesis(fit_mem1 , "isold1:blur2 > 0")
+a <- hypothesis(fit_mem1, "isold1:blur1  > 0")
+b <- hypothesis(fit_mem1, "isold1:blur2 > 0")
 
-a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
 ```
 
 #### Sensitivity
@@ -1097,31 +1285,33 @@ b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3))
 #### Exploratory analyses: Bias
 
 ```{r}
-a <- hypothesis(fit_mem1 , "blur1 < 0")
+a <- hypothesis(fit_mem1, "blur1 < 0")
 b <- hypothesis(fit_mem1, "blur2 < 0")
 
-a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
 ```
 
 Low blurred words had a bias towards more "old" responses compared to clear words, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`, and high blurred words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. High blurred words showed a more liberal bias compared to clear and low blurred words, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 ```{r}
 # (Negative) criteria
-emm_m1_c1 <- emmeans(fit_mem1, ~blur) |> 
+emm_m1_c1 <- emmeans(fit_mem1, ~blur) |>
   parameters::parameters(centrality = "mean")
 # Differences in (negative) criteria
-emm_m1_c2 <- emmeans(fit_mem1, ~blur) |> 
-  contrast("pairwise") |> 
+emm_m1_c2 <- emmeans(fit_mem1, ~blur) |>
+  contrast("pairwise") |>
   parameters::parameters(centrality = "mean")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem1, ~isold + blur) |> 
-  contrast("revpairwise", by = "blur") |> 
+emm_m1_d1 <- emmeans(fit_mem1, ~ isold + blur) |>
+  contrast("revpairwise", by = "blur") |>
   parameters::parameters(centrality = "mean")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) |> 
-  contrast(interaction = c("revpairwise", "pairwise")) |> 
+emm_m1_d2 <- emmeans(fit_mem1, ~ isold + blur) |>
+  contrast(interaction = c("revpairwise", "pairwise")) |>
   parameters::parameters(centrality = "mean")
 ```
 
@@ -1131,74 +1321,75 @@ emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) |>
 #| fig-width: 12
 #| fig-height: 8
 
-emm_m1_c1 <- emmeans(fit_mem1, ~blur) 
+emm_m1_c1 <- emmeans(fit_mem1, ~blur)
 
-emm_m1_c2 <- emmeans(fit_mem1, ~blur) |> 
+emm_m1_c2 <- emmeans(fit_mem1, ~blur) |>
   contrast("pairwise")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem1, ~isold + blur) |> 
+emm_m1_d1 <- emmeans(fit_mem1, ~ isold + blur) |>
   contrast("revpairwise", by = "blur")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem1, ~isold + blur) |> 
-  contrast(interaction = c("revpairwise", "pairwise")) 
+emm_m1_d2 <- emmeans(fit_mem1, ~ isold + blur) |>
+  contrast(interaction = c("revpairwise", "pairwise"))
 
 tmp <- bind_rows(
   bind_rows(
-    gather_emmeans_draws(emm_m1_d1) |> 
-      group_by(blur) |> 
+    gather_emmeans_draws(emm_m1_d1) |>
+      group_by(blur) |>
       select(-contrast),
-    gather_emmeans_draws(emm_m1_d2) |> 
+    gather_emmeans_draws(emm_m1_d2) |>
       rename(
         blur = blur_pairwise
-      ) |> 
-      group_by(blur) |> 
+      ) |>
+      group_by(blur) |>
       select(-isold_revpairwise)
   ),
   bind_rows(
     gather_emmeans_draws(emm_m1_c1),
-    gather_emmeans_draws(emm_m1_c2) |> 
+    gather_emmeans_draws(emm_m1_c2) |>
       rename(
         blur = contrast
       )
   ),
   .id = "Parameter"
-) |> 
-  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |> 
+) |>
+  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |>
   mutate(
-    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |>
       fct_inorder(),
     blur = fct_inorder(blur)
   )
 
-tmp |>   
-  ungroup() |> 
-  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) |> 
-  mutate(Parameter = fct_rev(Parameter)) |> 
-  mutate(blur=case_when(
-  blur=="C"~ "Clear", 
-  blur=="C - HB" ~ "Clear - High blur", 
-  blur=="HB" ~ "High blur", 
-  blur=="LB" ~ "Low blur", 
-  blur=="C - LB" ~ "Clear - Low blur", 
-  TRUE ~ "High blur - Low blur"
-  )) |> 
+tmp |>
+  ungroup() |>
+  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) |>
+  mutate(Parameter = fct_rev(Parameter)) |>
+  mutate(
+    blur = case_when(
+      blur == "C" ~ "Clear",
+      blur == "C - HB" ~ "Clear - High blur",
+      blur == "HB" ~ "High blur",
+      blur == "LB" ~ "Low blur",
+      blur == "C - LB" ~ "Clear - Low blur",
+      TRUE ~ "High blur - Low blur"
+    )
+  ) |>
   ggplot(aes(blur, .value)) +
   labs(
     x = "Blurring Level (or difference)",
-    y = "Parameter value", 
+    y = "Parameter value",
   ) +
-  stat_halfeye(colour="black", 
-               .width = c(0.95), point_interval = "mean_qi") + 
-    facet_grid(Parameter~t, scales = "free") + 
-    geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=16) + 
+  stat_halfeye(colour = "black", .width = c(0.95), point_interval = "mean_qi") +
+  facet_grid(Parameter ~ t, scales = "free") +
+  geom_hline(yintercept = 0, linewidth = .25) +
+  theme_minimal(base_size = 16) +
   theme(
     strip.background = element_rect(fill = "black", color = "black"),
     strip.text = element_text(color = "white", face = "bold")
   )
 
-ggsave("figures/expt1A-dprime.png", width=19, height=8, dpi=300)
+ggsave("figures/expt1A-dprime.png", width = 19, height = 8, dpi = 300)
 ```
 
 ## Discussion
@@ -1237,9 +1428,9 @@ We used the same stimuli from Experiment 1A. The main difference between Experim
 # get data from osf
 # https://osf.io/excgd/download
 blur_acc <- read_csv("data/cleaned_nocontext_rt.csv") |>
-    dplyr::filter(lex=="m")
+  dplyr::filter(lex == "m")
 
-blur_acc_new<- blur_acc |>
+blur_acc_new <- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
 
@@ -1248,9 +1439,14 @@ The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After 
 ```{r}
 # Create custom contrast matrix manually
 contrast_matrix <- matrix(
-  c(-.5,  -.5,   # C
-     .5,  0,   # HB
-     -.5, .5),  # LB
+  c(
+    -.5,
+    -.5, # C
+    .5,
+    0, # HB
+    -.5,
+    .5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -1268,30 +1464,33 @@ contrasts(blur_acc_new$blur) <- contrast_matrix
 prior_exp1 <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 #fit model
-fit_acc_weak <- brm(corr ~ blur + (1+blur|participant) + (1+blur|string), data=blur_acc_new, 
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4, 
-                    init=0, 
-                    family = bernoulli(),
-     cores = 4,
-prior = prior_exp1, 
-control = list(adapt_delta = 0.9), 
-backend="cmdstanr", 
-save_pars = save_pars(all=T),
-sample_prior = T, 
-threads = threading(4), 
-file="fit_acc_weak_nocontext")
+fit_acc_weak <- brm(
+  corr ~ blur + (1 + blur | participant) + (1 + blur | string),
+  data = blur_acc_new,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  init = 0,
+  family = bernoulli(),
+  cores = 4,
+  prior = prior_exp1,
+  control = list(adapt_delta = 0.9),
+  backend = "cmdstanr",
+  save_pars = save_pars(all = T),
+  sample_prior = T,
+  threads = threading(4),
+  file = "fit_acc_weak_nocontext"
+)
 ```
 
 ```{r}
 # get file from osf
-# fit_acc_noc <- read_rds("https://osf.io/p9xat/download")
-fit_acc_noc <- read_rds("data/fit_acc_weak_nocontext.rds")
+fit_acc_noc <- read_rds("https://osf.io/p9xat/download")
+#fit_acc_noc <- read_rds("data/fit_acc_weak_nocontext.rds")
 ```
 
 ```{r}
-acc_means <- emmeans(fit_acc_noc, specs="blur", type="response") 
+acc_means <- emmeans(fit_acc_noc, specs = "blur", type = "response")
 ```
 
 ```{r}
@@ -1300,12 +1499,13 @@ acc_means <- emmeans(fit_acc_noc, specs="blur", type="response")
 #| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 
 # Run hypotheses
-a <- hypothesis(fit_acc_noc, "blur1 < 0")  # high blur < (low blur + clear)/2
-b <- hypothesis(fit_acc_noc, "blur2 = 0")  # low blur < clear
+a <- hypothesis(fit_acc_noc, "blur1 < 0") # high blur < (low blur + clear)/2
+b <- hypothesis(fit_acc_noc, "blur2 = 0") # low blur < clear
 
 # Round numeric outputs
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -1332,7 +1532,7 @@ tab <- bind_rows(a$hypothesis, b$hypothesis) |>
 # Create the flextable
 acc_summary1B <- flextable(tab) |>
   theme_apa() |>
-  width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 
 acc_summary1B
@@ -1344,74 +1544,76 @@ A summary of posterior estimates are located in @tbl-acc1B. High blur words had 
 
 ```{r}
 #load data from osf
-# rts <- read_csv("https://osf.io/excgd/download")
-rts <- read_csv("data/cleaned_nocontext_rt.csv")
+rts <- read_csv("https://osf.io/excgd/download")
+#rts <- read_csv("data/cleaned_nocontext_rt.csv")
 ```
 
 ```{r}
-blur_rt<- rts |>
+blur_rt <- rts |>
   group_by(participant) |>
-   dplyr::filter(corr==1, lex=="m")#only include nonwords
+  dplyr::filter(corr == 1, lex == "m") #only include nonwords
 
-blur_rt_new <- blur_rt |> 
+blur_rt_new <- blur_rt |>
   dplyr::filter(rt >= .2 & rt <= 2.5) |>
-  mutate(rt_ms=rt*1000)
+  mutate(rt_ms = rt * 1000)
 ```
 
 The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
 
 ```{r}
 #hypothesis
-blurC <-hypr(HB~C, HB~LB, levels=c("C", "HB", "LB"))
+blurC <- hypr(HB ~ C, HB ~ LB, levels = c("C", "HB", "LB"))
 
-#set contrasts in df 
+#set contrasts in df
 blur_rt$blur <- as.factor(blur_rt$blur)
 
-contrasts(blur_rt$blur) <-contr.hypothesis(blurC)
+contrasts(blur_rt$blur) <- contr.hypothesis(blurC)
 ```
 
 ```{r}
 #| eval: false
 
 bform_exg1B <- bf(
-rt ~ 0+ blur + (1 + blur |p| participant) + (1 + blur|i| string),
-sigma ~ 0+ blur + (1 + blur |p|participant) + (1 + blur |i| string),
-beta ~ 0 + blur + (1 + blur |p|participant) + (1 + blur |i| string))
+  rt ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  sigma ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  beta ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string)
+)
 ```
 
 ```{r}
 #| eval: false
-#| 
-prior1B <- c(prior("normal(0,10)", class = "b", coef = ""))               
+#|
+prior1B <- c(prior("normal(0,10)", class = "b", coef = ""))
 
 fit_exg1B <- brm(
-  bform_exg1B, data = blur_rt_new,
+  bform_exg1B,
+  data = blur_rt_new,
   warmup = 1000,
   iter = 5000,
   prior = prior1B,
   family = three_param_exgauss,
   stanvars = three_param_exg_stanvars,
   init = 0,
-  cores = 4, 
-  file="mod_exgauss_1B", 
-  chains=4, 
-  seed=666, 
-  sample_prior = T, 
-  save_pars = save_pars(all=T),
-  control = list(adapt_delta = 0.8), 
-  backend="cmdstanr", 
-  threads = threading(2))
+  cores = 4,
+  file = "mod_exgauss_1B",
+  chains = 4,
+  seed = 666,
+  sample_prior = T,
+  save_pars = save_pars(all = T),
+  control = list(adapt_delta = 0.8),
+  backend = "cmdstanr",
+  threads = threading(2)
+)
 ```
 
 ```{r}
-# fit_exg1B <- read_rds("https://osf.io/ajwe4/download")
-fit_exg1B <- read_rds("data/ex_gauss_1b.rds")
+fit_exg1B <- read_rds("https://osf.io/ajwe4/download")
 ```
 
 ```{r}
 #| label: tbl-exgauss1B
 #| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 1B)."
-#| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale." 
+#| apa-note: "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale."
 
 # Define hypothesis tests
 a <- hypothesis(fit_exg1B, "blur1 > 0")
@@ -1422,10 +1624,11 @@ d <- hypothesis(fit_exg1B, "sigma_blur2 = 0")
 
 e <- hypothesis(fit_exg1B, "beta_blur1 > 0")
 f <- hypothesis(fit_exg1B, "beta_blur2 = 0")
- 
+
 # Round all numeric columns in each result
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -1437,7 +1640,14 @@ e <- round_hypothesis(e)
 f <- round_hypothesis(f)
 
 # Combine into one table
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis, f$hypothesis) |> 
+tab <- bind_rows(
+  a$hypothesis,
+  b$hypothesis,
+  c$hypothesis,
+  d$hypothesis,
+  e$hypothesis,
+  f$hypothesis
+) |>
   mutate(
     Parameter = c("Mu", "Mu", "Sigma", "Sigma", "Beta", "Beta"),
     Hypothesis = c(
@@ -1460,8 +1670,8 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypot
 
 # Create flextable
 flextable(tab) |>
-  theme_apa()  |>
-width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  theme_apa() |>
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 ```
 
@@ -1470,54 +1680,71 @@ A visualization of how blurring affected processing @tbl-exgauss1B during word r
 ### RTs: DDM
 
 ```{r}
-blur_rt_diff<- rts |>
+blur_rt_diff <- rts |>
   group_by(participant) |>
-  dplyr::filter(rt >= .2 & rt <= 2.5)|>
-  dplyr::filter(lex=="m")
+  dplyr::filter(rt >= .2 & rt <= 2.5) |>
+  dplyr::filter(lex == "m")
 ```
 
 ```{r}
-formula <- bf(rt | dec(corr) ~ 0 + blur + 
-                (1 + blur|p|participant) + (1+blur|i|string),  
-              ndt ~ 0 + blur + (1 + blur|p|participant) + (1+blur|i|string),
-              bias =.5)
+formula <- bf(
+  rt | dec(corr) ~
+    0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  ndt ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  bias = .5
+)
 
 bprior <- prior(normal(0, 1), class = b) +
-  prior(normal(0, 1), class = b, dpar = ndt)+
+  prior(normal(0, 1), class = b, dpar = ndt) +
   prior(normal(0, 1), class = sd) +
-  prior(normal(0, 1), class = sd, dpar = ndt) + 
-  prior("normal(0, 0.3)", class = "sd", group = "participant")+ 
+  prior(normal(0, 1), class = sd, dpar = ndt) +
+  prior("normal(0, 0.3)", class = "sd", group = "participant") +
   prior("normal(0, 0.3)", class = "sd", group = "string")
 ```
 
 ```{r}
 #| eval: false
 
-make_stancode(formula, 
-              family = wiener(link_bs = "identity", 
-                              link_ndt = "identity",
-                              link_bias = "identity"),
-              data = blur_rt_diff, 
-              prior = bprior)
+make_stancode(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
 
-tmp_dat <- make_standata(formula, 
-                         family = wiener(link_bs = "identity", 
-                              link_ndt = "identity",
-                              link_bias = "identity"),
-                            data = blur_rt_diff, prior = bprior)
+tmp_dat <- make_standata(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
 str(tmp_dat, 1, give.attr = FALSE)
 
 initfun <- function() {
   list(
     b = rnorm(tmp_dat$K),
-    bs=.5, 
+    bs = .5,
     b_ndt = runif(tmp_dat$K_ndt, 0.1, 0.15),
     sd_1 = runif(tmp_dat$M_1, 0.5, 1),
     sd_2 = runif(tmp_dat$M_2, 0.5, 1),
-    z_1 = matrix(rnorm(tmp_dat$M_1*tmp_dat$N_1, 0, 0.01),
-                 tmp_dat$M_1, tmp_dat$N_1),
-    z_2 = matrix(rnorm(tmp_dat$M_2*tmp_dat$N_2, 0, 0.01),
-                 tmp_dat$M_2, tmp_dat$N_2),
+    z_1 = matrix(
+      rnorm(tmp_dat$M_1 * tmp_dat$N_1, 0, 0.01),
+      tmp_dat$M_1,
+      tmp_dat$N_1
+    ),
+    z_2 = matrix(
+      rnorm(tmp_dat$M_2 * tmp_dat$N_2, 0, 0.01),
+      tmp_dat$M_2,
+      tmp_dat$N_2
+    ),
     L_1 = diag(tmp_dat$M_1),
     L_2 = diag(tmp_dat$M_2)
   )
@@ -1526,24 +1753,32 @@ initfun <- function() {
 
 ```{r}
 #| eval: false
-#| 
+#|
 
-fit_wiener1 <- brm(formula, 
-                  data = blur_rt_diff,
-                  family = wiener(link_bs = "identity", 
-                                  link_ndt = "identity",
-                                  link_bias = "identity"),
-                  prior = bprior, init=initfun,
-                  iter = 2000, warmup = 500, 
-                  chains = 4, cores = 4,
-                  file="weiner_diff_1", 
-                  backend = "cmdstanr", threads = threading(4), 
-                  control = list(max_treedepth = 15))
+fit_wiener1 <- brm(
+  formula,
+  data = blur_rt_diff,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  prior = bprior,
+  init = initfun,
+  iter = 2000,
+  warmup = 500,
+  chains = 4,
+  cores = 4,
+  file = "weiner_diff_1",
+  backend = "cmdstanr",
+  threads = threading(4),
+  control = list(max_treedepth = 15)
+)
 ```
 
 ```{r}
-# fit_wiener <- read_rds("https://osf.io/gy5ab/download")
-fit_wiener <- read_rds("data/weiner_diff_noc (1).rds")
+fit_wiener <- read_rds("https://osf.io/gy5ab/download")
+#fit_wiener <- read_rds("data/weiner_diff_noc (1).rds")
 ```
 
 ```{r}
@@ -1555,12 +1790,17 @@ fit_wiener <- read_rds("data/weiner_diff_noc (1).rds")
 a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC)/2) < 0")
 b <- hypothesis(fit_wiener, "blurLB - blurC = 0")
 
-c <- hypothesis(fit_wiener, "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0", dpar = "ndt")
+c <- hypothesis(
+  fit_wiener,
+  "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0",
+  dpar = "ndt"
+)
 d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC > 0", dpar = "ndt")
 
 # Round numeric columns
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -1592,46 +1832,52 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
 # Generate flextable
 flextable(tab) |>
   theme_apa() |>
-  width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 ```
 
 A summary of the diffusion model results is presented in @tbl-diffexpt1B. There was strong evidence that high blurred words were associated with a lower drift rate than both clear and low blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high blurred words compared to both clear and low blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.
 
 ```{r}
-#Delta plots (one per subject) 
+#Delta plots (one per subject)
 quibble <- function(x, q = seq(.1, .9, .2)) {
   tibble(x = quantile(x, q), q = q)
 }
 
 data.quantiles <- rts |>
-  dplyr::filter(rt >= .2 | rt <= 2.5) |> 
-  dplyr::group_by(participant,blur,corr) |>
-  dplyr::filter(lex=="m")|>
-  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) |> 
+  dplyr::filter(rt >= .2 | rt <= 2.5) |>
+  dplyr::group_by(participant, blur, corr) |>
+  dplyr::filter(lex == "m") |>
+  dplyr::summarise(RT = list(quibble(rt, seq(.1, .9, .2)))) |>
   tidyr::unnest(RT)
 
 data.delta <- data.quantiles |>
-  dplyr::filter(corr==1) |>
+  dplyr::filter(corr == 1) |>
   dplyr::select(-corr) |>
   dplyr::group_by(participant, blur, q) |>
-  dplyr::summarize(RT=mean(x))
+  dplyr::summarize(RT = mean(x))
 
 #Delta plots (based on vincentiles)
 vincentiles <- data.quantiles |>
-  dplyr::filter(corr==1) |>
+  dplyr::filter(corr == 1) |>
   dplyr::select(-corr) |>
-  dplyr::group_by(blur,q) |>
-  dplyr::summarize(RT=mean(x)) 
+  dplyr::group_by(blur, q) |>
+  dplyr::summarize(RT = mean(x))
 
-v=vincentiles |>
-  dplyr::group_by(blur,q) |>
-  dplyr::summarise(MRT=mean(RT))
+v = vincentiles |>
+  dplyr::group_by(blur, q) |>
+  dplyr::summarise(MRT = mean(RT))
 
 v <- v |>
-  mutate(blur=ifelse(blur=="HB", "High blur", ifelse(blur=="LB", "Low blur", "Clear")))
+  mutate(
+    blur = ifelse(
+      blur == "HB",
+      "High blur",
+      ifelse(blur == "LB", "Low blur", "Clear")
+    )
+  )
 
-v$blur<- factor(v$blur, level=c("High blur", "Low blur", "Clear"))
+v$blur <- factor(v$blur, level = c("High blur", "Low blur", "Clear"))
 
 p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   geom_line(size = 1) +
@@ -1640,78 +1886,125 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   theme(legend.title = element_blank()) +
   coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
-  geom_label_repel(data = v, aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5, size = 10) +
-  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A", colour='Blur Condition') + # Optional tag for labeling
+  geom_label_repel(
+    data = v,
+    aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(
+    x = "Quantiles",
+    y = "Response latencies in ms",
+    tag = "A",
+    colour = 'Blur Condition'
+  ) + # Optional tag for labeling
   theme_minimal(base_size = 16) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
 ```{r}
 v_chb <- v |>
-    dplyr::filter(blur=="Clear" | blur=="High blur") |>
-    dplyr::group_by(q)|>
-     mutate(mean_rt = mean(MRT)*1000) |>
-     ungroup() |> select(-q) |>
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-    mutate(diff=`High blur`*1000-Clear*1000)
- 
-p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) + 
+  dplyr::filter(blur == "Clear" | blur == "High blur") |>
+  dplyr::group_by(q) |>
+  mutate(mean_rt = mean(MRT) * 1000) |>
+  ungroup() |>
+  select(-q) |>
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff = `High blur` * 1000 - Clear * 1000)
+
+p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
   theme(legend.position = "none") +
-    theme_minimal(base_size=16)+
-scale_y_continuous(breaks=seq(10,440,50)) +
-    coord_cartesian(xlim = c(600, 1300), ylim = c(10, 440)) +
-  scale_x_continuous(breaks=seq(600,1300, 100))+
-   geom_label_repel(data=v_chb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+
-  labs( title = "Delta Plots: Clear - High blur", x = "", y = "Group differences", tag = "B")
+  theme_minimal(base_size = 16) +
+  scale_y_continuous(breaks = seq(10, 440, 50)) +
+  coord_cartesian(xlim = c(600, 1300), ylim = c(10, 440)) +
+  scale_x_continuous(breaks = seq(600, 1300, 100)) +
+  geom_label_repel(
+    data = v_chb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(
+    title = "Delta Plots: Clear - High blur",
+    x = "",
+    y = "Group differences",
+    tag = "B"
+  )
 ```
 
 ```{r}
 v_clb <- v |>
-    dplyr::filter(blur=="Clear" | blur=="Low blur") |>
-    dplyr::group_by(q)|>
-     mutate(mean_rt = mean(MRT)*1000) |>
-     ungroup() |> 
-   select(-q) |>
-   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-    mutate(diff=`Low blur`*1000-Clear*1000)
- 
-p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) + 
+  dplyr::filter(blur == "Clear" | blur == "Low blur") |>
+  dplyr::group_by(q) |>
+  mutate(mean_rt = mean(MRT) * 1000) |>
+  ungroup() |>
+  select(-q) |>
+  tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
+  mutate(diff = `Low blur` * 1000 - Clear * 1000)
+
+p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
-  theme(legend.position = "none") + 
-scale_y_continuous(breaks=seq(10,440,50)) +
-  scale_x_continuous(breaks=seq(600,1300, 100))+
-      coord_cartesian(xlim = c(600, 1300), ylim = c(10, 440)) +
-    geom_label_repel(data=v_clb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10) + 
-  labs( title = "Delta Plots: Low blur - Clear", x = "Mean RT per quantile", y = "")
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = seq(10, 440, 50)) +
+  scale_x_continuous(breaks = seq(600, 1300, 100)) +
+  coord_cartesian(xlim = c(600, 1300), ylim = c(10, 440)) +
+  geom_label_repel(
+    data = v_clb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(
+    title = "Delta Plots: Low blur - Clear",
+    x = "Mean RT per quantile",
+    y = ""
+  )
 ```
 
 ```{r}
 v_hlb <- v |>
-  dplyr::filter(blur=="High blur" | blur=="Low blur") |>
-  dplyr::group_by(q)|>
-  mutate(mean_rt = mean(MRT)*1000) |>
-     ungroup() |> 
-   select(-q) |>
+  dplyr::filter(blur == "High blur" | blur == "Low blur") |>
+  dplyr::group_by(q) |>
+  mutate(mean_rt = mean(MRT) * 1000) |>
+  ungroup() |>
+  select(-q) |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-  mutate(diff=`High blur`*1000-`Low blur`*1000)
+  mutate(diff = `High blur` * 1000 - `Low blur` * 1000)
 
-p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) + 
+p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 16) + 
-  theme(legend.position = "none") + 
-  scale_y_continuous(breaks=seq(10,440,50)) +
-  scale_x_continuous(breaks=seq(600,1300, 100))+
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = seq(10, 440, 50)) +
+  scale_x_continuous(breaks = seq(600, 1300, 100)) +
   coord_cartesian(xlim = c(600, 1300), ylim = c(10, 440)) +
-    geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5, size=10)+ 
-  labs( title = "Delta Plots: High blur - Low blur", x = "", y = "")
+  geom_label_repel(
+    data = v_hlb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5,
+    size = 10
+  ) +
+  labs(title = "Delta Plots: High blur - Low blur", x = "", y = "")
 ```
 
 ```{r}
@@ -1720,21 +2013,21 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 #| fig-width: 15
 #| fig-height: 10
 
-delta_comb = (p1+p2+p3)
+delta_comb = (p1 + p2 + p3)
 
 combined_plot <- p / delta_comb
 
-ggsave(filename='./figures/figure_kde2.png',width=12,height=12)
+ggsave(filename = './figures/figure_kde2.png', width = 12, height = 12)
 
 combined_plot
- # Automatically labels rows as A, B
+# Automatically labels rows as A, B
 ```
 
 ### Recognition Memory
 
 ```{r}
-# mem_nc <- read_csv("https://osf.io/jw2gx/download")
-mem_nc <- read_csv("data/cond_blmm_sdt_contextnot.csv")
+mem_nc <- read_csv("https://osf.io/jw2gx/download")
+#mem_nc <- read_csv("data/cond_blmm_sdt_contextnot.csv")
 ```
 
 ```{r}
@@ -1742,9 +2035,14 @@ mem_nc <- read_csv("data/cond_blmm_sdt_contextnot.csv")
 #hypothesis
 
 contrast_matrix <- matrix(
-  c(-0.5,  -.5,    # C
-     0.5,  0,  # HB
-     -0.5,  0.5), # LB
+  c(
+    -0.5,
+    -.5, # C
+    0.5,
+    0, # HB
+    -0.5,
+    0.5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -1753,54 +2051,64 @@ contrast_matrix <- matrix(
 mem_nc$blur <- factor(mem_nc$blur, levels = c("C", "HB", "LB"))
 contrasts(mem_nc$blur) <- contrast_matrix
 
-mem_nc$isold <- factor(mem_nc$isold, levels = c(0, 1))  # ensure proper level order
+mem_nc$isold <- factor(mem_nc$isold, levels = c(0, 1)) # ensure proper level order
 contrasts(mem_nc$isold) <- matrix(c(-0.5, 0.5), ncol = 1)
 
 # Apply to factor
 mem_nc$blur <- factor(mem_nc$blur, levels = c("C", "HB", "LB"))
 contrasts(mem_nc$blur) <- contrast_matrix
 
-mem_nc$isold <- factor(mem_nc$isold, levels = c(0, 1))  # ensure proper level order
+mem_nc$isold <- factor(mem_nc$isold, levels = c(0, 1)) # ensure proper level order
 contrasts(mem_nc$isold) <- matrix(c(-0.5, 0.5), ncol = 1)
 ```
 
 ```{r}
 #| eval: false
-#| 
+#|
 
 # weak prior
 sdt_priors <- c(set_prior("cauchy(0,.35)", class = "b"))
 
-fit_mem_nc <- brm(sayold ~ isold*blur + (1+isold*blur|participant) + (1+isold*blur|string), data=mem_nc, 
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4, 
-                    init=0, 
-                    family = bernoulli(link = "probit"),
-                    cores = 4, 
-control = list(adapt_delta = 0.9),
-prior=sdt_priors, 
-seed=666, 
-sample_prior = T, 
-file="blmm_sdt_noc",
-save_pars = save_pars(all=T),
-backend="cmdstanr",
-threads = threading(2))
+fit_mem_nc <- brm(
+  sayold ~
+    isold *
+      blur +
+      (1 + isold * blur | participant) +
+      (1 + isold * blur | string),
+  data = mem_nc,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  init = 0,
+  family = bernoulli(link = "probit"),
+  cores = 4,
+  control = list(adapt_delta = 0.9),
+  prior = sdt_priors,
+  seed = 666,
+  sample_prior = T,
+  file = "blmm_sdt_noc",
+  save_pars = save_pars(all = T),
+  backend = "cmdstanr",
+  threads = threading(2)
+)
 ```
 
 ```{r}
-# fit_mem_noc <- read_rds("https://osf.io/yfzke/download")
-fit_mem_noc <- read_rds("data/blmm_sdt_nc_hblbc.rds")
+fit_mem_noc <- read_rds("https://osf.io/yfzke/download")
+#fit_mem_noc <- read_rds("data/blmm_sdt_nc_hblbc.rds")
 ```
 
 ```{r}
 #HB > C
-a <- hypothesis(fit_mem_noc , "isold1:blur1 > 0")
-b <- hypothesis(fit_mem_noc , "isold1:blur2 = 0")
+a <- hypothesis(fit_mem_noc, "isold1:blur1 > 0")
+b <- hypothesis(fit_mem_noc, "isold1:blur2 = 0")
 
-a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
 ```
 
 #### Sensitivity
@@ -1809,20 +2117,20 @@ c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3))
 
 ```{r}
 # (Negative) criteria
-emm_m1_c1 <- emmeans(fit_mem_noc, ~blur) |> 
+emm_m1_c1 <- emmeans(fit_mem_noc, ~blur) |>
   parameters::parameters(centrality = "mean")
 # Differences in (negative) criteria
-emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |> 
-  contrast("pairwise") |> 
+emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |>
+  contrast("pairwise") |>
   parameters::parameters(centrality = "mean")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem_noc, ~isold + blur) |> 
-  contrast("revpairwise", by = "blur") |> 
+emm_m1_d1 <- emmeans(fit_mem_noc, ~ isold + blur) |>
+  contrast("revpairwise", by = "blur") |>
   parameters::parameters(centrality = "mean")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) |> 
-  contrast(interaction = c("revpairwise", "pairwise")) |> 
+emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
+  contrast(interaction = c("revpairwise", "pairwise")) |>
   parameters::parameters(centrality = "mean")
 ```
 
@@ -1832,73 +2140,75 @@ emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) |>
 #| fig-width: 12
 #| fig-height: 8
 
-emm_m1_c1 <- emmeans(fit_mem_noc, ~blur) 
+emm_m1_c1 <- emmeans(fit_mem_noc, ~blur)
 
-emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |> 
+emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |>
   contrast("pairwise")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem_noc, ~isold + blur) |> 
+emm_m1_d1 <- emmeans(fit_mem_noc, ~ isold + blur) |>
   contrast("revpairwise", by = "blur")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem_noc, ~isold + blur) |> 
-  contrast(interaction = c("revpairwise", "pairwise")) 
+emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
+  contrast(interaction = c("revpairwise", "pairwise"))
 
 tmp <- bind_rows(
   bind_rows(
-    gather_emmeans_draws(emm_m1_d1) |> 
-      group_by(blur) |> 
+    gather_emmeans_draws(emm_m1_d1) |>
+      group_by(blur) |>
       select(-contrast),
-    gather_emmeans_draws(emm_m1_d2) |> 
+    gather_emmeans_draws(emm_m1_d2) |>
       rename(
         blur = blur_pairwise
-      ) |> 
-      group_by(blur) |> 
+      ) |>
+      group_by(blur) |>
       select(-isold_revpairwise)
   ),
   bind_rows(
     gather_emmeans_draws(emm_m1_c1),
-    gather_emmeans_draws(emm_m1_c2) |> 
+    gather_emmeans_draws(emm_m1_c2) |>
       rename(
         blur = contrast
       )
   ),
   .id = "Parameter"
-) |> 
-  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |> 
+) |>
+  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |>
   mutate(
-    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |>
       fct_inorder(),
     blur = fct_inorder(blur)
   )
 
-tmp |>   
-  ungroup() |> 
-  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) |> 
-  mutate(Parameter = fct_rev(Parameter)) |> 
-  mutate(blur=case_when(
-  blur=="C"~ "Clear", 
-  blur=="C - HB" ~ "Clear - High blur", 
-  blur=="HB" ~ "High blur", 
-  blur=="LB" ~ "Low blur", 
-  blur=="C - LB" ~ "Clear - Low blur", 
-  TRUE ~ "High blur - Low blur"
-  )) |> 
+tmp |>
+  ungroup() |>
+  mutate(.value = if_else(Parameter == "Criterion", .value * -1, .value)) |>
+  mutate(Parameter = fct_rev(Parameter)) |>
+  mutate(
+    blur = case_when(
+      blur == "C" ~ "Clear",
+      blur == "C - HB" ~ "Clear - High blur",
+      blur == "HB" ~ "High blur",
+      blur == "LB" ~ "Low blur",
+      blur == "C - LB" ~ "Clear - Low blur",
+      TRUE ~ "High blur - Low blur"
+    )
+  ) |>
   ggplot(aes(blur, .value)) +
   labs(
     x = "Blurring Level (or difference)",
-    y = "Parameter value", 
+    y = "Parameter value",
   ) +
-  stat_halfeye(colour="black", .width = c(0.95), point_interval = "mean_qi") + 
-    facet_grid(Parameter~t, scales = "free") + 
-    geom_hline(yintercept = 0, linewidth = .25) + 
-  theme_minimal(base_size=16) + 
-   theme(
+  stat_halfeye(colour = "black", .width = c(0.95), point_interval = "mean_qi") +
+  facet_grid(Parameter ~ t, scales = "free") +
+  geom_hline(yintercept = 0, linewidth = .25) +
+  theme_minimal(base_size = 16) +
+  theme(
     strip.background = element_rect(fill = "black", color = "black"),
     strip.text = element_text(color = "white", face = "bold")
   )
 
-ggsave("figures/expt1B-dprime.png", width=19, height=8, dpi=300)
+ggsave("figures/expt1B-dprime.png", width = 19, height = 8, dpi = 300)
 ```
 
 ## Discussion
@@ -1952,18 +2262,18 @@ We used the same procedure as Experiments 1B. The main difference is that instea
 ### Accuracy
 
 ```{r}
-# rts_wf <- read_csv("https://osf.io/29hnd/download")
-rts_wf <- read_csv("data/SC_rt_cleaned.csv")
+rts_wf <- read_csv("https://osf.io/29hnd/download")
+#rts_wf <- read_csv("data/SC_rt_cleaned.csv")
 ```
 
 ```{r}
 rts_dim <- rts_wf |>
-  filter(category=="NONAN")
+  filter(category == "NONAN")
 
-blur_acc_wf<- rts_wf |>
+blur_acc_wf <- rts_wf |>
   group_by(participant) |>
-  dplyr::filter(rt >= .2 & rt <= 2.5)|>
-  dplyr::filter(category=="NONAN")
+  dplyr::filter(rt >= .2 & rt <= 2.5) |>
+  dplyr::filter(category == "NONAN")
 ```
 
 We started with `r dim(rts_dim)[1]`. After we removed RTs below .2 and above 2.5 (`r round(1-dim(blur_acc_wf)[1]/dim(rts_dim)[1], 3)`), we were left with `r dim(blur_acc_wf)[1]` data points.
@@ -1971,9 +2281,14 @@ We started with `r dim(rts_dim)[1]`. After we removed RTs below .2 and above 2.5
 ```{r}
 # Create custom contrast matrix manually
 contrast_matrix <- matrix(
-  c(-.5,  -.5,   # C
-     .5,  0,   # HB
-     -.5, .5),  # LB
+  c(
+    -.5,
+    -.5, # C
+    .5,
+    0, # HB
+    -.5,
+    .5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -1983,45 +2298,52 @@ blur_acc_wf$blur <- as.factor(blur_acc_wf$blur)
 # Assign to factor
 contrasts(blur_acc_wf$blur) <- contrast_matrix
 
-freqc <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
+freqc <- hypr(HIGH ~ LOW, levels = c("HIGH", "LOW"))
 
-blur_acc_wf$frequency<- as.factor(blur_acc_wf$frequency)
+blur_acc_wf$frequency <- as.factor(blur_acc_wf$frequency)
 
-contrasts(blur_acc_wf$frequency) <-contr.hypothesis(freqc)
+contrasts(blur_acc_wf$frequency) <- contr.hypothesis(freqc)
 ```
 
 ```{r}
 #| eval: false
-#| 
+#|
 prior_expsc <- c(set_prior("cauchy(0,.35)", class = "b"))
 
-fit_acc_wf <- brm(corr ~ blur*frequency + (1+blur*frequency|participant) + (1+blur|target), data=blur_acc_wf, 
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4, 
-                    init=0, 
-                    family = bernoulli(),
-     cores = 4, 
+fit_acc_wf <- brm(
+  corr ~
+    blur *
+      frequency +
+      (1 + blur * frequency | participant) +
+      (1 + blur | target),
+  data = blur_acc_wf,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  init = 0,
+  family = bernoulli(),
+  cores = 4,
 
-prior=prior_expsc,
-seed=666, 
-sample_prior = T, 
-save_pars = save_pars(all=T),
-control = list(adapt_delta = 0.9), 
-file="acc_blmm_sc", 
-backend="cmdstanr", 
-threads = threading(4))
+  prior = prior_expsc,
+  seed = 666,
+  sample_prior = T,
+  save_pars = save_pars(all = T),
+  control = list(adapt_delta = 0.9),
+  file = "acc_blmm_sc",
+  backend = "cmdstanr",
+  threads = threading(4)
+)
 ```
 
 ```{r}
 # get file from osf
-# fit_acc_sc <- read_rds("https://osf.io/2yb7g/download")
-fit_acc_sc <- read_rds("data/acc_blmm_sc_hblbc_moreints.rds")
+fit_acc_sc <- read_rds("https://osf.io/2yb7g/download")
+#fit_acc_sc <- read_rds("data/acc_blmm_sc_hblbc_moreints.rds")
 ```
 
 ```{r}
 # get mean accuracy per condition
-emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |> 
+emm_acc <- emmeans(fit_acc_sc, ~ frequency + blur, type = "response") |>
   parameters::parameters(centrality = "mean")
 ```
 
@@ -2031,15 +2353,16 @@ emm_acc <- emmeans(fit_acc_sc, ~frequency + blur, type="response") |>
 #| apa-note: "95% CrI for equivalency tests"
 
 # Run hypothesis tests
-a <- hypothesis(fit_acc_sc, "blur1 < 0")  # high blur < (low blur + clear)/2
-b <- hypothesis(fit_acc_sc, "blur2 = 0")  # low blur = clear
-c <- hypothesis(fit_acc_sc, "frequency1 = 0")  # No frequency effect
-d <- hypothesis(fit_acc_sc, "blur1:frequency1 = 0")  # No interaction: HB vs. (LB + C)/2 × Freq
-e <- hypothesis(fit_acc_sc, "blur2:frequency1 = 0")  # No interaction: LB vs. C × Freq
+a <- hypothesis(fit_acc_sc, "blur1 < 0") # high blur < (low blur + clear)/2
+b <- hypothesis(fit_acc_sc, "blur2 = 0") # low blur = clear
+c <- hypothesis(fit_acc_sc, "frequency1 = 0") # No frequency effect
+d <- hypothesis(fit_acc_sc, "blur1:frequency1 = 0") # No interaction: HB vs. (LB + C)/2 × Freq
+e <- hypothesis(fit_acc_sc, "blur2:frequency1 = 0") # No interaction: LB vs. C × Freq
 
 # Helper to round hypothesis results
 round_hypothesis <- function(hyp) {
-  hyp$hypothesis <- hyp$hypothesis |> mutate(across(where(is.numeric), round, 3))
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
   hyp
 }
 
@@ -2051,7 +2374,13 @@ d <- round_hypothesis(d)
 e <- round_hypothesis(e)
 
 # Combine and format table
-tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypothesis) |>
+tab <- bind_rows(
+  a$hypothesis,
+  b$hypothesis,
+  c$hypothesis,
+  d$hypothesis,
+  e$hypothesis
+) |>
   mutate(
     Hypothesis = c(
       "High blur < (Low blur + Clear)",
@@ -2073,7 +2402,7 @@ tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis, e$hypot
 # Create flextable
 acc_exp2 <- flextable(tab) |>
   theme_apa() |>
- width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 
 acc_exp2
@@ -2088,17 +2417,17 @@ Given the complexity of the model, we employed stronger priors to facilitate con
 ```{r}
 
 p_rt_filter <- rts_wf |>
-  filter(corr==1, category=="NONAN")
+  filter(corr == 1, category == "NONAN")
 
-p_rt_out <- p_rt_filter |> 
- filter(rt >= .2 & rt <= 2.5) |>
+p_rt_out <- p_rt_filter |>
+  filter(rt >= .2 & rt <= 2.5) |>
   ungroup()
 
 p_rt <- p_rt_filter |>
-   filter(rt >= .2 & rt <= 2.5) |>
+  filter(rt >= .2 & rt <= 2.5) |>
   group_by(frequency, blur) |>
-  dplyr::summarise(rt=mean(rt)) |>
-  dplyr::mutate(rt_ms=rt*1000) |>
+  dplyr::summarise(rt = mean(rt)) |>
+  dplyr::mutate(rt_ms = rt * 1000) |>
   select(-rt)
 
 ```
@@ -2109,9 +2438,14 @@ We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After
 ## Contrasts
 #hypothesis
 contrast_matrix <- matrix(
-  c(-0.5,  -0.5,    # C
-     0.5,  0,  # HB
-     -0.5,  0.5), # LB
+  c(
+    -0.5,
+    -0.5, # C
+    0.5,
+    0, # HB
+    -0.5,
+    0.5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -2129,9 +2463,21 @@ contrasts(p_rt_out$frequency) <- contr.hypothesis(freqc)
 #| eval: false
 # Model formula
 bform_ex2 <- bf(
-  rt ~ blur*frequency + (1 + blur * frequency |p| participant) + (1 + blur |i| target),
-  sigma ~  blur*frequency  + (1 + blur * frequency |p| participant) + (1 + blur |i| target),
-  beta ~ blur*frequency + (1 + blur * frequency |p| participant) + (1 + blur |i| target)
+  rt ~
+    blur *
+      frequency +
+      (1 + blur * frequency | p | participant) +
+      (1 + blur | i | target),
+  sigma ~
+    blur *
+      frequency +
+      (1 + blur * frequency | p | participant) +
+      (1 + blur | i | target),
+  beta ~
+    blur *
+      frequency +
+      (1 + blur * frequency | p | participant) +
+      (1 + blur | i | target)
 )
 ```
 
@@ -2140,35 +2486,37 @@ bform_ex2 <- bf(
 #|
 
 prior <- c(
-  prior(normal(0, 10), class = "b"), 
-  prior(normal(0,1), dpar="sigma"), 
+  prior(normal(0, 10), class = "b"),
+  prior(normal(0, 1), dpar = "sigma"),
   prior(normal(0, 0.25), class = "b", dpar = "beta")
 )
 
 fit_exg1 <- brm(
-bform_exg1, data = p_rt_out,
-warmup = 1000,
-                    iter = 5000,
-                    chains = 4,
-                    family = exgaussian(),
-                    init = 0,
-                    prior=prior, 
-                    cores = 4,
-control = list(adapt_delta = 0.8), 
-sample_prior = T, 
-seed=666, 
-save_pars = save_pars(all=T), 
-backend="cmdstanr", 
-threads = threading(2))
+  bform_exg1,
+  data = p_rt_out,
+  warmup = 1000,
+  iter = 5000,
+  chains = 4,
+  family = exgaussian(),
+  init = 0,
+  prior = prior,
+  cores = 4,
+  control = list(adapt_delta = 0.8),
+  sample_prior = T,
+  seed = 666,
+  save_pars = save_pars(all = T),
+  backend = "cmdstanr",
+  threads = threading(2)
+)
 ```
 
 ```{r}
 #| eval: false
-#| 
+#|
 #highblurvs clear highblur vslowblur
-#long time to load 
-# fit_sc <- read_rds("http://osf.io/uwcjf/download")
-fit_sc <- read_rds("data/mod_exgauss_HBLBC.rds")
+#long time to load
+fit_sc <- read_rds("http://osf.io/uwcjf/download")
+#fit_sc <- read_rds("data/mod_exgauss_HBLBC.rds")
 ```
 
 ```{r}
@@ -2206,13 +2554,13 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) |>
       "High Frequency <  Low Frequency ",
       "High blur (vs. Low blur/Clear) × Frequency",
       "Low blur (vs. Clear) × Frequency",
-      
+
       "High blur  > (vs. Clear/Low blur)",
       "Low blur <  Clear",
       "High Frequency < Low Frequency",
       "High blur (vs. Low blur/Clear) x Frequency",
       "Low blur (vs. Clear) × Frequency",
-      
+
       "High blur >  (vs. Clear/Low blur)",
       "Low blur >  (vs. Clear)",
       "High Frequency < Low Frequency",
@@ -2220,7 +2568,15 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) |>
       "Low blur (vs. Clear) × Frequency "
     )
   ) |>
-  select(Hypothesis, Parameter, Estimate, Est.Error, `90% CrI`, ER, Post.Prob) |>
+  select(
+    Hypothesis,
+    Parameter,
+    Estimate,
+    Est.Error,
+    `90% CrI`,
+    ER,
+    Post.Prob
+  ) |>
   rename(
     "Mean" = "Estimate",
     "SE" = "Est.Error",
@@ -2228,7 +2584,7 @@ tab <- bind_rows(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) |>
   ) |>
   flextable() |>
   theme_apa() |>
- width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 
 tab
@@ -2249,36 +2605,42 @@ quibble <- function(x, q = seq(.1, .9, .2)) {
 }
 
 data.quantiles <- p_rt_out |>
-  dplyr::group_by(participant,blur,frequency, corr) |>
-  dplyr::mutate(rt_ms = rt*1000) |> 
-  dplyr::summarise(RT = list(quibble(rt_ms, seq(.1, .9, .2)))) |> 
+  dplyr::group_by(participant, blur, frequency, corr) |>
+  dplyr::mutate(rt_ms = rt * 1000) |>
+  dplyr::summarise(RT = list(quibble(rt_ms, seq(.1, .9, .2)))) |>
   tidyr::unnest(RT) |>
   ungroup()
 
 data.delta <- data.quantiles |>
-  dplyr::group_by(participant, blur,frequency,  q) |>
-  dplyr::summarize(RT=mean(x)) |>
+  dplyr::group_by(participant, blur, frequency, q) |>
+  dplyr::summarize(RT = mean(x)) |>
   ungroup()
 ```
 
 ```{r}
 #Delta plots (based on vincentiles)
 vincentiles <- data.quantiles |>
-  dplyr::group_by(blur,frequency, q) |>
-  dplyr::summarize(RT=mean(x)) |>
+  dplyr::group_by(blur, frequency, q) |>
+  dplyr::summarize(RT = mean(x)) |>
   ungroup()
 
-v=vincentiles |>
-  dplyr::group_by(blur,frequency, q) |>
-  dplyr::summarise(MRT=mean(RT)) |>
+v = vincentiles |>
+  dplyr::group_by(blur, frequency, q) |>
+  dplyr::summarise(MRT = mean(RT)) |>
   ungroup()
 
-v$blur<- factor(v$blur, level=c("HB", "LB", "C"))
+v$blur <- factor(v$blur, level = c("HB", "LB", "C"))
 
 p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
-  facet_grid(~frequency, labeller = labeller(frequency = c(
-    "HIGH" = "High Frequency",
-    "LOW" = "Low Frequency"))) + 
+  facet_grid(
+    ~frequency,
+    labeller = labeller(
+      frequency = c(
+        "HIGH" = "High Frequency",
+        "LOW" = "Low Frequency"
+      )
+    )
+  ) +
   geom_line(size = 1) +
   geom_point(size = 3) +
   theme_bw() +
@@ -2290,7 +2652,14 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
   scale_y_continuous(breaks = seq(500, 1600, 100)) +
   coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
-  geom_label_repel(data = v, aes(x = q, y = MRT, label = round(MRT, 0)), color = "black", min.segment.length = 0, seed = 42, box.padding = 0.5) +
+  geom_label_repel(
+    data = v,
+    aes(x = q, y = MRT, label = round(MRT, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5
+  ) +
   labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") +
   ggokabeito::scale_colour_okabe_ito(
     name = "Blur Condition",
@@ -2299,89 +2668,140 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
 ```
 
 ```{r}
-p2 <- ggplot(data=v,aes(y=MRT, x=frequency, color=q)) + facet_grid(~blur)+
-  geom_line()+
-  geom_point(size=4) 
+p2 <- ggplot(data = v, aes(y = MRT, x = frequency, color = q)) +
+  facet_grid(~blur) +
+  geom_line() +
+  geom_point(size = 4)
 ```
 
 ```{r}
 v_chb <- v |>
-  dplyr::filter(blur=="C" | blur=="HB") |>
-  dplyr::group_by(frequency, q)|>
-  mutate(mean_rt = mean(MRT)) |> 
-  ungroup()|> 
+  dplyr::filter(blur == "C" | blur == "HB") |>
+  dplyr::group_by(frequency, q) |>
+  mutate(mean_rt = mean(MRT)) |>
+  ungroup() |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-  mutate(diff=HB-C)
+  mutate(diff = HB - C)
 
 v_chb_freq <- v |>
-  dplyr::group_by(blur, q)|>
-  mutate(mean_rt = mean(MRT)) |> 
-  ungroup()|> 
+  dplyr::group_by(blur, q) |>
+  mutate(mean_rt = mean(MRT)) |>
+  ungroup() |>
   tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
-  mutate(diff=LOW-HIGH)
+  mutate(diff = LOW - HIGH)
 
-p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) + facet_grid(~frequency, labeller = labeller(frequency = c(
-    "HIGH" = "High Frequency",
-    "LOW" = "Low Frequency"))) + 
+p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
+  facet_grid(
+    ~frequency,
+    labeller = labeller(
+      frequency = c(
+        "HIGH" = "High Frequency",
+        "LOW" = "Low Frequency"
+      )
+    )
+  ) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
-  theme(legend.position = "none") + 
-scale_y_continuous(breaks=seq(10,500,50)) +
-  scale_x_continuous(breaks=seq(600,1100, 100)) +
-  coord_cartesian(xlim=c(600,1100), ylim = c(10, 500)) +
-geom_label_repel(data=v_chb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5)  +
-  labs(title= "Delta Plots: High blur vs. Clear", x = "", y = "Group Differences", tag = "B")
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = seq(10, 500, 50)) +
+  scale_x_continuous(breaks = seq(600, 1100, 100)) +
+  coord_cartesian(xlim = c(600, 1100), ylim = c(10, 500)) +
+  geom_label_repel(
+    data = v_chb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5
+  ) +
+  labs(
+    title = "Delta Plots: High blur vs. Clear",
+    x = "",
+    y = "Group Differences",
+    tag = "B"
+  )
 ```
 
 ```{r}
 v_clb <- v |>
-  dplyr::group_by(frequency,q)|>
-   mutate(mean_rt = mean(MRT)) |> 
-  ungroup() |> 
+  dplyr::group_by(frequency, q) |>
+  mutate(mean_rt = mean(MRT)) |>
+  ungroup() |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-  mutate(diff=LB-C)
+  mutate(diff = LB - C)
 
-p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) + facet_grid(~frequency, labeller = labeller(frequency = c(
-    "HIGH" = "High Frequency",
-    "LOW" = "Low Frequency"))) + 
+p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
+  facet_grid(
+    ~frequency,
+    labeller = labeller(
+      frequency = c(
+        "HIGH" = "High Frequency",
+        "LOW" = "Low Frequency"
+      )
+    )
+  ) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
-  theme(legend.position = "none") + 
-scale_y_continuous(breaks=seq(10,500,50)) +
-  scale_x_continuous(breaks=seq(600,1100, 100))+
-    coord_cartesian(xlim=c(600,1100), ylim = c(10, 500)) +
-  geom_label_repel(data=v_clb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5) + 
-  labs( title = "Delta Plots: Clear - Low blur", x = "Mean RT per quantile", y = "")
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = seq(10, 500, 50)) +
+  scale_x_continuous(breaks = seq(600, 1100, 100)) +
+  coord_cartesian(xlim = c(600, 1100), ylim = c(10, 500)) +
+  geom_label_repel(
+    data = v_clb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5
+  ) +
+  labs(
+    title = "Delta Plots: Clear - Low blur",
+    x = "Mean RT per quantile",
+    y = ""
+  )
 ```
 
 ```{r}
 v_hlb <- v |>
-  dplyr::filter(blur=="HB" | blur=="LB") |>
-  dplyr::group_by(frequency,q)|>
-   mutate(mean_rt = mean(MRT)) |> 
-  ungroup() |> 
+  dplyr::filter(blur == "HB" | blur == "LB") |>
+  dplyr::group_by(frequency, q) |>
+  mutate(mean_rt = mean(MRT)) |>
+  ungroup() |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
-  mutate(diff=HB-LB)
+  mutate(diff = HB - LB)
 
-p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) + 
- facet_grid(~frequency, labeller = labeller(frequency = c(
-    "HIGH" = "High Frequency",
-    "LOW" = "Low Frequency"))) + 
+p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
+  facet_grid(
+    ~frequency,
+    labeller = labeller(
+      frequency = c(
+        "HIGH" = "High Frequency",
+        "LOW" = "Low Frequency"
+      )
+    )
+  ) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size=16) + 
+  theme_minimal(base_size = 16) +
   theme(legend.position = "none") +
-  scale_y_continuous(breaks=seq(10,500,50)) +
-    coord_cartesian(ylim = c(10, 500)) + 
-  scale_x_continuous(breaks=seq(600,1100, 100))+
-    coord_cartesian(xlim=c(600,1100), ylim = c(10, 500)) +
-  geom_label_repel(data=v_hlb, aes(y=diff, label=round(diff,0)), color="black", min.segment.length = 0, seed = 42, box.padding = 0.5) + 
-  labs( title = "Delta Plots: High blur - Low blur", x = "", y = "")
+  scale_y_continuous(breaks = seq(10, 500, 50)) +
+  coord_cartesian(ylim = c(10, 500)) +
+  scale_x_continuous(breaks = seq(600, 1100, 100)) +
+  coord_cartesian(xlim = c(600, 1100), ylim = c(10, 500)) +
+  geom_label_repel(
+    data = v_hlb,
+    aes(y = diff, label = round(diff, 0)),
+    color = "black",
+    min.segment.length = 0,
+    seed = 42,
+    box.padding = 0.5
+  ) +
+  labs(title = "Delta Plots: High blur - Low blur", x = "", y = "")
 ```
 
 ```{r}
@@ -2396,9 +2816,14 @@ bottom_row <- plot_grid(p1, p2, p3, ncol = 3, label_size = 16)
 # Stack p on top of the bottom_row
 final_plot <- plot_grid(p, bottom_row, ncol = 1)
 
-final_plot 
+final_plot
 
-ggsave(filename='./figures/figure_kde3.png',width=18,height=12, dpi=500)
+ggsave(
+  filename = './figures/figure_kde3.png',
+  width = 18,
+  height = 12,
+  dpi = 500
+)
 ```
 
 ```{r}
@@ -2406,19 +2831,26 @@ ggsave(filename='./figures/figure_kde3.png',width=18,height=12, dpi=500)
 #| tbl-cap: "Word frequency effect across .1, .3, .5, .7, .9 quantiles as a function of blurring"
 #diff
 v_wf <- v |>
-  dplyr::group_by(blur, q)|>
+  dplyr::group_by(blur, q) |>
   tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
-  mutate(Diff=LOW-HIGH) |>
+  mutate(Diff = LOW - HIGH) |>
   rename("Blur" = "blur") |>
-  mutate(Blur = ifelse(Blur=="C", "Clear", ifelse(Blur=="HB", "High blur", "Low blur")))|> 
+  mutate(
+    Blur = ifelse(
+      Blur == "C",
+      "Clear",
+      ifelse(Blur == "HB", "High blur", "Low blur")
+    )
+  ) |>
   ungroup()
 
-v_wf |> select(Blur, q, Diff) |> 
-  pivot_wider(names_from="q", values_from="Diff") |> 
+v_wf |>
+  select(Blur, q, Diff) |>
+  pivot_wider(names_from = "q", values_from = "Diff") |>
   mutate(across(where(is.numeric), ~ round(.x, 3))) |>
-   flextable() |>
+  flextable() |>
   theme_apa() |>
-  width(j = 1, width = 2.5) |>  # widen the Hypothesis column
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 ```
 
@@ -2452,9 +2884,14 @@ dat_binom <- mem_sc %>%
 ## Contrasts
 #hypothesis
 contrast_matrix <- matrix(
-  c(-0.5,  -0.5,    # C
-     0.5,  0,  # HB
-    -0.5,  0.5), # LB
+  c(
+    -0.5,
+    -0.5, # C
+    0.5,
+    0, # HB
+    -0.5,
+    0.5
+  ), # LB
   ncol = 2,
   byrow = TRUE
 )
@@ -2463,49 +2900,51 @@ contrast_matrix <- matrix(
 dat_binom$blur <- factor(dat_binom$blur, levels = c("C", "HB", "LB"))
 contrasts(dat_binom$blur) <- contrast_matrix
 
-HF_cont <- hypr(HIGH~LOW,levels=c("HIGH", "LOW"))
+HF_cont <- hypr(HIGH ~ LOW, levels = c("HIGH", "LOW"))
 
-dat_binom$frequency<-as.factor(dat_binom$frequency)
+dat_binom$frequency <- as.factor(dat_binom$frequency)
 
-contrasts(dat_binom$frequency) <-contr.hypothesis(HF_cont)
+contrasts(dat_binom$frequency) <- contr.hypothesis(HF_cont)
 ```
 
 ```{r}
 #| eval: false
-#| 
+#|
 prior_exp <- c(set_prior("cauchy(0,.35)", class = "b"))
 
 fit_sc_sdt <- brm(
-  formula = success |trials(total) ~ isold * blur * frequency + (1 + isold * blur * frequency | participant),
+  formula = success | trials(total) ~
+    isold * blur * frequency + (1 + isold * blur * frequency | participant),
   data = dat_binom,
   family = binomial(link = "probit"),
-  prior = prior_exp, 
+  prior = prior_exp,
   chains = 4,
-  cores=4, 
+  cores = 4,
   iter = 5000,
-  sample_prior=TRUE, 
-  backend="cmdstanr", 
-  threads = threading(2), 
-  file="blmm_sdt_sc_hblbc", 
-  control = list(adapt_delta = 0.95))
+  sample_prior = TRUE,
+  backend = "cmdstanr",
+  threads = threading(2),
+  file = "blmm_sdt_sc_hblbc",
+  control = list(adapt_delta = 0.95)
+)
 ```
 
 ```{r}
-# read in file from osf 
+# read in file from osf
 # fit_sc_mem <- read_rds("https://osf.io/kh43z/download")
 fit_sc_mem <- read_rds("data/blmm_sdt_sc_hblbC.rds")
 ```
 
 ```{r}
-emm_m2_d1 <- emmeans(fit_sc_mem, ~isold | blur * frequency) |> 
+emm_m2_d1 <- emmeans(fit_sc_mem, ~ isold | blur * frequency) |>
   contrast("revpairwise")
 
-emm_m2_d2 <- emmeans(fit_sc_mem, ~isold + blur * frequency) |> 
+emm_m2_d2 <- emmeans(fit_sc_mem, ~ isold + blur * frequency) |>
   contrast(interaction = c("revpairwise", "pairwise"), by = "frequency")
 
 # (Negative) criteria
-emm_m2_c1 <- emmeans(fit_sc_mem, ~blur * frequency)
-emm_m2_c2 <- emmeans(fit_sc_mem, ~blur | frequency) |> 
+emm_m2_c1 <- emmeans(fit_sc_mem, ~ blur * frequency)
+emm_m2_c2 <- emmeans(fit_sc_mem, ~ blur | frequency) |>
   contrast("pairwise")
 ```
 
@@ -2515,82 +2954,93 @@ emm_m2_c2 <- emmeans(fit_sc_mem, ~blur | frequency) |>
 #| fig-width: 12
 #| fig-height: 10
 
-blur_level <- c("Clear", "High blur", "Low blur", "Clear-High blur", "Clear-Low blur", "High blur-Low blur")
+blur_level <- c(
+  "Clear",
+  "High blur",
+  "Low blur",
+  "Clear-High blur",
+  "Clear-Low blur",
+  "High blur-Low blur"
+)
 
 tmp <- bind_rows(
   bind_rows(
-    gather_emmeans_draws(emm_m2_d1) |> 
-      group_by(blur, frequency) |> 
+    gather_emmeans_draws(emm_m2_d1) |>
+      group_by(blur, frequency) |>
       select(-contrast),
-    gather_emmeans_draws(emm_m2_d2) |> 
+    gather_emmeans_draws(emm_m2_d2) |>
       rename(
         blur = blur_pairwise
-      ) |> 
-      group_by(blur, frequency) |> 
+      ) |>
+      group_by(blur, frequency) |>
       select(-isold_revpairwise)
   ),
   bind_rows(
     gather_emmeans_draws(emm_m2_c1),
-    gather_emmeans_draws(emm_m2_c2) |> 
+    gather_emmeans_draws(emm_m2_c2) |>
       rename(
         blur = contrast
       )
   ),
   .id = "Parameter"
-) |> 
-  ungroup() |> 
-  mutate(Parameter = factor(Parameter, labels = c("dprime", "Criterion"))) |> 
-   mutate(
-    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |> 
+) |>
+  ungroup() |>
+  mutate(Parameter = factor(Parameter, labels = c("dprime", "Criterion"))) |>
+  mutate(
+    t = if_else(str_detect(blur, " - "), "Differences", "Group means") |>
       fct_inorder(),
-    blur = fct_inorder(blur), 
-    frequency=ifelse(frequency=="HIGH", "High", "Low")
-  ) 
+    blur = fct_inorder(blur),
+    frequency = ifelse(frequency == "HIGH", "High", "Low")
+  )
 # Convert blur to an ordered factor to control spacing
 # Convert blur to a factor with predefined order
-tmp |>   
+tmp |>
   mutate(
     .value = if_else(Parameter == "Criterion", .value * -1, .value),
     Parameter = fct_rev(Parameter)
-  ) |> 
-  ggplot(aes(x = as.numeric(blur), y = .value, fill = frequency)) +  
+  ) |>
+  ggplot(aes(x = as.numeric(blur), y = .value, fill = frequency)) +
   labs(
     x = "Blurring Level (or difference)",
-    y = "Parameter value", 
+    y = "Parameter value",
     fill = "Frequency"
   ) +
   geom_hline(yintercept = 0, linewidth = .25) +
-  
+
   # Replace scale_x_discrete with scale_x_continuous
   scale_x_continuous(
-    breaks = 1:6,  # Assuming you have 6 unique blur levels
-    labels = blur_level  # Your predefined labels
+    breaks = 1:6, # Assuming you have 6 unique blur levels
+    labels = blur_level # Your predefined labels
   ) +
-  
+
   scale_slab_alpha_discrete(range = c(1, .5)) +
-  
+
   stat_halfeye(
     normalize = "xy",
     width = 0.44,
-    slab_color = "black", 
-   point_interval = "mean_qi",
+    slab_color = "black",
+    point_interval = "mean_qi",
     .width = c(.95),
     aes(
       side = ifelse(frequency == "High", "left", "right"),
-      x = ifelse(frequency == "High", as.numeric(blur) - .08, as.numeric(blur) + .08)
+      x = ifelse(
+        frequency == "High",
+        as.numeric(blur) - .08,
+        as.numeric(blur) + .08
+      )
     )
   ) +
-  
+
   guides(slab_alpha = "none") +
   facet_grid(Parameter ~ t, scales = "free") +
-  ggokabeito::scale_fill_okabe_ito() + 
-    theme_minimal(base_size=16) + 
-   theme(
+  ggokabeito::scale_fill_okabe_ito() +
+  theme_minimal(base_size = 16) +
+  theme(
     strip.background = element_rect(fill = "black", color = "black"),
     strip.text = element_text(color = "white", face = "bold")
   )
 
-ggsave("figures/dprime_expt2.png", width=14, height=8, dpi=500)
+ggsave("figures/dprime_expt2.png", width = 14, height = 8, dpi = 500)
 ```
 
 ```{r}
@@ -2603,11 +3053,16 @@ d <- hypothesis(fit_sc_mem, "isold:blur1:frequency1 > 0")
 e <- hypothesis(fit_sc_mem, "isold:blur2:frequency1 > 0")
 
 # Extract and round each hypothesis table
-a$hypothesis <- a$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-b$hypothesis <- b$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-d$hypothesis <- d$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
-e$hypothesis <- e$hypothesis |> mutate(across(where(is.numeric), ~ round(.x, 3)))
+a$hypothesis <- a$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+b$hypothesis <- b$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+c$hypothesis <- c$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+d$hypothesis <- d$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+e$hypothesis <- e$hypothesis |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
 
 # Combine into one table
 tab <- bind_rows(
