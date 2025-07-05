@@ -34,7 +34,7 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 ## Data
 
 - All data for this manuscript can be found in the OSF repo. Large amounts of data and size of model obects is far too large to store on Github. 
- 
+- if you are trying to run the main analyses it will take a long time to run (~hours and or days). 
 # Reproducing the Manuscript
 
 This repository contains all the resources needed to reproduce the manuscript associated with this project. To ensure maximum reproducibility, we used [Quarto](https://quarto.org/) for creating the manuscript. This allows computational figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document. We also provide a file called default.nix which contains the definition of the development environment that was used to work on the analysis. Reproducers can easily re-use the exact same environment by installing the Nix package manager and using the included default.nix file to set up the right environment.
