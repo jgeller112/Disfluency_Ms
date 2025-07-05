@@ -2,6 +2,13 @@
 
 This repository contains  materials and code for our manuscript "Perceptual Disfluency and Recognition Memory: A Response Time Distributional Analysis". The data, materials, and model files can be found here: https://osf.io/6sy7k/. 
 
+# Authors
+
+- Jason Geller*
+- Pablo Gomez
+- Erin Buchanan
+- Dominique Makowski
+
 
 
 ## Overview
