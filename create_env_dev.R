@@ -37,6 +37,6 @@ rix(date = "2025-04-07",
     tex_pkgs = c("amsmath", "ninecolors", "apa7", "scalerel", "threeparttable", "threeparttablex", "endfloat", "environ", "multirow", "tcolorbox", "pdfcol", "tikzfill", "fontawesome5", "framed", "newtx", "fontaxes", "xstring", "wrapfig", "tabularray", "siunitx", 
                  "fvextra", "geometry","setspace", "fancyvrb", "anyfontsize"), 
     shell_hook = "Rscript install_cmdstan.R",
-    ide = "none",
+    ide = "rstudio",
     project_path = ".",
     overwrite = TRUE)
