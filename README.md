@@ -4,7 +4,7 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 
 # Authors
 
-- Jason Geller*
+- Jason Geller* (drjasongeller@gmail.com)
 - Pablo Gomez
 - Erin Buchanan
 - Dominique Makowski
