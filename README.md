@@ -1,4 +1,4 @@
-
+# Modeling Perceptual Disfluency Paper Repository
 
 This repository contains  materials and code for our manuscript "Perceptual Disfluency and Recognition Memory: A Response Time Distributional Analysis". The data, materials, and model files can be found here: https://osf.io/6sy7k/. 
 
@@ -8,7 +8,6 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 - Pablo Gomez
 - Erin Buchanan
 - Dominique Makowski
-
 
 
 ## Overview
@@ -21,7 +20,8 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 - **`default.nix`**: Configuration file for the Nix package manager.
 - **`.project`**: Project configuration file.
 - **`exguass_reparm.R`**: correct brms family to get mean of guassian and not mean of dist
-- **grateful-report.html**: R packages used in paper citations
+- **`install_cmdstan.R`**: when running nix this installs cmdstanR in the shell for reproduction
+- **`grateful-report.html`**: R packages used in paper citations
 
 ## Directories
 
@@ -34,38 +34,53 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 ## Data
 
 - All data for this manuscript can be found in the OSF repo. Large amounts of data and size of model obects is far too large to store on Github. 
-- if you are trying to run the main analyses it will take a long time to run (~hours and or days). 
+- if you are trying to run the main analyses it will take a long time to run (~hours and or days).
+
+
 # Reproducing the Manuscript
 
-This repository contains all the resources needed to reproduce the manuscript associated with this project. To ensure maximum reproducibility, we used [Quarto](https://quarto.org/) for creating the manuscript. This allows computational figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document. We also provide a file called default.nix which contains the definition of the development environment that was used to work on the analysis. Reproducers can easily re-use the exact same environment by installing the Nix package manager and using the included default.nix file to set up the right environment.
+This repository contains all the resources needed to reproduce the manuscript associated with this project.  
+To ensure reproducibility, we created the manuscript using [Quarto](https://quarto.org/), which allows computational figures, tables, and text to be programmatically included directly in the manuscript.  
+We also provide a `default.nix` file that defines the development environment used for the analysis.  
+By installing the [Nix](https://nixos.org/) package manager, you can recreate the exact same environment using this file.
+
+---
 
 ## Video Tutorial
 
-Here is a video tutorial showing an example of how to reproduce a manuscript using Nix/Rix
+Here is a video tutorial showing an example of how to reproduce a manuscript using Nix/Rix:
 
 [![Reproduce Manuscript with Nix/Rix](https://img.youtube.com/vi/nb9NfGfwAwc/0.jpg)](https://www.youtube.com/watch?v=nb9NfGfwAwc)
+
+---
 
 ## Prerequisites
 
 ### Required Software
-To reproduce the manuscript, you will need the following if not using rix/nix:
 
-1. **Git** - To get Github repos [https://git-scm.com/downloads]
-2. **RStudio** or **Positron**  or **VS Code**- To run the R scripts and render the Quarto document.
-3. **Quarto** - To compile the manuscript.
-4. **apaQuarto** - APA manuscript template [https://github.com/wjschne/apaquarto/tree/main] (you should not have to download this if you download the repo as the _extension file contains all the files needed)
+If you are **not** using Nix/Rix, you will need:
+
+1. **Git** – To clone the repository [https://git-scm.com/downloads].  
+2. **RStudio**, **Positron**, or **VS Code** – To run the R scripts and render the Quarto document.  
+3. **Quarto** – To compile the manuscript.  
+4. **apaQuarto** – APA manuscript template [https://github.com/wjschne/apaquarto/tree/main].  
+   *(You don’t need to download this manually if you cloned the repository; the `_extension` directory already contains all required files.)*
+
+---
 
 ## Steps to Reproduce
 
-### Nix/Rix
+### Nix/Rix Workflow
 
 #### Installation Guides
 
 - **Nix and Rix**
-  - For Windows and Linux: [Setup Guide](https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html)
-  - For macOS: [Setup Guide](https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html)
+  - **Windows and Linux**: [Setup Guide](https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html)
+  - **macOS**: [Setup Guide](https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html)
 
-#### 1. Clone the Repository
+---
+
+### 1. Clone the Repository
 
 Clone this repository to your local machine:
 
@@ -99,7 +114,7 @@ quarto render "~/_manuscript/Disfluency_Modeling_Ms.qmd"
 
 or 
 
-2. Launch your IDE in the correct environment in run code and analyses:
+2. Launch your IDE in the correct environment in run code and analyses (this needs to be set explicitly when generating the default.nix file):
 
 - Positron
   - To use Positron from the shell you will need to make sure the correct path is set (see https://github.com/posit-dev/positron/discussions/4485#discussioncomment-10456159). Once this is done you can open Positron from the shell
@@ -118,7 +133,7 @@ Finally, it’s also possible to forget {rix} and instead run everything using R
 
 - Make sure the required software is installed above and you have the following packages:
 
-  - R 4.4.1 (or later) and RStudio.
+  - R 4.4.1 (or later) and RStudio/Positron
 
   - Quarto 1.5.54 or earlier (if you want to produce a typst pdf). 
   
@@ -164,6 +179,8 @@ sudo apt install g++ make
 | tidybayes    | 3.0.7   | Kay (2024c)                                                              |
 | tidylog      | 1.1.0   | Elbers (2024)                                                            |
 | tidyverse    | 2.0.0   | Wickham et al. (2019)                                                    |
+| tinytex      | 0.52    | Xie (2024)                                                               |
+
 
 ```
 install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev", "https://packagemanager.posit.co/cran/latest"))
@@ -172,6 +189,12 @@ install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev", "https
 ```
 # install cmdstan 
 cmdstanr::install_cmdstan()
+```
+
+```
+#install tinytex for pdf
+tinytex::install_tinytex()
+
 ```
 
 1. Download the repository from Github
