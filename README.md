@@ -12,6 +12,106 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 
 ## Overview
 
+```
+_manuscript/
+    ├── _extensions/
+        └── wjschne/
+            └── apaquarto/
+                ├── typst/
+                    ├── formattypst.lua
+                    ├── typst-show.typ
+                    └── typst-template.typ
+                ├── _apa_title.qmd
+                ├── _extension.yml
+                ├── apa.csl
+                ├── apa.css
+                ├── apa.scss
+                ├── apaafternote.lua
+                ├── apaandcite.lua
+                ├── apaappendixlatex.lua
+                ├── apacaption.lua
+                ├── apaextractfigure.lua
+                ├── apafgtb.lua
+                ├── apafigtab.lua
+                ├── apafigtblappendix.lua
+                ├── apafigurelatex.lua
+                ├── apafigurewidthlatex.lua
+                ├── apafloat.lua
+                ├── apafloatlatex.lua
+                ├── apafloatstoend.lua
+                ├── apaheader.lua
+                ├── apalanguage.lua
+                ├── apamasked.lua
+                ├── apanote.lua
+                ├── apaomitrefsdiv.lua
+                ├── apaoneauthoraffiliation.lua
+                ├── apaquarto.docx
+                ├── apaquarto.md
+                ├── apaquote.lua
+                ├── apastriptitle.lua
+                ├── apatemplate.tex
+                ├── apatwocolumnlatex.lua
+                ├── before-body.tex
+                ├── citeprocr.lua
+                ├── crossrefprefix.lua
+                ├── doc-class.tex
+                ├── docxlinenumber.lua
+                ├── docxstyler.lua
+                ├── frontmatter.lua
+                ├── header.tex
+                ├── journalmode.lua
+                ├── latexnoindent.lua
+                ├── ORCID-iD_icon-vector.svg
+                ├── styles.css
+                ├── title-block.html
+                └── title.tex
+    ├── data/
+        └── README.md
+    ├── expt2_hypothesis/
+        ├── hypothesis_beta_blur1_frequency1.csv
+        ├── hypothesis_beta_blur1.csv
+        ├── hypothesis_beta_blur2_frequency1.csv
+        ├── hypothesis_beta_blur2.csv
+        ├── hypothesis_beta_frequency1.csv
+        ├── hypothesis_mu_blur1_frequency1.csv
+        ├── hypothesis_mu_blur1.csv
+        ├── hypothesis_mu_blur2_frequency1.csv
+        ├── hypothesis_mu_blur2.csv
+        ├── hypothesis_mu_frequency1.csv
+        ├── hypothesis_sigma_blur1_frequency1.csv
+        ├── hypothesis_sigma_blur1.csv
+        ├── hypothesis_sigma_blur2_frequency1.csv
+        ├── hypothesis_sigma_blur2.csv
+        └── hypothesis_sigma_frequency1.csv
+    ├── figures/
+        ├── ARROW.png
+        ├── ARROWHB.png
+        ├── ARROWLB.png
+        ├── blur.jpg
+        ├── dprime_expt2.png
+        ├── expt1A-dprime.png
+        ├── expt1B-dprime.png
+        ├── figure_kde.png
+        ├── figure_kde2.png
+        └── figure_kde3.png
+    ├── Disfluency_ms_1.pdf
+    ├── Disfluency_ms_1.qmd
+    └── references.bib
+.gitignore
+.Rprofile
+create_env_dev.R
+default.nix
+Disfluency_ms.Rproj
+exguass_reparm.R
+grateful-refs.bib
+grateful-report.html
+install_cmdstan.R
+README.md
+result
+
+
+```
+
 - **`.Rprofile`**: Configuration file for R sessions.
 - **`.gitignore`**: Specifies files and directories for Git to ignore.
 - **`Disfluency_ms.Rproj`**: RStudio project file.
@@ -25,7 +125,7 @@ This repository contains  materials and code for our manuscript "Perceptual Disf
 
 ## Directories
 
-- **`_extensions/`**: Contains extensions, including:
+- **`_extensions/`**: Contains extensions for APA formatted manuscript, including:
   - **`wjschne/apaquarto/`**
 
 - **`_manuscript/`**: Manuscript-related files.
