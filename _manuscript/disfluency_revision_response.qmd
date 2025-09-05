@@ -1,0 +1,62 @@
+---
+title: Responses to editor and reviewer concerns
+format:
+  hikmah-response-typst: default
+bibliography: references.bib
+csl: apa.csl
+---
+
+Thank you for giving us the opportunity to revise and resubmit our manuscript, “The Perceptual Disfluency Effect: A Drift Diffusion and Ex-Gaussian Analysis” (Manuscript ID: JOC-2025-0043). We greatly appreciate the insightful and constructive comments provided by the Editor and Reviewers. These suggestions were extremely helpful in guiding our revisions, and we have used them to substantially improve the clarity, structure, and presentation of the manuscript.
+
+Some of the general changes include restructuring the paper to make it more streamlined, trimming its overall length, moving the discussion of drift-diffusion modeling (DDM) to the appendix, and updating the title.
+
+Below, we describe in detail how we have revised the paper in response to the Editor’s and Reviewers’ comments. The Editor’s and Reviewers’ comments are cited or summarized in [red italicized text]{.memo-reviewer-inline}, and our responses are provided in standard black Roman text. We also include excerpts from the revised manuscript in [blue text]{.memo-excerpt-inline}.
+
+
+# Reviewer 1
+
+## Main Concerns
+
+::: memo-reviewer
+***Reviewer 1***:  A central point I would encourage the authors to consider is how the experimental design—specifically, the intermixed vs. blocked presentation of stimuli—may influence the observed disfluency effects and consequently, the interpretation of the results.  The current design, which randomly intermixes clear, low-blur, and high-blur words, may limit the ecological validity of the findings, particularly in light of the educational implications suggested.
+In real-world reading scenarios (e.g., reading a book or handwritten notes), perceptual characteristics such as font, handwriting, or blur are typically consistent across longer stretches of text. This consistency enables parafoveal processing and the generation of visual and orthographic predictions about upcoming stimuli. In contrast, an intermixed design reduces such predictability, and may even suppress predictive processing altogether.
+:::
+
+We would like to thank the reviewer for bringing up this point, and we fully agree that is a potential limitation of the study. Some of my work (@geller2018) and also @rosner2015 showed that some types of disfluency (handwritten cursve and high blurring) elicits the effect regardless of design (mixed vs. pure/blocked design). We opted for a mixed design becasue of this is, but it would be interesting to see if this effect dissaperas with a pure design. We have added this to the limitation section of the discussion. 
+
+::: memo-excerpt
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in Fig X. A summary of the ex-Gaussion model can be found in Table 3. 
+:::
+
+## Minor Concerns
+
+::: memo-reviewer
+***Reviewer 1***:  p 25, lines 57: “A summary of the results can be found in. A summary of the results can be found in Table 3.”
+:::
+
+We have fixed this grammatical error in the paper. 
+
+::: memo-excerpt
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in Fig X. A summary of the ex-Gaussion model can be found in Table 3. 
+:::
+
+
+::: memo-reviewer
+***Reviewer 1***:  p 14, line 59: “Another scenario entails a general slow down of processing—causing distributional shifting μ, but not skewing”.  “but not skewing”.. Would it be better with “not an increase in skewing”?
+:::
+
+::: memo-excerpt
+Another scenario entails a general slowing of processing, reflected in an increase in $\mu$  but not in $\tau$.
+:::
+
+
+::: memo-reviewer
+***Reviewer 1***:  p 5 line 48: “Originally launched with the strong claim that typeface enhances memory retention due to the backward-slanting letters and gaps within each letter which forces individuals to ‘generate’ the missing parts of each word” . Please check grammar.
+:::
+
+
+::: memo-excerpt
+It was originally launched with the strong claim that typeface enhances memory retention because of the backward-slanting letters and the gaps within each letter, which force individuals to “generate” the missing parts of each word. 
+
+:::
+
