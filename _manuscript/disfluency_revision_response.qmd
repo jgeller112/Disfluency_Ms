@@ -8,7 +8,7 @@ csl: apa.csl
 
 Thank you for giving us the opportunity to revise and resubmit our manuscript, “The Perceptual Disfluency Effect: A Drift Diffusion and Ex-Gaussian Analysis” (Manuscript ID: JOC-2025-0043). We greatly appreciate the insightful and constructive comments provided by the Editor and Reviewers. These suggestions were extremely helpful in guiding our revisions, and we have used them to substantially improve the clarity, structure, and presentation of the manuscript.
 
-Some of the general changes include restructuring the paper to make it more streamlined, trimming its overall length, moving the discussion of drift-diffusion modeling (DDM) to the appendix, and updating the title.
+Some of the general changes include restructuring the paper to make it more streamlined by trimming its overall length per the reccomendation of Reviewer 2, moving the discussion of drift-diffusion modeling (DDM) mostly to the appendix, and updating the title.
 
 Below, we describe in detail how we have revised the paper in response to the Editor’s and Reviewers’ comments. The Editor’s and Reviewers’ comments are cited or summarized in [red italicized text]{.memo-reviewer-inline}, and our responses are provided in standard black Roman text. We also include excerpts from the revised manuscript in [blue text]{.memo-excerpt-inline}.
 
@@ -35,7 +35,7 @@ Second, all three experiments employed a mixed-list design. Although perceptual 
 We would like to thank Reviewer 1 for suggesting Gagl et al. (2020). We have now incorporated discussion of the orthographic prediction error model in conjunction with the stage-specific account.
 
 ::: memo-excerpt
-Converging neuroimaging and neurophysiological evidence supports this interpretation. @gagl2020 proposed the orthographic prediction error (OPE) model, which holds that reading words involves generating visual–orthographic predictions and comparing them to incoming input. Visual degradation increases OPE—the mismatch between expected and observed letter input—and when predictions are impaired or suspended due to stimulus unpredictability, the benefits of top-down facilitation are attenuated. As a result, processing relies more heavily on bottom-up input, which can slow responses and alter encoding quality. This perspective clarifies how perceptual disfluency can influence both response-time distributions and memory outcomes, while also situating the stage-specific account within a broader predictive-processing framework. Future research can helf edify this. 
+ Complementing this stage-specific perspective, @gagl2020 proposed a more stage-agnostic framework: the orthographic prediction error (OPE) model. Drawing on fMRI and EEG data, this model holds that reading involves generating visual–orthographic predictions and comparing them to incoming input. Visual degradation increases OPE—the mismatch between expected and observed letter input—and when predictions are impaired or suspended due to unpredictability, the benefits of top-down facilitation are reduced. Processing then relies more heavily on bottom-up input, which can slow responses and alter encoding quality. This framework helps clarify how perceptual disfluency influences both response-time distributions and memory outcomes, while situating the stage-specific account within a broader predictive-processing view. Future research may further elucidate how these perspectives converge.
 :::
 
 ::: memo-reviewer
@@ -78,4 +78,194 @@ It was originally launched with the strong claim that typeface enhances memory r
 
 # Reviewer 2
 
+## Major Points
 
+::: memo-reviewer
+**Reviewer 2**: Perhaps my main concern is that the paper is very long and I found it somewhat difficult to read, although it seems to have a clear set of conclusions that could in my opinion be presented much more concisely. I hence strongly recommend streamlining the manuscript overall. Main targets for shortening should be the introduction and discussion, but I would also like to note that processing the 10 tables and 6 figures is also quite taxing for the reader.
+:::
+
+We agree with this concern and appreciate the suggestion. In response, we have substantially streamlined the introduction and discussion to make them more concise and focused. We have also reviewed all tables and figures, ensuring that each one directly supports the main text, and have simplified their formatting to reduce redundancy and improve readability.
+::: memo-reviewer
+**Reviewer 2**: Relatedly, I personally did not see the benefit of reporting the results of two reaction time modeling approaches in experiments 1a and 1b, especially since one was
+subsequently dropped for experiment 2. Of course, it is always nice if conclusions
+from different methods converge, but in my opinion, the presentation of the two
+different models, including their explanation in the introduction section, unnecessarily
+complicates things and distracts from the main points of the paper. Could the
+presentation in the main paper perhaps be limited to the ex-Gaussian model results
+and the DDM models be moved to supplementary materials?
+:::
+
+We also wrestled with the question of whether including both modeling approaches added clarity or complexity. To address this, we have revised the manuscript to place greater emphasis on the ex-Gaussian results in the main text, while mentioing the DDM in the discussion sections of 1a and 1B and moving tables of DDM results to the appendices. We believe it is still valuable to report the DDM analyses because there is ongoing debate about the utility of ex-Gaussian models and their relationship to cognitive processes. Including both approaches allows readers to see that the conclusions converge, while ensuring that the primary narrative in the paper is not disrupted.
+
+::: memo-reviewer
+**Reviewer 2**: Relatedly, I do not believe that the observed correspondence between the two kinds
+of models in experiments 1a and 1b is sufficient for assuming equivalence of the
+processes reflected by the derived parameters (p. 41). The authors should be more
+careful with such statements.
+:::
+
+We appreciate this important point. In the revision, we removed the claim of correspondence to avoid overstating the equivalence between the processes reflected by the model parameters.
+
+::: memo-reviewer
+**Reviewer 2**: The sample size justification of experiment 2 was not sufficient (“based on the
+interaction effect we aimed to test”). Also, were participants again over-sampled?
+Were participants with insufficient accuracy at encoding excluded?
+:::
+
+Thank you for raising this point. We have clarified our sample size justification for Experiment 2. Because we were testing an attenuated interaction effect, a larger sample was needed to achieve adequate power. Following Brysbaert (2019), detecting a fully attenuated interaction with 80% power requires approximately 210 participants. To be conservative, and to ensure sufficient sensitivity, we doubled the sample size relative to Experiments 1A and 1B and ultimately collected 435 participants. This approach is also consistent with previous work using comparable designs (e.g., Geller, 2021).  
+
+We have also added details regarding data handling. Participants were oversampled to allow for potential exclusions. As preregistered, participants with insufficient accuracy during encoding were excluded from the final analysis set. These clarifications have now been incorporated into the methods section and a footnote.  
+
+
+::: memo-reviewer
+**Reviewer 2**: I would suggest to write the general discussion in a more generally understandable
+way, moving away from labels for specific parameters (or if anything in parentheses
+after naming the process/construct they refer to) and towards verbal
+descriptors/explanations.
+:::
+
+We hope we have addressed this reviewers concern by rewriting the discussion section. 
+
+
+
+::: memo-reviewer
+**Reviewer 2**: I found no statement regarding ethics approval (or this research being exempt thereof).
+:::
+
+We apologize for this oversight. We have now added a statement in the Methods section under Transparency and Openness noting that each study received approval from the Institutional Review Board.
+
+
+
+## Minor Points
+
+::: memo-reviewer
+***Reviewer 2***:  p 5 line 48: There seems to be an extra parenthesis on p.5, line 33.
+:::
+
+The introduction has been rewritten and the extra paenthesis has been removed.
+
+::: memo-reviewer
+***Reviewer 2***:  P. 8 line 9 the formatting of the citation is off
+:::
+
+This has been fixed by rewriting the introduction
+
+::: memo-reviewer
+***Reviewer 2***:  P. 9 line 22 and onwards: There is an (almost identical) duplicate sentence here.
+:::
+
+This has been fixed by rewriting the introduction
+
+::: memo-reviewer
+***Reviewer 2***:  P. 13 line 7/8: “primarily influenced both...” would sound better without the “primarily”
+:::
+
+This has been fixed by rewriting the introduction
+
+::: memo-reviewer
+Reviewer 2: The table captions are confusing, which is partly due to the formatting. Also, does “95% CrI for equivalence tests” mean that it is not the 90% CrI, but the 95% CrI that is shown in the column “90% CrI” in the tables? If so, I think the column label should be changed to something clearer rather than simply mentioning in the caption that it does not apply to equivalence tests.
+:::
+
+We appreciate this helpful comment and apologize for the confusion. To improve clarity, we have relabeled the column simply as CrI and added a note in the caption distinguishing between directional (one-tailed) and bidirectional (two-tailed) hypotheses. We have also corrected the formatting to ensure consistency across tables.
+
+::: memo-excerpt
+CrI: 90% for one-sided tests and 95% for two-sided tests against 0.
+:::
+
+::: memo-reviewer
+***Reviewer 2***:  "This is absolutely not critical, but why are sigma and beta reported in log (logit) scale?”
+:::
+
+::: memo-reviewer
+**Reviewer 2**: "This is absolutely not critical, but why are sigma and beta reported in log (logit) scale?”
+:::
+
+We reported sigma and beta on the log (logit) scale because that is the scale on which the models are estimated, and it ensures that the parameters remain in their allowable range (e.g., variance parameters strictly positive, probabilities constrained between 0 and 1). The `brms` package reports estimates on the transformed scale. 
+
+::: memo-reviewer
+Reviewer 2: "Page 23, bottom, there is again a duplicate sentence"
+:::
+
+Thank you for catching this repetition. We have revised the section to remove the duplication and improve readability.
+
+::: memo-excerpt
+A visualization of how blurring affected processing during word recognition is shown in the quantile and delta plots (Fig. X). A summary of the ex-Gaussian model results is provided in Fig. X.
+:::
+
+::: memo-reviewer
+Reviewer 2: "Page 23, bottom, there is again a duplicate sentence"
+:::
+
+::: memo-reviewer
+Reviewer 2: "In my opinion, the quality of the figures could be improved."
+:::
+
+Thank you for this suggestion. We have revised the figures to improve their overall clarity and readability. Specifically, we increased resolution, adjusted font sizes and labels, and standardized formatting across figures. We hope these changes make the figures more accessible and visually clear.
+
+::: memo-reviewer
+**Reviewer 2**: "Page 38, the sentence in the discussion section is unclear (‘with no context reinstatement’). It becomes clear what is meant when thinking about it, but it would be beneficial to improve the clarity."
+:::
+
+Thank you for noting this. We have revised the sentence for clarity.
+
+::: memo-excerpt
+We replicated all the findings of Experiment 1A in a design where levels of blurring were not reinstated at test. 
+:::
+
+::: memo-reviewer
+**Reviewer 2**: "Page 39, “remembered” is a bit of a tricky wording here as this could also have
+implications for specific retrieval processes, which I do not believe is what the authors
+mean
+:::
+
+Thank you for pointing this out. We agree that “remembered” could misleadingly suggest a focus on retrieval processes, which is not our intention. Our results speak specifically to recognition sensitivity (d′), not to retrieval mechanisms per se. To avoid confusion, we have revised the sentence to read:
+
+::: memo-excerpt
+Sensitivity was higher for high blurred words than for clear and low blurred words...
+:::
+
+::: memo-reviewer
+**Reviewer 2**: Page 48 greater skewing for high frequency words”, do the authors mean “greater
+skewing due to blurring in the high frequency than in the low frequency words”?
+Overall, the clarity of these passages could be improved, especially when reporting
+interactions.
+:::
+
+This section has been rewritten to improve clairity. 
+
+::: memo-reviewer
+**Reviewer 2**: For Table 10, it is unclear what the DV presented here is.
+:::
+
+Thank you for pointing this out. We agree that the DV was not made sufficiently clear in Table 10. The table presents RTs, broken down by word frequency (high vs. low) across each quantile of the distribution, corresponding to the effects illustrated in Figure 6. To improve clarity, we have revised the table caption to explicitly state the variable and its relation to Figure 6. We also added a cross-reference in the discussion to ensure consistency.
+
+::: memo-excerpt
+Mean response time (in ms) for the word frequency effects across the .1, .3, .5, .7, and .9 quantiles of the RT distribution as a function of blurring. These values correspond to the quantile effects for Experiment 2. 
+:::
+
+::: memo-reviewer
+**Reviewer 2**: Page 50 were more likely to be recognized”: this sentence sounds like the hit rate is
+being referred to, which I do not think is the case.
+:::
+
+::: memo-excerpt
+Sensitivity was higher for low-frequency words compared to high-frequency words,
+:::
+
+::: memo-reviewer
+**Reviewer 2**: Page 50, “such that high frequency words showed a selective memory benefit”: it
+would be better in my opinion to explicitly say “high frequency words, but not low
+frequency words, showed...”
+:::
+
+This sentence has been rewritten to improve clairity. 
+
+::: memo-excerpt
+high frequency words, but not low frequency words, showed a selective memory benefit under high blurring
+:::
+
+::: memo-reviewer
+**Reviewer 2**: P. 55 the gomes reference is not formatted correctly
+:::
+
+The document was automtically created in Quarto and did not format the citation correctly. This has been changed as this section has been rewritten. 
