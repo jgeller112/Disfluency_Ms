@@ -99,10 +99,9 @@ language:
   title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"
 word-count: true
 format:
- apaquarto-docx: default
- apaquarto-html: default
- apaquarto-pdf:
-    documetmode: man
+ #apaquarto-docx: default
+ #apaquarto-html: default
+ apaquarto-typst: default
   
 execute: 
   echo: false
@@ -124,6 +123,7 @@ knitr:
 ---
 
 ```{r}
+#| eval: false
 required_packages <- c(
   "brms",
   "cmdstanr",
@@ -314,13 +314,13 @@ pwalk(data_files, function(filename, url) {
 })
 ```
 
-**We live in a world that is, even for adults, “blooming and buzzing with confusion” [@james1890, p.488]. Yet we can still decipher cursive words or follow conversations in noisy bars. This ability to cope with a noisy, confusing environment has long been studied at the intersection of education and cognitive psychology. Decades of work show that encoding difficulty can enhance long-term memory. Although people often assume that easier learning is better, many findings demonstrate the opposite: under certain conditions, making learning more effortful can improve retention. This phenomenon, known as the *desirable difficulties* principle [@bjork_making_2011], includes robust effects such as spacing study sessions [@carpenter2022], interleaving concepts rather than blocking them [@rohrer2007], and generating or retrieving information instead of simply re-reading it [@roediger2006; @slamecka1978].**
+**We live in a world that is, even for adults, “blooming and buzzing with confusion” [@james1890, p.488]. Yet we can still decipher cursive writing or follow conversations in noisy bars. This ability to cope with a noisy, confusing environment has long been studied at the intersection of education and cognitive psychology. Decades of work show that encoding difficulty can enhance long-term memory. Although people often assume that easier learning is better, many findings demonstrate the opposite: under certain conditions, making learning more effortful can improve retention. This phenomenon, known as the *desirable difficulties* principle [@bjork_making_2011], includes robust effects such as spacing study sessions [@carpenter2022], interleaving concepts rather than blocking them [@rohrer2007], and generating or retrieving information instead of simply re-reading it [@roediger2006; @slamecka1978].**
 
 **One straightforward example involves altering the perceptual characteristics of study materials to make them harder to process. A growing literature shows that such manipulations can improve memory [e.g., @geller2018; @geller2021; @halamish2018; @rosner2015], a benefit referred to as the *perceptual disfluency effect*[see @geller2018].**
 
 ## The Perceptual Disfluency Effect
 
-**The link between perceptual disfluency and memory dates back to the late 1980s. @nairne1988 , using the term perceptual-interference effect, employed backward masking with hash marks (e.g., ####) to make word encoding more effortful. Since then, a range of manipulations has been shown to elicit similar effects, including high-level blurring [@rosner2015], word inversion [@sungkhasettee2011], small text size [@halamish2018], handwritten cursive [@geller2018], and unusual typefaces [@geller2021; @weissgerber2017; @weltman2014].**
+**The link between perceptual disfluency and memory dates back to the late 1980s. @nairne1988 , using the term perceptual-interference effect, employed backward masking with hash marks (e.g., ####) to make word encoding more difficult. Since then, a range of manipulations has been shown to elicit similar effects, including high-level blurring [@rosner2015], word inversion [@sungkhasettee2011], small text size [@halamish2018], handwritten cursive [@geller2018], and unusual typefaces [@geller2021; @weissgerber2017; @weltman2014].**
 
 **Because these manipulations are simple to implement, researchers quickly began touting their educational potential. Interest grew following @diemand-yauman2011, who reported that presenting material in disfluent typefaces (e.g., Comic Sans, Bodoni MT, Haettenschweiler, Monotype Corsiva) enhanced memory both in the lab and in high school classrooms across multiple content areas.**
 
@@ -356,11 +356,9 @@ More recently, Ptok and colleagues proposed a limited-capacity, stage-specific m
 
 ## Goals of the Present Experiments
 
-I**n the present experiments, we pursued two aims related to perceptual disfluency. The first was to examine the replicability of the perceptual disfluency effect. To maximize the likelihood of observing this effect, we employed a manipulation that has previously been shown to enhance memory: perceptual blurring. @rosner2015 demonstrated across several studies that varying degrees of blurring (high vs. low) differentially affect memory. Following their paradigm, we presented participants with clear words (no blur), low-blurred words (5% Gaussian blur), and high-blurred words (15% Gaussian blur).\*\* Prior evidence suggests that high levels of blurring can enhance memory [@rosner2015]. As @geller2018 emphasized, however, not all disfluency manipulations are created equal. Different perceptual manipulations affect processing in distinct ways, making it critical to identify which manipulations reliably produce disfluency effects and at what stage of processing. By testing multiple levels of perceptual disfluency, our study offers a more nuanced account of how encoding processes shape memory outcomes.**
+I**n the present experiments, we pursued two aims related to perceptual disfluency. The first was to examine the replicability of the perceptual disfluency effect. To maximize the likelihood of observing this effect, we employed a manipulation that has previously been shown to enhance memory: perceptual blurring. @rosner2015 demonstrated across several studies that varying degrees of blurring (high vs. low) differentially affect memory, with high levels of blurring enhancing memory. Following their paradigm, we presented participants with clear words (no blur), low-blurred words (5% Gaussian blur), and high-blurred words (15% Gaussian blur).\*\* As @geller2018 emphasized, however, not all disfluency manipulations are created equal. Different perceptual manipulations affect processing in distinct ways, making it critical to identify which manipulations reliably produce disfluency effects and at what stage of processing. By testing multiple levels of perceptual disfluency, our study offers a more nuanced account of how encoding processes shape memory outcomes.**
 
-**The second, more pivotal aim was to expand the methodological toolkit available for investigating conflict during encoding, such as perceptual disfluency. We applied distributional techniques—specifically ex-Gaussian analyses—to illustrate how these methods can provide deeper insights into how encoding difficulty influences memory. Although other distributional approaches exist (e.g., the linear ballistic accumulator model, gamma distributions), we chose the ex-Gaussian model due to its popularity and extensive application in the word recognition literature, where it has received the most empirical scrutiny [@balota2008]. To strengthen our conclusions, we also report drift diffusion model analyses in the supplemental materials, which converge with the ex-Gaussian results.**[^1] **Together, these methodological efforts aim to clarify the conditions under which perceptual disfluency enhances memory and when it does not.**
-
-[^1]: Although part of our pre-registered plan, the DDM results converged with the ex-Gaussian findings; to streamline the paper, we present them in the Appendix.
+**The second, more pivotal aim was to expand the methodological toolkit for investigating perceptual disfluency during encoding. To this end, we applied the ex-Gaussian distribution, which allows RT distributions to be decomposed into parameters reflecting different stages of processing. This approach offers a richer perspective beyond what mean response times alone can reveal. The ex-Gaussian model is widely used in the word recognition field [@balota2008], and its parameters are both interpretable and straightforward to implement. By using a distributional approach, we aim to clarify the specific processing stages at which perceptual disfluency affects encoding, thereby providing a more mechanistic account of when disfluency enhances memory and when it does not.**
 
 ### Predictions
 
@@ -491,9 +489,9 @@ In Experiment 1A, we collected RTs from a lexical decision task (LDT) during enc
 
 ### Transparency and Openness
 
-This study complies with transparency and openness guidelines. The preregistered analysis plan for this experiment can be found here: https://osf.io/q3fjn. All raw and summary data, materials, and *R* scripts for pre-processing, analysis, and plotting for Experiments 1 can be found at https://osf.io/6sy7k/. All deviations and changes from the preregistration are noted herein.[^2]
+This study complies with transparency and openness guidelines. The preregistered analysis plan for this experiment can be found here: https://osf.io/q3fjn. All raw and summary data, materials, and *R* scripts for pre-processing, analysis, and plotting for Experiments 1 can be found at https://osf.io/6sy7k/. All deviations and changes from the preregistration are noted herein.[^1]
 
-[^2]: To promote transparency and reproducibility, this paper was written in I [@R] using Quarto [@Allaire_Quarto_2024], an open-source publishing system that allows for dynamic and static documents. This system allows figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document. We used the *rix* [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility. This package captures not only the *R* packages used to generate the manuscript but also the system dependencies at run-time. As a result, others can easily reproduce the environment by installing the Nix package manager and using the included `default.nix` file. The `README` file in the GitHub repository contains detailed information on how to set up and reproduce the contents of the current manuscript. We have also included a video tutorial. We hope these supplemental materials will make it easier for researchers to apply this code to their own research.
+[^1]: To promote transparency and reproducibility, this paper was written in I [@R] using Quarto [@Allaire_Quarto_2024], an open-source publishing system that allows for dynamic and static documents. This system allows figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document. We used the *rix* [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility. This package captures not only the *R* packages used to generate the manuscript but also the system dependencies at run-time. As a result, others can easily reproduce the environment by installing the Nix package manager and using the included `default.nix` file. The `README` file in the GitHub repository contains detailed information on how to set up and reproduce the contents of the current manuscript. We have also included a video tutorial. We hope these supplemental materials will make it easier for researchers to apply this code to their own research.
 
 **The study protocol was reviewed and approved by the Rutgers University Institutional Review Board.**
 
@@ -528,15 +526,13 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 ### Data Analysis Plan
 
-All models were fit in *R* (v.4.5.0) [@R] using the Stan modeling language [@grant2017] via the *brms* package [@brms]. [^3] We used maximal random-effects structures justified by the design [@barr2013].
+All models were fit in *R* (v.4.5.0) [@R] using the Stan modeling language [@grant2017] via the *brms* package [@brms]. We used maximal random-effects structures justified by the design [@barr2013].
 
-[^3]: To promote transparency and reproducibility, this paper was written using Quarto [@Allaire_Quarto_2024]. To increase computational reproducibility we use the rix [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility.
+We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples. Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and effective sample size [ESS; @vehtari2021]. Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) [@brms]. Default (non-informative) priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio; ER) calculations for two sided-hypotheses against a point null. Full prior specifications are available in the Quarto source file on OSF: <https://osf.io/6vew2>.
 
-We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples. Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and effective sample size [ESS; @vehtari2021]. Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) [@brms]. Default (non-informative) priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio; ER) calculations for two sided-hypotheses against a point null. Full prior specifications are available in the Quarto source file on OSF:
+We report posterior means and 90% credible intervals (CrIs) for one-sided hypotheses (preregistered differences), and 95% CrIs for two-sided hypotheses (against zero). Estimated marginal means were extracted using a combination of *emmeans* [@emmeans] and *brms* [@brms]. Additionally, we report the posterior probability that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses[^2]. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, The posterior probability approached 1, and ER was \> 3.
 
-We report posterior means and 90% credible intervals (CrIs) for one-sided hypotheses (preregistered differences), and 95% CrIs for two-sided hypotheses (against zero). Estimated marginal means were extracted using a combination of *emmeans* [@emmeans] and *brms* [@brms]. Additionally, we report the posterior probability that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses[^4]. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, The posterior probability approached 1, and ER was \> 3.
-
-[^4]: **This is supported by the creator of `brms`Paul Buerkner in this Github post: <https://github.com/paul-buerkner/brms/issues/311>. However, there is much debate on the use of BFs.**
+[^2]: **This is supported by the creator of `brms`Paul Buerkner in this Github post: <https://github.com/paul-buerkner/brms/issues/311>. However, there is much debate on the use of BFs.**
 
 For all models, we applied ANOVA-style (effects) coding using contrast variables. For the blur factor in Experiments 1A, 1B, and 2, we defined two orthogonal contrasts to capture the primary comparisons of interest. Contrast 1 compared high blur against the average of clear and low blur, coding high blur as 0.5 and both clear and low blur as –0.5. Contrast 2 isolated the difference between low blur and clear, with low blur coded as 0.5, clear as –0.5, and high blur as 0. In Experiment 2, we also included a Frequency factor, with High Frequency coded as 0.5 and Low Frequency as –0.5. Although these contrasts deviate from our preregistered comparisons, we believe they offer a more targeted test of our hypotheses. For transparency, we provide all pairwise comparisons in the accompanying visualizations.
 
@@ -544,11 +540,11 @@ For all models, we applied ANOVA-style (effects) coding using contrast variables
 
 Accuracy (coded as correct \[1\] vs. incorrect \[0\]) was modeled using a Bayesian logistic regression with a Bernoulli distribution.
 
-#### Ex-Gaussian Model
+#### Ex-Gaussian
 
-We modeled response times with an ex-Gaussian distribution[^5], allowing the Gaussian mean/location ($\mu$), the Gaussian standard deviation ($\sigma$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. To visualize distributional shifts, we generated quantile and delta plots [@balota2008; @dejong1994].
+We modeled response times with an ex-Gaussian distribution[^3], allowing the Gaussian mean/location ($\mu$), the Gaussian standard deviation ($\sigma$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. To visualize distributional shifts, we generated quantile and delta plots [@balota2008; @dejong1994].
 
-[^5]: The parameterization used by *brms* does not match the standard formulation of the ex-Gaussian distribution. A custom script was implemented to recover the traditional parameters.
+[^3]: The parameterization used by *brms* does not match the standard formulation of the ex-Gaussian distribution. A custom script was implemented to recover the traditional parameters.
 
 #### Quantile and Delta Plots
 
@@ -566,7 +562,7 @@ Typically, there are four observable patterns in the graphical depiction. No obs
 
 #### Recognition memory
 
-Following recent trends [@zloteanu2024], recognition memory data were analyzed using a Bayesian generalized linear multilevel model (GLMM; a Bernoulli distribution with a probit link). Here the response of the participant ("say old" vs. "say new") are modeled as function of item status ("is old" vs. "is new") and condition.
+Following recent trends [see @zloteanu2024], recognition memory data were analyzed using a Bayesian generalized linear multilevel model (GLMM; a Bernoulli distribution with a probit link). Here the response of the participant ("say old" vs. "say new") are modeled as function of item status ("is old" vs. "is new") and condition.
 
 Bayesian GLMMs provide a more precise and flexible approach than traditional signal detection theory analyses. Following Signal Detection Theory [SDT; @green1966], participant responses can be classified as hits, correct rejections, misses, or false alarms, depending on the item status ("old" vs. "new"). In the probit regression framework, the interaction between item status and a predictor of interest corresponds directly to *d′*, while the main effects reflect response criterion [@decarlo1998; for a detailed discussion of Bayesian SDT modeling see @zloteanu2024]. Note that the model parameterization reflects *–c* (i.e., reversed sign) and this facet is what is reported in the paper. For visualization purposes, we use the conventional parameterization: positive values indicate more conservative responding, and negative values indicate a more liberal bias.
 
@@ -577,17 +573,13 @@ All models presented no divergences, and all chains mixed well and produced comp
 ### Accuracy
 
 ```{r}
-blur_acc <- read_csv("https://osf.io/xv5bd/download")
-#blur_acc <- read_csv("data/cleaned_context_rt.csv")
-```
-
-```{r}
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
-blur_acc <- blur_acc |>
-  dplyr::filter(lex == "m")
 
-blur_acc_new <- blur_acc |>
+blur_acc <- read_csv("https://osf.io/xv5bd/download")
+
+blur_acc_new <- read_csv("https://osf.io/xv5bd/download") |> 
+  dplyr::filter(lex == "m") |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
 
@@ -648,15 +640,8 @@ fit_acc_weak <- brm(
 ```
 
 ```{r}
-# get file from osf
 acc_c <- read_rds("https://osf.io/xkgqj/download")
-#acc_c <- read_rds("data/fit_acc_context_1a.rds")
-```
-
-```{r}
-#| label: tbl-acc1A
-#| tbl-cap: "Summary of posterior distributions for fixed effects in the Bayesian accuracy model (Experiment 1A)."
-#| apa-note:  CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero.
+fit_acc_noc <- read_rds("https://osf.io/p9xat/download")
 
 # Run hypotheses
 a <- hypothesis(acc_c, "blur1 < 0") # high blur < (low blur + clear)/2
@@ -673,7 +658,7 @@ a <- round_hypothesis(a)
 b <- round_hypothesis(b)
 
 # Combine and format table
-tab <- bind_rows(a$hypothesis, b$hypothesis) |>
+tab_acc1 <- bind_rows(a$hypothesis, b$hypothesis) |>
   mutate(
     Hypothesis = c(
       "High blur < (Low blur + Clear)",
@@ -687,18 +672,97 @@ tab <- bind_rows(a$hypothesis, b$hypothesis) |>
     ER = Evid.Ratio,
     `Posterior Prob` = Post.Prob
   ) |>
-  select(Hypothesis, Mean, SE, `CrI*`, ER, `Posterior Prob`)
+  select(Hypothesis, Mean, SE, `CrI*`, ER, `Posterior Prob`) |>
+  mutate(Experiment = c("Experiment 1A", "")) |>
+  relocate(Experiment, .before = everything())
 
+# Run hypotheses
+a <- hypothesis(fit_acc_noc, "blur1 < 0") # high blur < (low blur + clear)/2
+b <- hypothesis(fit_acc_noc, "blur2 = 0") # low blur < clear
+
+# Round numeric outputs
+round_hypothesis <- function(hyp) {
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
+  hyp
+}
+
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+
+# Combine and format table
+tab_acc2 <- bind_rows(a$hypothesis, b$hypothesis) |>
+  mutate(
+    Hypothesis = c(
+      "High blur < (Low blur + Clear)",
+      "Low blur = Clear"
+    ),
+    `CrI*` = str_glue("[{CI.Lower}, {CI.Upper}]")
+  ) |>
+  rename(
+    Mean = Estimate,
+    SE = Est.Error,
+    ER = Evid.Ratio,
+    `Posterior Prob` = Post.Prob
+  ) |>
+  select(Hypothesis, Mean, SE, `CrI*`, ER, `Posterior Prob`) |>
+  mutate(Experiment = c("Experiment 1B", "")) |>
+  relocate(Experiment, .before = everything())
+
+```
+
+```{r}
+# Run hypotheses
+a <- hypothesis(acc_c, "blur1 < 0") # high blur < (low blur + clear)/2
+b <- hypothesis(acc_c, "blur2 = 0") # low blur < clear
+
+# Round numeric outputs
+round_hypothesis <- function(hyp) {
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
+  hyp
+}
+
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+
+# Combine and format table
+tab_acc1 <- bind_rows(a$hypothesis, b$hypothesis) |>
+  mutate(
+    Hypothesis = c(
+      "High blur < (Low blur + Clear)",
+      "Low blur < Clear"
+    ),
+    `CrI*` = str_glue("[{CI.Lower}, {CI.Upper}]")
+  ) |>
+  rename(
+    Mean = Estimate,
+    SE = Est.Error,
+    ER = Evid.Ratio,
+    `Posterior Prob` = Post.Prob
+  ) |>
+  select(Hypothesis, Mean, SE, `CrI*`, ER, `Posterior Prob`) |>
+  mutate(Experiment = c("Experiment 1A", "")) |>
+  relocate(Experiment, .before = everything())
+```
+
+```{r}
+#| label: tbl-acc1A1B
+#| tbl-cap: "Summary of the posterior distribution for accuracy (Experiment 1A and 1B)"
+#| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
 # Create the flextable
-acc_summary <- flextable(tab) |>
+
+tabs1a1b <- rbind(tab_acc1, tab_acc2)
+
+acc_summary1A1B <- flextable(tabs1a1b) |>
   theme_apa() |>
   width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
 
-acc_summary
+acc_summary1A1B
 ```
 
-Model estimates can be found in @tbl-acc1A. High blur words had lower accuracy compared to clear and low blurred words, , $b$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. However, the evidence was weak for no significant differences in the identification accuracy between clear and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+Model estimates can be found in @tbl-acc1A1B. High blur words had lower accuracy compared to clear and low blurred words, , $b$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. However, the evidence was weak for no significant differences in the identification accuracy between clear and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 ### RTs: Ex-Gaussian
 
@@ -755,31 +819,25 @@ fit_exg1A <- brm(
 ```
 
 ```{r}
-#load rdata for model
-# no intercept model - easier to fit priors on all levels of factor
-
-download.file(
-  "https://osf.io/m4nv5/download",
-  destfile = "data/fit_sc.rds",
-  mode = "wb"
-)
-fit_sc <- readRDS("data/fit_sc.rds")
+fit_exg1A<- read_rds("https://osf.io/m4nv5/download") # expt1a ex gauss download
+fit_exg1B <- read_rds("https://osf.io/ajwe4/download") # expt1b ex gauss download
 ```
 
 ```{r}
-#| label: tbl-exgauss1A
-#| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 1A)."
-#| apa-note:  "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale."
+#| label: tbl-ex1A1B
+#| tbl-cap: "Posterior distribution estimates for ex-gaussian distribution (Experiment 1A and 1B)"
+#| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
+# Create the flextable
 
 # Define hypothesis tests
-a <- hypothesis(fit_sc, "blur1 > 0")
-b <- hypothesis(fit_sc, "blur2 > 0")
+a <- hypothesis(fit_exg1A, "blur1 > 0")
+b <- hypothesis(fit_exg1A, "blur2 > 0")
 
-c <- hypothesis(fit_sc, "sigma_blur1 > 0")
-d <- hypothesis(fit_sc, "sigma_blur2 = 0")
+c <- hypothesis(fit_exg1A, "sigma_blur1 > 0")
+d <- hypothesis(fit_exg1A, "sigma_blur2 = 0")
 
-e <- hypothesis(fit_sc, "beta_blur1 > 0")
-f <- hypothesis(fit_sc, "beta_blur2 = 0")
+e <- hypothesis(fit_exg1A, "beta_blur1 > 0")
+f <- hypothesis(fit_exg1A, "beta_blur2 = 0")
 
 # Round all numeric columns in each result
 round_hypothesis <- function(hyp) {
@@ -796,7 +854,7 @@ e <- round_hypothesis(e)
 f <- round_hypothesis(f)
 
 # Combine into one table
-tab <- bind_rows(
+tab_1a_ex <- bind_rows(
   a$hypothesis,
   b$hypothesis,
   c$hypothesis,
@@ -822,16 +880,108 @@ tab <- bind_rows(
     ER = Evid.Ratio,
     `Posterior Prob` = Post.Prob
   ) |>
-  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`)
+  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`) |> 
+  mutate(Experiment = c("Experiment 1A")) |>
+  relocate(Experiment, .before = everything())
 
-# Create flextable
-flextable(tab) |>
-  theme_apa() |>
+# Define hypothesis tests
+a <- hypothesis(fit_exg1B, "blur1 > 0")
+b <- hypothesis(fit_exg1B, "blur2 > 0")
+
+c <- hypothesis(fit_exg1B, "sigma_blur1 > 0")
+d <- hypothesis(fit_exg1B, "sigma_blur2 = 0")
+
+e <- hypothesis(fit_exg1B, "beta_blur1 > 0")
+f <- hypothesis(fit_exg1B, "beta_blur2 = 0")
+
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+c <- round_hypothesis(c)
+d <- round_hypothesis(d)
+e <- round_hypothesis(e)
+f <- round_hypothesis(f)
+
+# Combine into one table
+tab_1b_ex <- bind_rows(
+  a$hypothesis,
+  b$hypothesis,
+  c$hypothesis,
+  d$hypothesis,
+  e$hypothesis,
+  f$hypothesis
+) |>
+  mutate(
+    Parameter = c("Mu", "Mu", "Sigma", "Sigma", "Beta", "Beta"),
+    Hypothesis = c(
+      "High blur > (Low blur + Clear)",
+      "Low blur > Clear",
+      "High blur > (Low blur + Clear)",
+      "Low blur = Clear",
+      "High blur > (Low blur + Clear)",
+      "Low blur = Clear"
+    ),
+    `CrI*` = str_glue("[{CI.Lower}, {CI.Upper}]")
+  ) |>
+  rename(
+    Mean = Estimate,
+    SE = Est.Error,
+    ER = Evid.Ratio,
+    `Posterior Prob` = Post.Prob
+  ) |>
+  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`) |> 
+  mutate(Experiment = c("Experiment 1B")) |>
+  relocate(Experiment, .before = everything())
+
+ tabs <- bind_rows(tab_1a_ex, tab_1b_ex) |> 
+ mutate(
+    Parameter = factor(Parameter, levels = c("Mu", "Sigma", "Beta"))
+  ) |>
+arrange(Hypothesis, Parameter, Experiment) 
+
+   ft <- flextable(tabs) |>
+   theme_apa() |>
   width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
+ 
 ```
 
-A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant. A summary of the ex-Gaussion model can be found in @tbl-exgauss1A. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred compared to clear words showed greater shifting, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+```{r}
+# Define hypothesis tests
+a <- hypothesis(fit_exg1A, "blur1 > 0")
+b <- hypothesis(fit_exg1A, "blur2 > 0")
+
+c <- hypothesis(fit_exg1A, "sigma_blur1 > 0")
+d <- hypothesis(fit_exg1A, "sigma_blur2 = 0")
+
+e <- hypothesis(fit_exg1A, "beta_blur1 > 0")
+f <- hypothesis(fit_exg1A, "beta_blur2 = 0")
+
+# Round all numeric columns in each result
+round_hypothesis <- function(hyp) {
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
+  hyp
+}
+
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+c <- round_hypothesis(c)
+d <- round_hypothesis(d)
+e <- round_hypothesis(e)
+f <- round_hypothesis(f)
+
+# Combine into one table
+tab <- bind_rows(
+  a$hypothesis,
+  b$hypothesis,
+  c$hypothesis,
+  d$hypothesis,
+  e$hypothesis,
+  f$hypothesis
+)
+```
+
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant1A1B A summary of the ex-Gaussion model can be found in @tbl-ex1A1B. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred compared to clear words showed greater shifting, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 Analyses of the $\sigma$ and $\tau$ parameters yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was strong evidence for no difference between low blurred and clear words, *b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.
 
@@ -865,11 +1015,11 @@ vincentiles <- data.quantiles |>
   dplyr::group_by(blur, q) |>
   dplyr::summarize(RT = mean(x))
 
-v = vincentiles |>
+v_1 = vincentiles |>
   dplyr::group_by(blur, q) |>
   dplyr::summarise(MRT = mean(RT))
 
-v <- v |>
+v_1<- v |>
   mutate(
     blur = ifelse(
       blur == "HB",
@@ -878,36 +1028,14 @@ v <- v |>
     )
   )
 
-v$blur <- factor(v$blur, level = c("High blur", "Low blur", "Clear"))
+v_1$blur <- factor(v$blur, level = c("High blur", "Low blur", "Clear"))
 
-p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
-  geom_line(size = 1) +
-  geom_point(size = 3) +
-  scale_y_continuous(breaks = seq(500, 1600, 100)) +
-  theme(legend.title = element_blank()) +
-  coord_cartesian(ylim = c(500, 1600)) +
-  scale_x_continuous(breaks = seq(.1, .9, .2)) +
-  geom_label_repel(
-    data = v,
-    aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)),
-    color = "black",
-    min.segment.length = 0,
-    seed = 42,
-    box.padding = 0.5,
-    size = 10
-  ) +
-  labs(
-    x = "Quantiles",
-    y = "Response latencies in ms",
-    tag = "A",
-    colour = "Blur Condition"
-  ) + # Optional tag for labeling
-  theme_minimal(base_size = 16) +
-  ggokabeito::scale_colour_okabe_ito()
+v_1 <- v |> 
+mutate(Experiment="Experiment 1A")
 ```
 
 ```{r}
-v_chb <- v |>
+v_chb <- v_1 |>
   dplyr::filter(blur == "Clear" | blur == "High blur") |>
   dplyr::group_by(q) |>
   mutate(mean_rt = mean(MRT) * 1000) |>
@@ -916,7 +1044,7 @@ v_chb <- v |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff = `High blur` * 1000 - Clear * 1000)
 
-p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
+p1_dp <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
@@ -935,15 +1063,16 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Delta Plots: Clear - High blur",
+    title = "Clear - High blur",
     x = "",
     y = "Group differences",
     tag = "B"
-  )
+  ) + 
+ggtitle('Delta Plots: Experiment 1A')
 ```
 
 ```{r}
-v_clb <- v |>
+v_clb <- v_1 |>
   dplyr::filter(blur == "Clear" | blur == "Low blur") |>
   dplyr::group_by(q) |>
   mutate(mean_rt = mean(MRT) * 1000) |>
@@ -952,7 +1081,7 @@ v_clb <- v |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff = `Low blur` * 1000 - Clear * 1000)
 
-p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
+p2_dp <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
@@ -971,14 +1100,14 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Delta Plots: Low blur - Clear",
+    title = "Low blur - Clear",
     x = "Mean RT per quantile",
     y = ""
   )
 ```
 
 ```{r}
-v_hlb <- v |>
+v_hlb <- v_1 |>
   dplyr::filter(blur == "High blur" | blur == "Low blur") |>
   dplyr::group_by(q) |>
   mutate(mean_rt = mean(MRT) * 1000) |>
@@ -987,7 +1116,7 @@ v_hlb <- v |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff = `High blur` * 1000 - `Low blur` * 1000)
 
-p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
+p3_dp <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
@@ -1005,23 +1134,11 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
     box.padding = 0.5,
     size = 10
   ) +
-  labs(title = "Delta Plots: High blur - Low blur", x = "", y = "")
+  labs(title = "High blur - Low blur", x = "", y = "")
 ```
 
 ```{r}
-#| label: fig-deltaquant
-#| fig-cap: "Quantile plots for each condition (A) and Delta plots (B) depicting the magnitude of the effect for hypotheses of interest over time in Experiment 1A. Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
-#| fig-width: 15
-#| fig-height: 10
-
-delta_comb = (p1 + p2 + p3)
-
-combined_plot <- p / delta_comb
-
-combined_plot
-# Automatically labels rows as A, B
-
-ggsave(filename = './figures/figure_kde.png', width = 10, height = 12)
+delta_comb1a = (p1_dp + p2_dp + p3_dp)
 ```
 
 ### Recognition Memory
@@ -1108,7 +1225,7 @@ b$hypothesis <- b$hypothesis |>
 
 #### Sensitivity
 
-@fig-dprimeexp1A highlights $D'$ and $c$ means and comparisons across all groups. Sensitivity was higher for high blurred words than for clear and low blurred words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. The evidence for no difference in sensitivity between clear words and low blurred words was strong, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+@fig-dprimeexp1A highlights $d'$ and $c$ means and comparisons across all groups. Sensitivity was higher for high blurred words than for clear and low blurred words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. The evidence for no difference in sensitivity between clear words and low blurred words was strong, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 #### Exploratory analyses: Bias
 
@@ -1217,7 +1334,7 @@ tmp |>
     strip.text = element_text(color = "white", face = "bold")
   )
 
-ggsave("figures/expt1A-dprime.png", width = 19, height = 8, dpi = 300)
+ggsave("figures/expt1A-dprime.png", width = 19, height = 8, dpi = 300, bg="white")
 ```
 
 ## Discussion
@@ -1228,7 +1345,7 @@ We present evidence that different levels of disfluency can influence distinct s
 
 Given the important theoretical implications of these findings, Experiment 1B served as a conceptual replication. Due to the bias observed in the recognition memory test (i.e., low blurred words were responded to more liberally), we will not present old and new items as blurred, instead all of the words will be presented in a clear, different, font at test.
 
-# Experiment 1B
+# Experiment 1B: No Context Reinstatement
 
 ## Method
 
@@ -1253,9 +1370,10 @@ We used the same stimuli from Experiment 1A. The main difference between Experim
 ### Accuracy
 
 ```{r}
+#| label: acc_expt1b
 # get data from osf
 # https://osf.io/excgd/download
-blur_acc <- read_csv("data/cleaned_nocontext_rt.csv") |>
+blur_acc <- read_csv("https://osf.io/excgd/download") |>
   dplyr::filter(lex == "m")
 
 blur_acc_new <- blur_acc |>
@@ -1322,10 +1440,6 @@ acc_means <- emmeans(fit_acc_noc, specs = "blur", type = "response")
 ```
 
 ```{r}
-#| label: tbl-acc1B
-#| tbl-cap: "Summary of posterior distributions for fixed effects in the Bayesian accuracy model (Experiment 1B)"
-#| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
-
 # Run hypotheses
 a <- hypothesis(fit_acc_noc, "blur1 < 0") # high blur < (low blur + clear)/2
 b <- hypothesis(fit_acc_noc, "blur2 = 0") # low blur < clear
@@ -1341,7 +1455,7 @@ a <- round_hypothesis(a)
 b <- round_hypothesis(b)
 
 # Combine and format table
-tab <- bind_rows(a$hypothesis, b$hypothesis) |>
+tab_acc2 <- bind_rows(a$hypothesis, b$hypothesis) |>
   mutate(
     Hypothesis = c(
       "High blur < (Low blur + Clear)",
@@ -1355,18 +1469,13 @@ tab <- bind_rows(a$hypothesis, b$hypothesis) |>
     ER = Evid.Ratio,
     `Posterior Prob` = Post.Prob
   ) |>
-  select(Hypothesis, Mean, SE, `CrI*`, ER, `Posterior Prob`)
+  select(Hypothesis, Mean, SE, `CrI*`, ER, `Posterior Prob`) |>
+  mutate(Experiment = c("Experiment 1B", "")) |>
+  relocate(Experiment, .before = everything())
 
-# Create the flextable
-acc_summary1B <- flextable(tab) |>
-  theme_apa() |>
-  width(j = 1, width = 2.5) |> # widen the Hypothesis column
-  set_table_properties(layout = "autofit")
-
-acc_summary1B
 ```
 
-A summary of posterior estimates are located in @tbl-acc1B. High blur words had lower accuracy compared to clear and low blurred words, $b$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. However, the evidence was weak for no significant difference in the identification accuracy between clear and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+A summary of posterior estimates are located in @tbl-acc1A1B. High blur words had lower accuracy compared to clear and low blurred words, $b$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. However, the evidence was weak for no significant difference in the identification accuracy between clear and low blurred words, $b$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 ### RTs: Ex-Gaussian
 
@@ -1439,9 +1548,6 @@ fit_exg1B <- read_rds("https://osf.io/ajwe4/download")
 ```
 
 ```{r}
-#| label: tbl-exgauss1B
-#| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 1B)."
-#| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale."
 
 # Define hypothesis tests
 a <- hypothesis(fit_exg1B, "blur1 > 0")
@@ -1475,35 +1581,10 @@ tab <- bind_rows(
   d$hypothesis,
   e$hypothesis,
   f$hypothesis
-) |>
-  mutate(
-    Parameter = c("Mu", "Mu", "Sigma", "Sigma", "Beta", "Beta"),
-    Hypothesis = c(
-      "High blur > (Low blur + Clear)",
-      "Low blur > Clear",
-      "High blur > (Low blur + Clear)",
-      "Low blur = Clear",
-      "High blur > (Low blur + Clear)",
-      "Low blur = Clear"
-    ),
-    `CrI*` = str_glue("[{CI.Lower}, {CI.Upper}]")
-  ) |>
-  rename(
-    Mean = Estimate,
-    SE = Est.Error,
-    ER = Evid.Ratio,
-    `Posterior Prob` = Post.Prob
-  ) |>
-  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`)
-
-# Create flextable
-flextable(tab) |>
-  theme_apa() |>
-  width(j = 1, width = 2.5) |> # widen the Hypothesis column
-  set_table_properties(layout = "autofit")
+)
 ```
 
-A visualization of how blurring affected processing @tbl-exgauss1B during word recognition can be seen in the quantile and delta plots in.A summary of the results can be found in .Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words had greater shifting compared to clear words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Analyses of the $\sigma$ parameter yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)` Finally, there was greater skewing for high blurred words compared to clear and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r round(e$hypothesis$Evid.Ratio, 3)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(f$hypothesis$Estimate, 3)`, 90% CrI \[`r round(f$hypothesis$CI.Lower, 3)`, `r round(f$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
+A visualization of how blurring affected processing @fig-deltaquant1A1B during word recognition can be seen in the quantile and delta plots in.A summary of the results can be found in .Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words had greater shifting compared to clear words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Analyses of the $\sigma$ parameter yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)` Finally, there was greater skewing for high blurred words compared to clear and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r round(e$hypothesis$Evid.Ratio, 3)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(f$hypothesis$Estimate, 3)`, 90% CrI \[`r round(f$hypothesis$CI.Lower, 3)`, `r round(f$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
 
 ```{r}
 #Delta plots (one per subject)
@@ -1531,11 +1612,11 @@ vincentiles <- data.quantiles |>
   dplyr::group_by(blur, q) |>
   dplyr::summarize(RT = mean(x))
 
-v = vincentiles |>
+v_2 = vincentiles |>
   dplyr::group_by(blur, q) |>
   dplyr::summarise(MRT = mean(RT))
 
-v <- v |>
+v_2<- v_2 |>
   mutate(
     blur = ifelse(
       blur == "HB",
@@ -1544,9 +1625,13 @@ v <- v |>
     )
   )
 
-v$blur <- factor(v$blur, level = c("High blur", "Low blur", "Clear"))
+v_2  <- v_2 |> 
+mutate(blur = factor(blur, level = c("High blur", "Low blur", "Clear")), 
+                     Experiment="Experiment 1B")
 
-p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
+v_12 <- bind_rows(v_1, v_2)
+
+p_12 <- ggplot(v_12, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) + 
   geom_line(size = 1) +
   geom_point(size = 3) +
   scale_y_continuous(breaks = seq(500, 1600, 100)) +
@@ -1554,7 +1639,7 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
   geom_label_repel(
-    data = v,
+    data = v_12,
     aes(x = q, y = MRT * 1000, label = round(MRT * 1000, 0)),
     color = "black",
     min.segment.length = 0,
@@ -1562,18 +1647,19 @@ p <- ggplot(v, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
     box.padding = 0.5,
     size = 10
   ) +
+facet_grid(~Experiment)  + 
   labs(
     x = "Quantiles",
     y = "Response latencies in ms",
     tag = "A",
     colour = 'Blur Condition'
   ) + # Optional tag for labeling
-  theme_minimal(base_size = 16) +
+  theme_minimal(base_size = 14) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
 ```{r}
-v_chb <- v |>
+v_chb <- v_2 |>
   dplyr::filter(blur == "Clear" | blur == "High blur") |>
   dplyr::group_by(q) |>
   mutate(mean_rt = mean(MRT) * 1000) |>
@@ -1582,7 +1668,7 @@ v_chb <- v |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff = `High blur` * 1000 - Clear * 1000)
 
-p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
+p1_dp2 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
@@ -1601,15 +1687,16 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Delta Plots: Clear - High blur",
+    title = "Clear - High blur",
     x = "",
     y = "Group differences",
-    tag = "B"
-  )
+    tag = "C"
+  ) + 
+ggtitle("Delta Plots: Experiment 1A")
 ```
 
 ```{r}
-v_clb <- v |>
+v_clb <- v_2 |>
   dplyr::filter(blur == "Clear" | blur == "Low blur") |>
   dplyr::group_by(q) |>
   mutate(mean_rt = mean(MRT) * 1000) |>
@@ -1618,7 +1705,7 @@ v_clb <- v |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff = `Low blur` * 1000 - Clear * 1000)
 
-p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
+p2_dp2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
@@ -1637,14 +1724,14 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Delta Plots: Low blur - Clear",
+    title = "Low blur - Clear",
     x = "Mean RT per quantile",
     y = ""
   )
 ```
 
 ```{r}
-v_hlb <- v |>
+v_hlb <- v_2 |>
   dplyr::filter(blur == "High blur" | blur == "Low blur") |>
   dplyr::group_by(q) |>
   mutate(mean_rt = mean(MRT) * 1000) |>
@@ -1653,7 +1740,7 @@ v_hlb <- v |>
   tidyr::pivot_wider(names_from = "blur", values_from = "MRT") |>
   mutate(diff = `High blur` * 1000 - `Low blur` * 1000)
 
-p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
+p3_dp2 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
@@ -1671,20 +1758,20 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
     box.padding = 0.5,
     size = 10
   ) +
-  labs(title = "Delta Plots: High blur - Low blur", x = "", y = "")
+  labs(title = "High blur - Low blur", x = "", y = "")
 ```
 
 ```{r}
-#| label: fig-deltaquant1B
-#| fig-cap: "Quantile plots for each condition (A) and Delta plots (B) depicting the magnitude of the effect for hypotheses of interest over time in Experiment 1B. Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
+#| label: fig-deltaquant1A1B
+#| fig-cap: "Quantile plots for each condition in Exeriment 1A and 1B (A) and Delta plots depicting the magnitude of the effect for hypotheses of interest over time in for Experiments 1A (B) and 1B (C). Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
 #| fig-width: 15
 #| fig-height: 10
 
-delta_comb = (p1 + p2 + p3)
+delta_comb1b = (p1_dp2 + p2_dp2 + p3_dp2)
 
-combined_plot <- p / delta_comb
+combined_plot <- p_12 / delta_comb1a/delta_comb1b
 
-ggsave(filename = './figures/figure_kde2.png', width = 12, height = 12)
+ggsave(filename = './figures/figure_quantile_deltaplots1A1B, width = 12, height = 12, bg="white")
 
 combined_plot
 # Automatically labels rows as A, B
@@ -1780,7 +1867,7 @@ c$hypothesis <- c$hypothesis |>
 
 #### Sensitivity
 
-@fig-dprimeexp1B highlights $D'$ and $c$ means and comparisons across all groups. Sensitivity was higher for high blurred words than for clear and low blurred words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. The evidence for no difference in sensitivity between clear words and low blurred words was strong, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+@fig-dprimeexp1B highlights $d'$ and $c$ means and comparisons across all groups. Sensitivity was higher for high blurred words than for clear and low blurred words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. The evidence for no difference in sensitivity between clear words and low blurred words was strong, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 ```{r}
 # (Negative) criteria
@@ -1910,9 +1997,9 @@ This study was preregistered https://osf.io/kjq3t. All raw and summary data, mat
 
 ### Participants
 
-Using @brysbaert2019 as heuristic, detecting a fully attenuated interaction with 80% power requires approximately 210 participants. To be conservative, and to ensure sufficient sensitivity, we doubled the sample size relative to Experiments 1A and 1B. We thus preregistered a sample size of 432[^6]. All participants were recruited through SONA and Prolific.
+Using @brysbaert2019 as heuristic, detecting a fully attenuated interaction with 80% power requires approximately 210 participants. To be conservative, and to ensure sufficient sensitivity, we doubled the sample size relative to Experiments 1A and 1B. We thus preregistered a sample size of 432[^4]. All participants were recruited through SONA and Prolific.
 
-[^6]: @brysbaert2019 suggested a sample size of 210 participants to detect a fully attenuated interaction with 80% power. In similar sample size was used in previous studies @geller2021.
+[^4]: @brysbaert2019 suggested a sample size of 210 participants to detect a fully attenuated interaction with 80% power. In similar sample size was used in previous studies @geller2021.
 
 Participants recruited via Prolific were compensated \$12 per hour. On Prolific, we applied built-in filters to include only monolingual, native English-speaking Americans currently residing in the United States, with normal or corrected-to-normal vision. Participants recruited via SONA were given course credit for their participation.
 
@@ -2018,7 +2105,7 @@ emm_acc <- emmeans(fit_acc_sc, ~ frequency + blur, type = "response") |>
 
 ```{r}
 #| label: tbl-acc2
-#| tbl-cap: "Summary of posterior distributions for fixed effects in the Bayesian accuracy model (Experiment 2)"
+#| tbl-cap: "Posterior distribution estimates for the accuracy model (Experiment 2)"
 #| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero"
 
 # Run hypothesis tests
@@ -2529,7 +2616,7 @@ To aid in model convergence, we used a binomial (probit) family rather than a Be
 
 ```{r}
 # mem_sc <- read_csv("https://osf.io/eapu5/download")
-mem_sc <- read_csv("data/SC_blmm_sdt.csv")
+mem_sc <- read_csv("https://osf.io/eapu5/download")
 ```
 
 ```{r}
@@ -2601,7 +2688,7 @@ fit_sc_sdt <- brm(
 ```{r}
 # read in file from osf
 # fit_sc_mem <- read_rds("https://osf.io/kh43z/download")
-fit_sc_mem <- read_rds("data/blmm_sdt_sc_hblbC.rds")
+fit_sc_mem <- read_rds("https://osf.io/kh43z/download")
 ```
 
 ```{r}
@@ -2806,3 +2893,5 @@ Our paper contributes nuanced insights to the intricate relationship between per
 :::
 
 # Appendix A
+
+## Drift Diffuion Model Results

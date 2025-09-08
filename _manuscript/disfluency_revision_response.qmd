@@ -104,7 +104,7 @@ processes reflected by the derived parameters (p. 41). The authors should be mor
 careful with such statements.
 :::
 
-We appreciate this important point. In the revision, we removed the claim of correspondence to avoid overstating the equivalence between the processes reflected by the model parameters.
+We appreciate this important point. In the revision, we removed the claim of equivalanecy between the two models. 
 
 ::: memo-reviewer
 **Reviewer 2**: The sample size justification of experiment 2 was not sufficient (“based on the
@@ -133,7 +133,6 @@ We hope we have addressed this reviewers concern by rewriting the discussion sec
 :::
 
 We apologize for this oversight. We have now added a statement in the Methods section under Transparency and Openness noting that each study received approval from the Institutional Review Board.
-
 
 
 ## Minor Points
@@ -180,7 +179,7 @@ CrI: 90% for one-sided tests and 95% for two-sided tests against 0.
 **Reviewer 2**: "This is absolutely not critical, but why are sigma and beta reported in log (logit) scale?”
 :::
 
-We reported sigma and beta on the log (logit) scale because that is the scale on which the models are estimated, and it ensures that the parameters remain in their allowable range (e.g., variance parameters strictly positive, probabilities constrained between 0 and 1). The `brms` package reports estimates on the transformed scale. 
+We reported sigma and beta on the log (logit) scale because that is the scale on which the models are estimated, and it ensures that the parameters remain in their allowable range (e.g., variance parameters strictly positive, probabilities constrained between 0 and 1). The `brms` package reports estimates on the transformed scale. If the reviewier has stong feelings on this, we can report them on the response scale. The visualizations are on the response (ms) scale. 
 
 ::: memo-reviewer
 Reviewer 2: "Page 23, bottom, there is again a duplicate sentence"
@@ -206,7 +205,7 @@ Thank you for this suggestion. We have revised the figures to improve their over
 **Reviewer 2**: "Page 38, the sentence in the discussion section is unclear (‘with no context reinstatement’). It becomes clear what is meant when thinking about it, but it would be beneficial to improve the clarity."
 :::
 
-Thank you for noting this. We have revised the sentence for clarity.
+Thank you for noting this. We have revised the sentence for clarity and titled this experiment Experiment 1B: No Context Reinstatement. 
 
 ::: memo-excerpt
 We replicated all the findings of Experiment 1A in a design where levels of blurring were not reinstated at test. 
