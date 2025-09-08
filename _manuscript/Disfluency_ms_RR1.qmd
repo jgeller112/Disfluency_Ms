@@ -542,13 +542,13 @@ Accuracy (coded as correct \[1\] vs. incorrect \[0\]) was modeled using a Bayesi
 
 #### Ex-Gaussian
 
-We modeled response times with an ex-Gaussian distribution[^3], allowing the Gaussian mean/location ($\mu$), the Gaussian standard deviation ($\sigma$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. To visualize distributional shifts, we generated quantile and delta plots [@balota2008; @dejong1994].
+We modeled response times with an ex-Gaussian distribution[^3], allowing the Gaussian mean/location ($\mu$), the Gaussian standard deviation ($\sigma$) and the exponential scale ($\beta = 1/\lambda$) to vary by condition. Please note that when we refer to $\beta$ we are referring to $\tau$. \*\*When fitting the ex-Guassian distribution we use the identity link for $\mu$, and the log link for $\sigma$ and $\beta$ .\*\*
 
 [^3]: The parameterization used by *brms* does not match the standard formulation of the ex-Gaussian distribution. A custom script was implemented to recover the traditional parameters.
 
 #### Quantile and Delta Plots
 
-In addition to ex-Gaussian analyses, we provide a graphical description of changes to the RT distribution using quantile and delta plots [see @angele2023]. The process of visualization through quantile analysis can be broken down into four distinct steps:
+In addition to ex-Gaussian analyses, we provide a graphical description of changes to the RT distribution using quantile and delta plots [@balota2008; @dejong1994]. The process of visualization through quantile analysis can be broken down into four distinct steps:
 
 1.  Sorting and plotting: For correct trials, RTs are arranged in ascending order within each condition. We then plot the average of the specified quantiles (e.g., .1, .2, .3, .4, .5, .9).
 
