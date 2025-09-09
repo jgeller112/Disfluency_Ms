@@ -497,7 +497,7 @@ This study complies with transparency and openness guidelines. The preregistered
 
 ### Participants
 
-We preregistered a sample size of 216. All participants were recruited through the university subject pool (SONA). A design with a sample size of 216 can detect effect sizes of $\delta \geq 0.2$ with a probability of at least 0.90, assuming a one-sided criterion for detection that allows for a maximum Type I error rate of $\alpha = 0.05$. Per our exclusion criteria, we retained participants that were native English speakers, were over the age of 17, had overall accuracy on the LDT greater than 80%, and did not complete the experiment more than once. Due to our exclusion criteria, we over sampled participants, and to ensure equal number of participants in each list, we randomly chose 36 participants from each list.
+**All participants were recruited through the** Rutgers University subject pool (SONA system). **We preregistered a sample size of 216 participants. A design of this size provides at least 90% power to detect effect sizes of** $\delta \geq 0.20$**, assuming a one-sided test with** $\alpha =0.05$**. A total of 263 participants completed the study. Per our exclusion criteria, 15 participants were removed for completing the experiment more than once, and 16 were removed for accuracy below 80%. No participants were excluded for being non-native English speakers or under 18 years of age. To account for oversampling and to ensure equal numbers across lists, we randomly selected 36 participants from each list, yielding a final sample of 216 participants.**
 
 ### Apparatus and stimuli
 
@@ -578,7 +578,7 @@ All models presented no divergences, and all chains mixed well and produced comp
 
 blur_acc <- read_csv("https://osf.io/xv5bd/download")
 
-blur_acc_new <- read_csv("https://osf.io/xv5bd/download") |> 
+blur_acc_new <- read_csv("https://osf.io/xv5bd/download") |>
   dplyr::filter(lex == "m") |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
@@ -819,16 +819,11 @@ fit_exg1A <- brm(
 ```
 
 ```{r}
-fit_exg1A<- read_rds("https://osf.io/m4nv5/download") # expt1a ex gauss download
+fit_exg1A <- read_rds("https://osf.io/m4nv5/download") # expt1a ex gauss download
 fit_exg1B <- read_rds("https://osf.io/ajwe4/download") # expt1b ex gauss download
 ```
 
 ```{r}
-#| label: tbl-ex1A1B
-#| tbl-cap: "Posterior distribution estimates for ex-gaussian distribution (Experiment 1A and 1B)"
-#| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
-# Create the flextable
-
 # Define hypothesis tests
 a <- hypothesis(fit_exg1A, "blur1 > 0")
 b <- hypothesis(fit_exg1A, "blur2 > 0")
@@ -880,7 +875,7 @@ tab_1a_ex <- bind_rows(
     ER = Evid.Ratio,
     `Posterior Prob` = Post.Prob
   ) |>
-  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`) |> 
+  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`) |>
   mutate(Experiment = c("Experiment 1A")) |>
   relocate(Experiment, .before = everything())
 
@@ -928,21 +923,31 @@ tab_1b_ex <- bind_rows(
     ER = Evid.Ratio,
     `Posterior Prob` = Post.Prob
   ) |>
-  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`) |> 
+  select(Hypothesis, Parameter, Mean, SE, `CrI*`, ER, `Posterior Prob`) |>
   mutate(Experiment = c("Experiment 1B")) |>
   relocate(Experiment, .before = everything())
 
- tabs <- bind_rows(tab_1a_ex, tab_1b_ex) |> 
- mutate(
+tabs <- bind_rows(tab_1a_ex, tab_1b_ex) |>
+  mutate(
     Parameter = factor(Parameter, levels = c("Mu", "Sigma", "Beta"))
   ) |>
-arrange(Hypothesis, Parameter, Experiment) 
+  arrange(Hypothesis, Parameter, Experiment)
+```
 
-   ft <- flextable(tabs) |>
-   theme_apa() |>
+```{r}
+#| label: tbl-ex1A1B
+#| tbl-cap: "Posterior distribution estimates for ex-gaussian distribution (Experiment 1A and 1B)"
+#| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
+
+# Create the flextable
+
+ft <- flextable(tabs) |>
+  theme_apa() |>
   width(j = 1, width = 2.5) |> # widen the Hypothesis column
   set_table_properties(layout = "autofit")
- 
+
+ft
+
 ```
 
 ```{r}
@@ -981,7 +986,7 @@ tab <- bind_rows(
 )
 ```
 
-A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in @fig-deltaquant1A1B A summary of the ex-Gaussion model can be found in @tbl-ex1A1B. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred compared to clear words showed greater shifting, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in A summary of the ex-Gaussion model can be found in @tbl-ex1A1B. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred compared to clear words showed greater shifting, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 Analyses of the $\sigma$ and $\tau$ parameters yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was strong evidence for no difference between low blurred and clear words, *b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.
 
@@ -1019,7 +1024,7 @@ v_1 = vincentiles |>
   dplyr::group_by(blur, q) |>
   dplyr::summarise(MRT = mean(RT))
 
-v_1<- v |>
+v_1 <- v_1 |>
   mutate(
     blur = ifelse(
       blur == "HB",
@@ -1028,10 +1033,10 @@ v_1<- v |>
     )
   )
 
-v_1$blur <- factor(v$blur, level = c("High blur", "Low blur", "Clear"))
+v_1$blur <- factor(v_1$blur, level = c("High blur", "Low blur", "Clear"))
 
-v_1 <- v |> 
-mutate(Experiment="Experiment 1A")
+v_1 <- v_1 |>
+  mutate(Experiment = "Experiment 1A")
 ```
 
 ```{r}
@@ -1067,8 +1072,8 @@ p1_dp <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     x = "",
     y = "Group differences",
     tag = "B"
-  ) + 
-ggtitle('Delta Plots: Experiment 1A')
+  ) +
+  ggtitle('Delta Plots: Experiment 1A')
 ```
 
 ```{r}
@@ -1227,7 +1232,7 @@ b$hypothesis <- b$hypothesis |>
 
 @fig-dprimeexp1A highlights $d'$ and $c$ means and comparisons across all groups. Sensitivity was higher for high blurred words than for clear and low blurred words, $\beta$ = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. The evidence for no difference in sensitivity between clear words and low blurred words was strong, $\beta$ = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
-#### Exploratory analyses: Bias
+#### Exploratory Analyses: Bias
 
 ```{r}
 a <- hypothesis(fit_mem1, "blur1 < 0")
@@ -1334,7 +1339,13 @@ tmp |>
     strip.text = element_text(color = "white", face = "bold")
   )
 
-ggsave("figures/expt1A-dprime.png", width = 19, height = 8, dpi = 300, bg="white")
+ggsave(
+  "figures/expt1A-dprime.png",
+  width = 19,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 ```
 
 ## Discussion
@@ -1357,7 +1368,7 @@ This study was not preregistered. All raw and summary data, materials, and R scr
 
 ### Participants
 
-We used the same sample size procedure as in Experiment 1A (*N* = 216). All participants were recruited through the Rutgers University subject pool (SONA system). The exclusion criteria were the same as in Experiment 1A.
+**All participants were recruited through the Rutgers University subject pool (SONA system). We preregistered a sample size of 216 participants. A total of 282 participants completed the study. Per our exclusion criteria, 5 participants were removed for completing the experiment more than once, 19 were removed for accuracy below 80%, and 1 was removed for being under 18. No participants were excluded for being non-native English speakers. This resulted in 258 eligible participants. To account for oversampling and to ensure equal numbers across lists, we randomly selected 36 participants from each list, yielding a final analyzed sample of 216 participants.**
 
 ### Apparatus, Stimuli, Design, Procedure, and Analysis
 
@@ -1584,7 +1595,7 @@ tab <- bind_rows(
 )
 ```
 
-A visualization of how blurring affected processing @fig-deltaquant1A1B during word recognition can be seen in the quantile and delta plots in.A summary of the results can be found in .Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words had greater shifting compared to clear words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Analyses of the $\sigma$ parameter yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)` Finally, there was greater skewing for high blurred words compared to clear and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r round(e$hypothesis$Evid.Ratio, 3)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(f$hypothesis$Estimate, 3)`, 90% CrI \[`r round(f$hypothesis$CI.Lower, 3)`, `r round(f$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in. A summary of the results can be found in @tbl-ex1A1B. Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred words had greater shifting compared to clear words, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Analyses of the $\sigma$ parameter yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)` Finally, there was greater skewing for high blurred words compared to clear and low blurred words, *b* = `r round(e$hypothesis$Estimate, 3)`, 90% CrI \[`r round(e$hypothesis$CI.Lower, 3)`, `r round(e$hypothesis$CI.Upper, 3)`\], ER = `r round(e$hypothesis$Evid.Ratio, 3)`. There was no evidence of a difference in variance between low blurred and clear words,*b* = `r round(f$hypothesis$Estimate, 3)`, 90% CrI \[`r round(f$hypothesis$CI.Lower, 3)`, `r round(f$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(f$hypothesis$Evid.Ratio)`.
 
 ```{r}
 #Delta plots (one per subject)
@@ -1616,7 +1627,7 @@ v_2 = vincentiles |>
   dplyr::group_by(blur, q) |>
   dplyr::summarise(MRT = mean(RT))
 
-v_2<- v_2 |>
+v_2 <- v_2 |>
   mutate(
     blur = ifelse(
       blur == "HB",
@@ -1625,13 +1636,15 @@ v_2<- v_2 |>
     )
   )
 
-v_2  <- v_2 |> 
-mutate(blur = factor(blur, level = c("High blur", "Low blur", "Clear")), 
-                     Experiment="Experiment 1B")
+v_2 <- v_2 |>
+  mutate(
+    blur = factor(blur, level = c("High blur", "Low blur", "Clear")),
+    Experiment = "Experiment 1B"
+  )
 
 v_12 <- bind_rows(v_1, v_2)
 
-p_12 <- ggplot(v_12, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) + 
+p_12 <- ggplot(v_12, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
   geom_line(size = 1) +
   geom_point(size = 3) +
   scale_y_continuous(breaks = seq(500, 1600, 100)) +
@@ -1647,7 +1660,7 @@ p_12 <- ggplot(v_12, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
     box.padding = 0.5,
     size = 10
   ) +
-facet_grid(~Experiment)  + 
+  facet_grid(~Experiment) +
   labs(
     x = "Quantiles",
     y = "Response latencies in ms",
@@ -1691,8 +1704,7 @@ p1_dp2 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     x = "",
     y = "Group differences",
     tag = "C"
-  ) + 
-ggtitle("Delta Plots: Experiment 1A")
+  )
 ```
 
 ```{r}
@@ -1769,12 +1781,16 @@ p3_dp2 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 
 delta_comb1b = (p1_dp2 + p2_dp2 + p3_dp2)
 
-combined_plot <- p_12 / delta_comb1a/delta_comb1b
-
-ggsave(filename = './figures/figure_quantile_deltaplots1A1B, width = 12, height = 12, bg="white")
+combined_plot <- p_12 / delta_comb1a / delta_comb1b
 
 combined_plot
-# Automatically labels rows as A, B
+
+ggsave(
+  filename = './figures/figure_quantile_deltaplots1A1B.png',
+  width = 12,
+  height = 12,
+  bg = "white"
+)
 ```
 
 ### Recognition Memory
@@ -1997,11 +2013,7 @@ This study was preregistered https://osf.io/kjq3t. All raw and summary data, mat
 
 ### Participants
 
-Using @brysbaert2019 as heuristic, detecting a fully attenuated interaction with 80% power requires approximately 210 participants. To be conservative, and to ensure sufficient sensitivity, we doubled the sample size relative to Experiments 1A and 1B. We thus preregistered a sample size of 432[^4]. All participants were recruited through SONA and Prolific.
-
-[^4]: @brysbaert2019 suggested a sample size of 210 participants to detect a fully attenuated interaction with 80% power. In similar sample size was used in previous studies @geller2021.
-
-Participants recruited via Prolific were compensated \$12 per hour. On Prolific, we applied built-in filters to include only monolingual, native English-speaking Americans currently residing in the United States, with normal or corrected-to-normal vision. Participants recruited via SONA were given course credit for their participation.
+**Participants were recruited via Prolific and compensated \$12 per hour. Using Prolific’s built-in filters, we restricted eligibility to monolingual, native English–speaking Americans residing in the United States, with normal or corrected-to-normal vision. A total of 465 participants completed the study. Three were excluded for completing the experiment more than once, and 13 were excluded for accuracy below .80; no participants were excluded for being under 18 years of age. This left 444 participants. Consistent with Experiments 1A and 1B, we randomly sampled participants to reach our preregistered sample size of 432. As noted by Brysbaert (2019), approximately 210 participants are required to detect a fully attenuated interaction with 80% power. To be conservative and ensure adequate sensitivity, we doubled the sample size of Experiments 1A and 1B and preregistered a target of 432 participants.**
 
 ### Materials
 
@@ -2032,7 +2044,7 @@ blur_acc_wf <- rts_wf |>
   dplyr::filter(category == "NONAN")
 ```
 
-We started with `r dim(rts_dim)[1]`. After we removed RTs below .2 and above 2.5 (`r round(1-dim(blur_acc_wf)[1]/dim(rts_dim)[1], 3)`), we were left with `r dim(blur_acc_wf)[1]` data points.
+We started with `r dim(rts_dim)[1]`. After we removed RTs below .2 s and above 2.5 s (`r round(1-dim(blur_acc_wf)[1]/dim(rts_dim)[1], 3)`), we were left with `r dim(blur_acc_wf)[1]` data points.
 
 ```{r}
 # Create custom contrast matrix manually
@@ -2188,7 +2200,7 @@ p_rt <- p_rt_filter |>
 
 ```
 
-We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After removing RTs below .2 and above 2.5, we were left with `r dim(p_rt_out)[1]` trials.
+We had `r dim(p_rt_filter)[1]` correct RT trials for non-animal responses. After removing RTs below .2 s and above 2.5 s, we were left with `r dim(p_rt_out)[1]` trials.
 
 ```{r}
 ## Contrasts
@@ -2578,7 +2590,8 @@ ggsave(
   filename = './figures/figure_kde3.png',
   width = 18,
   height = 12,
-  dpi = 500
+  dpi = 500,
+  bg = "white"
 )
 ```
 
@@ -2891,7 +2904,3 @@ Our paper contributes nuanced insights to the intricate relationship between per
 
 ::: {#refs}
 :::
-
-# Appendix A
-
-## Drift Diffuion Model Results
