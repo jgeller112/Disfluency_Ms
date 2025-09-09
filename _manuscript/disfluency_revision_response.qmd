@@ -122,10 +122,13 @@ blur < high blur, in terms of memory performance. This point also refers to tabl
 which I did not find very convincing.
 :::
 
-As we state in the paper "We made a good-faith effort to translate these verbal descriptions into models, while recognizing that reasonable researchers may make alternative modeling choices—an unavoidable reality of scientific inference."
+We thank the reviewer for raising these important points. As we noted in the manuscript, our goal in the predictions section was to make a good-faith effort to translate largely verbal theories into more formal expectations, while recognizing that reasonable researchers may reach different conclusions—an unavoidable reality of scientific inference.
 
-It has been shown high and low blurred words are processed differently, and it is reasonable to assume that high blurred words would engeneder more top down processing than low blurred words.
+In line with this concern, we have revised the text to temper the strength of our language and to present the predictions in a more neutral, descriptive manner. Specifically, we clarify that the different accounts do not necessarily provide strong or exclusive predictions about relative memory performance across clear, low-blur, and high-blur conditions. Instead, we outline how each account might lead to differences in response-time distributions, and how those distributional changes could (but need not) map onto recognition performance.
 
+We also expand our discussion of why one might expect mnemonic benefits to emerge most clearly for high-blurred words under the compensatory processing account, while acknowledging that such a cutoff is not explicitly defined in the original formulations and remains an open question. Similarly, for the stage-specific account, we highlight that our predictions represent one plausible interpretation of how early and late processes may interact, but alternative patterns are conceivable.
+
+We hope these clarifications address the reviewer’s concerns and make our predictions section clearer and more balanced.
 ::: memo-reviewer
 **Reviewer 2**: I was confused by the description of over-sampling on p. 17. Was it not possible to
 check most exclusion criteria (age, English native speaker etc.) before participation?
@@ -187,7 +190,6 @@ We hope we have addressed this reviewers concern by rewriting the discussion sec
 :::
 
 We apologize for this oversight. We have now added a statement in the Methods section under Transparency and Openness noting that each study received approval from the Institutional Review Board.
-
 
 
 ## Minor Points
