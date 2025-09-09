@@ -368,14 +368,18 @@ I**n the present experiments, we pursued two aims related to perceptual disfluen
 
 **If the metacognitive account [@pieger2016] holds, and the effect arises primarily at a post-lexical stage, one would expect a lengthening of the distribution tail (increases in \$\\tau\$) for blurred relative to clear words. Importantly, this perspective suggests that memory performance may not differ between high- and low-blurred words, given that perceptual disfluency is assumed to be largely subjective.**
 
-**In contrast, the compensatory processing account [@mulligan1996] would predict a shift in the distribution (increase in** $\mu$**) for high-blurred words compared to low- and no-blurred words and better memory. Memory effects arising in this account are thought to be purely lexical/semantic. This expectation is in line with findings from \@rosner2015, who reported that highly blurred words are associated with longer latencies, incre error rates, and better recognition memory.**
+**In contrast, the compensatory processing account [@mulligan1996] would predict a shift in the distribution (increase in** $\mu$**) for high-blurred words compared to low- and no-blurred words and better memory. Memory effects arising in this account are thought to be purely lexical/semantic. This expectation is in line with findings from \@rosner2015, who reported that highly blurred words are associated with longer latencies, increased error rates, and better recognition memory.**
 
-**Finally, the stage-specific account [@ptok2019; @ptok2020] anticipates effects on both μ and τ for high-blurred words when tasks recruit higher-level processing during encoding, consistent with the involvement of both early and late processes. Similar patterns have been observed with difficult-to-read handwritten words \[e.g., \@perea2016; \@vergara-martínez2021\]. From this perspective, additional post-lexical processing for high-blurred words may facilitate recognition memory, producing benefits for high- but not low-blur conditions.**
+**If the disfluency effect reflects both early and late processing, the stage-specific account [@ptok2019; @ptok2020] predicts that high blur (vs. clear/low blur) will increase both \$\\mu\$ (overall rightward shift) and \$\\tau\$ (heavier tail). Similar encoding patterns have been observed with hard-to-read handwriting [e.g., @perea2016; @vergara-martínez2021]. Because low blur is unlikely to recruit substantial post-lexical control, the account predicts no reliable change in either parameter for low-blur items.**
 
 ```{r}
 #| label: tbl-predictions
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
 #| apa-note: "↑ = bigger ; ↓ = smaller;  x = no effect on parameter of interest"
+
+#| label: tbl-predictions
+#| tbl-cap: "Mapping model predictions to theoretical constructs"
+#| apa-note: "↑ = larger; ↓ = smaller; × = no effect on parameter of interest"
 
 data <- data.frame(
   Account = rep(
@@ -384,7 +388,7 @@ data <- data.frame(
   ),
   Description = rep(
     c(
-      "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing",
+      "Perceptual disfluency affects meta-cognitive processes via increased System 2 processing",
       "Perceptual disfluency affects the word recognition process",
       "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
     ),
@@ -403,20 +407,12 @@ data <- data.frame(
     "Low blur vs. Clear"
   ),
   ExGaussianPredictions = c(
+    "μ: ×\nτ: ↑",  # Meta-cognitive
     "μ: ×\nτ: ↑",
-    "μ: ×\nτ:↑ ", # Meta-cognitive
-    "μ: ↑\nτ: ×",
-    "μ: x\nτ: x", # Compensatory-processing (updated)
-    "μ: ↑\nτ: ↑",
-    "μ: ↑\nτ: ×" # Stage-specific
-  ),
-  DDMPredictions = c(
-    "Ter: ×\nv: ↓",
-    "Ter: ×\nv: ↓", # Meta-cognitive
-    "Ter: ↑\nv: ×",
-    "Ter: x\nv: ×", # Compensatory-processing (updated)
-    "Ter: ↑\nv: ↓",
-    "Ter: ×\nv: ×" # Stage-specific
+    "μ: ↑\nτ: ×",  # Compensatory-processing
+    "μ: ×\nτ: ×",
+    "μ: ↑\nτ: ↑",  # Stage-specific
+    "μ: ↑\nτ: ×"
   ),
   QuantilePlots = c(
     "Late Difference",
@@ -428,11 +424,11 @@ data <- data.frame(
   ),
   RecognitionMemoryPredictions = c(
     "High > Low/clear",
-    "Low > clear", # Meta-cognitive
+    "Low > clear",          # Meta-cognitive
     "High > Low/clear",
-    "Low  =  clear", # Compensatory-processing (updated)
+    "Low  =  clear",        # Compensatory-processing
     "High > Low/clear",
-    "Low  =  clear" # Stage-specific
+    "Low  =  clear"         # Stage-specific
   ),
   stringsAsFactors = FALSE
 ) |>
@@ -442,42 +438,35 @@ data <- data.frame(
     Loci = ifelse(duplicated(Loci), "", Loci)
   )
 
-ft <- flextable(data) |>
-  set_header_labels(
+ft <- flextable::flextable(data) |>
+  flextable::set_header_labels(
     Account = "Account",
     Description = "Description",
     Loci = "Loci",
     Contrast = "Contrast",
     ExGaussianPredictions = "Ex-Gaussian Predictions",
-    DDMPredictions = "Drift Diffusion Predictions",
     QuantilePlots = "Quantile Plots",
     RecognitionMemoryPredictions = "Recognition Memory Predictions"
   ) |>
-  merge_v(j = c("Account", "Description", "Loci")) |>
-  align(
+  flextable::merge_v(j = c("Account", "Description", "Loci")) |>
+  flextable::valign(j = c("Account", "Description", "Loci"), valign = "top") |>
+  flextable::align(
     j = c("Account", "Description", "Loci", "Contrast"),
-    align = "left",
-    part = "body"
+    align = "left", part = "body"
   ) |>
-  align(
-    j = c(
-      "ExGaussianPredictions",
-      "DDMPredictions",
-      "QuantilePlots",
-      "RecognitionMemoryPredictions"
-    ),
-    align = "center",
-    part = "body"
+  flextable::align(
+    j = c("ExGaussianPredictions", "QuantilePlots", "RecognitionMemoryPredictions"),
+    align = "center", part = "body"
   ) |>
-  width(j = "Account", width = 1) |>
-  width(j = "Description", width = 2) |>
-  width(j = "Loci", width = 1) |>
-  width(j = "Contrast", width = 1) |>
-  width(j = "ExGaussianPredictions", width = 1.5) |>
-  width(j = "DDMPredictions", width = 1.5) |>
-  width(j = "QuantilePlots", width = 1.5) |>
-  width(j = "RecognitionMemoryPredictions", width = 1.5) |>
-  bold(part = "header")
+  flextable::width(j = "Account", width = 1) |>
+  flextable::width(j = "Description", width = 2) |>
+  flextable::width(j = "Loci", width = 1.2) |>
+  flextable::width(j = "Contrast", width = 1.4) |>
+  flextable::width(j = "ExGaussianPredictions", width = 1.6) |>
+  flextable::width(j = "QuantilePlots", width = 1.7) |>
+  flextable::width(j = "RecognitionMemoryPredictions", width = 1.9) |>
+  flextable::bold(part = "header") |>
+  flextable::autofit()
 
 ft
 
