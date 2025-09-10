@@ -377,10 +377,6 @@ I**n the present experiments, we pursued two aims related to perceptual disfluen
 #| tbl-cap: "Mapping model predictions to theoretical constructs"
 #| apa-note: "↑ = bigger ; ↓ = smaller;  x = no effect on parameter of interest"
 
-#| label: tbl-predictions
-#| tbl-cap: "Mapping model predictions to theoretical constructs"
-#| apa-note: "↑ = larger; ↓ = smaller; × = no effect on parameter of interest"
-
 data <- data.frame(
   Account = rep(
     c("Meta-cognitive", "Compensatory-processing", "Stage-specific"),
@@ -388,7 +384,7 @@ data <- data.frame(
   ),
   Description = rep(
     c(
-      "Perceptual disfluency affects meta-cognitive processes via increased System 2 processing",
+      "Perceptual disfluency affects meta-cognitive processes via increased system 2 processing",
       "Perceptual disfluency affects the word recognition process",
       "Disfluency effects rely on (1) the stage or level of processing tapped by the task and (2) monitoring and control processes"
     ),
@@ -407,12 +403,20 @@ data <- data.frame(
     "Low blur vs. Clear"
   ),
   ExGaussianPredictions = c(
-    "μ: ×\nτ: ↑",  # Meta-cognitive
     "μ: ×\nτ: ↑",
-    "μ: ↑\nτ: ×",  # Compensatory-processing
-    "μ: ×\nτ: ×",
-    "μ: ↑\nτ: ↑",  # Stage-specific
-    "μ: ↑\nτ: ×"
+    "μ: ×\nτ:↑ ", # Meta-cognitive
+    "μ: ↑\nτ: ×",
+    "μ: x\nτ: x", # Compensatory-processing (updated)
+    "μ: ↑\nτ: ↑",
+    "μ: ↑\nτ: ×" # Stage-specific
+  ),
+  DDMPredictions = c(
+    "Ter: ×\nv: ↓",
+    "Ter: ×\nv: ↓", # Meta-cognitive
+    "Ter: ↑\nv: ×",
+    "Ter: x\nv: ×", # Compensatory-processing (updated)
+    "Ter: ↑\nv: ↓",
+    "Ter: ×\nv: ×" # Stage-specific
   ),
   QuantilePlots = c(
     "Late Difference",
@@ -424,11 +428,11 @@ data <- data.frame(
   ),
   RecognitionMemoryPredictions = c(
     "High > Low/clear",
-    "Low > clear",          # Meta-cognitive
+    "Low > clear", # Meta-cognitive
     "High > Low/clear",
-    "Low  =  clear",        # Compensatory-processing
+    "Low  =  clear", # Compensatory-processing (updated)
     "High > Low/clear",
-    "Low  =  clear"         # Stage-specific
+    "Low  =  clear" # Stage-specific
   ),
   stringsAsFactors = FALSE
 ) |>
@@ -438,35 +442,42 @@ data <- data.frame(
     Loci = ifelse(duplicated(Loci), "", Loci)
   )
 
-ft <- flextable::flextable(data) |>
-  flextable::set_header_labels(
+ft <- flextable(data) |>
+  set_header_labels(
     Account = "Account",
     Description = "Description",
     Loci = "Loci",
     Contrast = "Contrast",
     ExGaussianPredictions = "Ex-Gaussian Predictions",
+    DDMPredictions = "Drift Diffusion Predictions",
     QuantilePlots = "Quantile Plots",
     RecognitionMemoryPredictions = "Recognition Memory Predictions"
   ) |>
-  flextable::merge_v(j = c("Account", "Description", "Loci")) |>
-  flextable::valign(j = c("Account", "Description", "Loci"), valign = "top") |>
-  flextable::align(
+  merge_v(j = c("Account", "Description", "Loci")) |>
+  align(
     j = c("Account", "Description", "Loci", "Contrast"),
-    align = "left", part = "body"
+    align = "left",
+    part = "body"
   ) |>
-  flextable::align(
-    j = c("ExGaussianPredictions", "QuantilePlots", "RecognitionMemoryPredictions"),
-    align = "center", part = "body"
+  align(
+    j = c(
+      "ExGaussianPredictions",
+      "DDMPredictions",
+      "QuantilePlots",
+      "RecognitionMemoryPredictions"
+    ),
+    align = "center",
+    part = "body"
   ) |>
-  flextable::width(j = "Account", width = 1) |>
-  flextable::width(j = "Description", width = 2) |>
-  flextable::width(j = "Loci", width = 1.2) |>
-  flextable::width(j = "Contrast", width = 1.4) |>
-  flextable::width(j = "ExGaussianPredictions", width = 1.6) |>
-  flextable::width(j = "QuantilePlots", width = 1.7) |>
-  flextable::width(j = "RecognitionMemoryPredictions", width = 1.9) |>
-  flextable::bold(part = "header") |>
-  flextable::autofit()
+  width(j = "Account", width = 1) |>
+  width(j = "Description", width = 2) |>
+  width(j = "Loci", width = 1) |>
+  width(j = "Contrast", width = 1) |>
+  width(j = "ExGaussianPredictions", width = 1.5) |>
+  width(j = "DDMPredictions", width = 1.5) |>
+  width(j = "QuantilePlots", width = 1.5) |>
+  width(j = "RecognitionMemoryPredictions", width = 1.5) |>
+  bold(part = "header")
 
 ft
 
@@ -1063,8 +1074,7 @@ p1_dp <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     x = "",
     y = "Group differences",
     tag = "B"
-  ) +
-  ggtitle('Delta Plots: Experiment 1A')
+  ) 
 ```
 
 ```{r}
@@ -1341,7 +1351,17 @@ ggsave(
 
 ## Discussion
 
-Experiment 1A successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory. Adding to these results, we used the ex-Guassin model model to gain further insights into the mechanisms underlying the perceptual disfluency effect. Descriptively, high blurred words induced a more pronounced shift in the RT distribution ($\mu$) and exhibited a higher degree of skew ($\beta$) compared to clear and low blurred words. However, low blurred words did not differ compared to clear words on $\mu$ or $\beta$. These patterns can be clearly seen in our quantile delta plots in Fig. 3.
+Experiment 1A successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory. Adding to these results, we used the ex-Guassin model model to gain further insights into the mechanisms underlying the perceptual disfluency effect. Descriptively, high blurred words induced a more pronounced shift in the RT distribution ($\mu$) and exhibited a higher degree of skew ($\beta$) compared to clear and low blurred words. However, low blurred words did not differ compared to clear words on $\mu$ or $\beta$. These patterns can be clearly seen in our quantile delta plots in @fig-deltaquant1A1B.
+
+While this pattern suggests that highly blurred words influence both early and late processing, whereas low-blurred words affect only early stages, there has been considerable debate about the use of the ex-Gaussian distribution for making inferences about latent cognitive processes [@fitousi2020; @matzke2009].
+
+Unlike the ex-Gaussian distribution, which makes little theoretical assumptions regarding process, the drift diffusion model - DDM [see @ratcliff2016, for a comprehensive introduction] is a process-model, and it's parameters can be linked to latent cognitive constructs [@gomez2013]. The DDM is a popular computational model commonly used in binary speeded decision tasks such as the lexical decision task (LDT). The DDM model assumes a decision is a cumulative process that begins at stimulus onset and ends once a noisy accumulation of evidence has reached a decision threshold.The DDM has led to important insights into cognition in a wide range of choice tasks, including perceptual-, memory-, and value-based decisions [@myers2022].
+
+In the DDM, RTs are decomposed into several parameters that represent distinct cognitive processes. The most relevant to our purposes here are the drift rate ($v$) and non-decision time (ndt; $T_{er}$) parameters. Drift rate ($v$) represents the rate at which evidence is accumulated towards a decision boundary. In essence, it is a measure of how quickly information is processed to make a decision. A higher (more positive) $v$ indicates a steeper slope, meaning that evidence is accumulated more quickly, leading to faster decisions. Conversely, a lower $v$ indicates a shallower slope, meaning that evidence is accumulated more slowly. Drift rate is closely linked to the decision-making process itself and serves as an index of global processing demands imposed by factors such as task difficulty, memory load, or other concurrent cognitive demands—particularly when these processes compete for the same cognitive resources [@boag2019]. Additionally, drift rates have been implicated as a key mechanism of reactive inhibitory control [@braver2012], where critical events (e.g., working memory updates or task switches) trigger inhibition of prepotent response drift rates [@boag2019; @boag2019a].
+
+The $T_{er}$ parameter represents the time taken for processes other than the decision-making itself. This includes early sensory processing (like visual or auditory processing of the stimulus) and late motor processes (like executing the response). The DDM has been shown to be a valuable tool for studying the effects of different experimental manipulations on cognitive processes in visual word recognition. For example, @gomez2014 demonstrated certain manipulations can deferentially affect specific parameters of the model. For instance, manipulating the orientation of words (rotating them by 0, 90, or 180 degrees) affected the $T_{er}$ component, but not $v$ component. In contrast, word frequency (high-frequency words vs. low-frequency words) primarily influenced both the drift rate and non-decision time. These findings highlight the sensitivity of the DDM in identifying and differentiating the impact of various stimulus manipulations on different cognitive processes involved in decision-making.
+
+We preregistered DDM analyses and present the model results in the appendix to enhance readability. Overall, we found high blurred words impacted both an early, non-decision, component evinced by higher $T_{er}$ and a later more analytic, component evinced by a lower $v$ than clear or low blurred words. On the other hand, low blurred words only affected $T_{er}$.
 
 We present evidence that different levels of disfluency can influence distinct stages of encoding, potentially contributing to the presence or absence of a mnemonic effect for perceptually blurred stimuli. Unlike most studies that commonly employ a single level of disfluency, our study incorporated two levels of disfluency. The results indicate that a subtle manipulation such as low blur primarily affects early processing stages, whereas a more pronounced perceptual manipulation (i.e., high blur) impacts both early and late processing stages. Regarding recognition memory, high blurred stimuli were better recognized compared to low blurred and clear words. This suggests that in order to observe a perceptual disfluency effect, the perceptual manipulation must be sufficiently disfluent to do so and tap later stages of encoding.
 
@@ -1658,7 +1678,7 @@ p_12 <- ggplot(v_12, aes(x = q, y = MRT * 1000, colour = blur, group = blur)) +
     tag = "A",
     colour = 'Blur Condition'
   ) + # Optional tag for labeling
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 16) +
   ggokabeito::scale_colour_okabe_ito()
 ```
 
@@ -1768,7 +1788,7 @@ p3_dp2 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 #| label: fig-deltaquant1A1B
 #| fig-cap: "Quantile plots for each condition in Exeriment 1A and 1B (A) and Delta plots depicting the magnitude of the effect for hypotheses of interest over time in for Experiments 1A (B) and 1B (C). Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
 #| fig-width: 15
-#| fig-height: 10
+#| fig-height: 12
 
 delta_comb1b = (p1_dp2 + p2_dp2 + p3_dp2)
 
@@ -1779,9 +1799,10 @@ combined_plot
 ggsave(
   filename = './figures/figure_quantile_deltaplots1A1B.png',
   width = 12,
-  height = 12,
+  height = 15,
   bg = "white"
 )
+
 ```
 
 ### Recognition Memory
@@ -1974,7 +1995,7 @@ ggsave("figures/expt1B-dprime.png", width = 19, height = 8, dpi = 300)
 
 ## Discussion
 
-**We replicated all the findings of Experiment 1A in a design where levels of blurring were not reinstated at test.**
+**We replicated all the findings of Experiment 1A in a design where levels of blurring were not reinstated at test. In the appendix we present the results from our DDM analysis and it largely corresponds to Experiment 1A.**
 
 # Experiment 2
 
@@ -2280,7 +2301,7 @@ fit_sc <- read_rds("http://osf.io/uwcjf/download")
 
 ```{r}
 #| label: tbl-expt2summary
-#| tbl-cap: "Summary of posterior distributions for fixed effects in the ex-Gaussian model (Experiment 2)."
+#| tbl-cap: "Posterior distribution summary for fixed effects in the ex-Gaussian model (Experiment 2)."
 #| apa-note: "CrI: 90% for one-sided tests and 95% for two-sided tests against 0. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero. Sigma and Beta parameters are on the log (logit) scale."
 
 # Read CSVs from the folder and assign to objects
@@ -2402,11 +2423,11 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
   ) +
   geom_line(size = 1) +
   geom_point(size = 3) +
-  theme_bw() +
+  theme_minimal(base_size=16) +
   theme(
     axis.title = element_text(size = 16, face = "bold"),
     axis.text = element_text(size = 16),
-    plot.title = element_text(face = "bold", size = 20)
+    plot.title = element_text(face = "bold", size = 16)
   ) +
   scale_y_continuous(breaks = seq(500, 1600, 100)) +
   coord_cartesian(ylim = c(500, 1600)) +
@@ -2419,11 +2440,11 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
     seed = 42,
     box.padding = 0.5
   ) +
-  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") +
-  ggokabeito::scale_colour_okabe_ito(
+ggokabeito::scale_colour_okabe_ito(
     name = "Blur Condition",
     labels = c("C" = "Clear", "HB" = "High blur", "LB" = "Low blur")
-  )
+  ) + 
+  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") 
 ```
 
 ```{r}
@@ -2449,21 +2470,23 @@ v_chb_freq <- v |>
   tidyr::pivot_wider(names_from = "frequency", values_from = "MRT") |>
   mutate(diff = LOW - HIGH)
 
+base_theme <- theme_minimal(base_size = 16) +
+  theme(
+    legend.position   = "none",
+    panel.border      = element_blank(),
+    strip.background  = element_blank()
+  )
+
 p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   facet_grid(
     ~frequency,
     labeller = labeller(
-      frequency = c(
-        "HIGH" = "High Frequency",
-        "LOW" = "Low Frequency"
-      )
+      frequency = c("HIGH" = "High Frequency", "LOW" = "Low Frequency")
     )
   ) +
   geom_abline(intercept = 0, slope = 0) +
   geom_line(size = 1, colour = "black") +
   geom_point(size = 3, colour = "black") +
-  theme_minimal(base_size = 16) +
-  theme(legend.position = "none") +
   scale_y_continuous(breaks = seq(10, 500, 50)) +
   scale_x_continuous(breaks = seq(600, 1100, 100)) +
   coord_cartesian(xlim = c(600, 1100), ylim = c(10, 500)) +
@@ -2473,14 +2496,18 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     color = "black",
     min.segment.length = 0,
     seed = 42,
-    box.padding = 0.5
+    box.padding = 0.5,
+    label.size = 0,   # removes box border
+    fill = NA         # removes box fill
   ) +
   labs(
-    title = "Delta Plots: High blur vs. Clear",
+    title = "High blur vs. Clear",
     x = "",
     y = "Group Differences",
     tag = "B"
-  )
+  ) +
+  base_theme
+
 ```
 
 ```{r}
@@ -2518,7 +2545,7 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
     box.padding = 0.5
   ) +
   labs(
-    title = "Delta Plots: Clear - Low blur",
+    title = "Clear - Low blur",
     x = "Mean RT per quantile",
     y = ""
   )
@@ -2560,14 +2587,14 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
     seed = 42,
     box.padding = 0.5
   ) +
-  labs(title = "Delta Plots: High blur - Low blur", x = "", y = "")
+  labs(title = "High blur - Low blur", x = "", y = "")
 ```
 
 ```{r}
 #| label: fig-quantiledeltaexp2
 #| fig-cap: "Group RT distributions in the blurring and word frequency manipulations in word stimuli. A. Quantile plots with each point represents the average RT quantiles (.1, .3, .5, .7,and .9) in each condition. B. Delta plots obatined by computing the quantiles for each participant and subsequently averaging the obtained values for each quantile over the participants and subtracting the values from each condition."
 #| fig-width: 20
-#| fig-height: 12
+#| fig-height: 14
 
 # Create bottom row with p1, p2, p3
 bottom_row <- plot_grid(p1, p2, p3, ncol = 3, label_size = 16)
@@ -2577,13 +2604,6 @@ final_plot <- plot_grid(p, bottom_row, ncol = 1)
 
 final_plot
 
-ggsave(
-  filename = './figures/figure_kde3.png',
-  width = 18,
-  height = 12,
-  dpi = 500,
-  bg = "white"
-)
 ```
 
 ```{r}
@@ -2877,7 +2897,7 @@ These findings have several implications. At a theoretical level, the current da
 
 At a methodological level, our experiments demonstrate that a straightforward blurring manipulation can benefit memory, which we observed whether or not we reinstated the context during testing. However, blurring has to be sufficiently difficult do so. If the secondary task requires too much attentional control the effect might not be observed or attenuated.
 
-More significantly, our current experiments underscore the benefits of using mathematical and computational models—such as the ex-Gaussian distribution. A frequent critique of the ex-Gaussian model is that it lacks a clear correspondence to specific cognitive constructs [@fitousi2020]. To address this limitation, we also fit a drift diffusion model (DDM) to the encoding data from Experiments 1A and 1B (see Appendix A). Both models converged on similar findings: response time distributions were differentially affected by the degree of visual blur. Words with low blur primarily influenced early or non-decision stages of processing whereas highly blurred words impacted both early and later stages. These findings suggest that both the ex-Gaussian and DDM are sensitive to perceptual disfluency and can help uncover underlying cognitive mechanisms during encoding [see also @gomez2014]. Although the models converged on similar patterns, it remains an open question whether one should be favored over the other. Nevertheless, because the DDM provides a clearer theoretical mapping between parameters and cognitive processes, it may ultimately serve as the more informative model in this context.
+More significantly, our current experiments underscore the benefits of using mathematical and computational models to examine stages or levels of processing during encoding. A frequent critique of the ex-Gaussian model is that it lacks a clear correspondence to specific cognitive constructs [@fitousi2020]. To address this limitation, we also fit a drift diffusion model (DDM) to the encoding data from Experiments 1A and 1B (see Appendix A). Both models converged on similar findings: response time distributions were differentially affected by the degree of visual blur. Words with low blur primarily influenced early or non-decision stages of processing whereas highly blurred words impacted both early and later stages. These findings suggest that both the ex-Gaussian and DDM are sensitive to perceptual disfluency and can help uncover underlying cognitive mechanisms during encoding [but see @hu2022 for a DDM account of perceptual disfluency at retreival]. Although the models converged on similar patterns, it remains an open question whether one should be favored over the other.
 
 Furthermore, our distribution modeling of RTs appears to be a more sensitive method. Although we found weak evidence for differences between clean and low blurred conditions in measures like accuracy, we did notice variations in non-decision time and a shift in the response time distribution for low blurred words compared to clear words. We recommend that future studies employ distribution modeling and DDM to decompose response times and directly quantify the impact of perceptual disfluency on encoding.
 
@@ -2895,3 +2915,332 @@ Our paper contributes nuanced insights to the intricate relationship between per
 
 ::: {#refs}
 :::
+
+# DDM {\@apx-a
+
+**The purpose of this appendix is to provide a brief description of how the diffusion model accounts for the data presented in the main article. Although fitting the diffusion model was included in our preregistration plan, we chose to present these analyses here rather than in the main text in order to enhance readability.**
+
+### Experiment 1A - DDM Results
+
+```{r}
+blur_rt_diff <- rts |>
+  group_by(participant) |>
+  dplyr::filter(rt >= .2 & rt <= 2.5) |>
+  dplyr::filter(lex == "m")
+```
+
+```{r}
+#| eval: false
+
+formula <- bf(
+  rt | dec(corr) ~
+    0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  ndt ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  bias = .5
+)
+
+
+bprior <- prior(normal(0, 1), class = b) +
+  prior(normal(0, 1), class = b, dpar = ndt) +
+  prior(normal(0, 1), class = sd) +
+  prior(normal(0, 1), class = sd, dpar = ndt) +
+  prior("normal(0, 0.3)", class = "sd", group = "participant") +
+  prior("normal(0, 0.3)", class = "sd", group = "string")
+```
+
+```{r}
+#| eval: false
+#|
+make_stancode(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
+
+tmp_dat <- make_standata(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
+str(tmp_dat, 1, give.attr = FALSE)
+
+initfun <- function() {
+  list(
+    b = rnorm(tmp_dat$K),
+    bs = .5,
+    b_ndt = runif(tmp_dat$K_ndt, 0.1, 0.15),
+    sd_1 = runif(tmp_dat$M_1, 0.5, 1),
+    sd_2 = runif(tmp_dat$M_2, 0.5, 1),
+    z_1 = matrix(
+      rnorm(tmp_dat$M_1 * tmp_dat$N_1, 0, 0.01),
+      tmp_dat$M_1,
+      tmp_dat$N_1
+    ),
+    z_2 = matrix(
+      rnorm(tmp_dat$M_2 * tmp_dat$N_2, 0, 0.01),
+      tmp_dat$M_2,
+      tmp_dat$N_2
+    ),
+    L_1 = diag(tmp_dat$M_1),
+    L_2 = diag(tmp_dat$M_2)
+  )
+}
+```
+
+```{r}
+#| eval: false
+
+fit_wiener1 <- brm(
+  formula,
+  data = blur_rt_diff,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  prior = bprior,
+  init = initfun,
+  iter = 2000,
+  warmup = 500,
+  chains = 4,
+  cores = 4,
+  file = "weiner_diff_1",
+  backend = "cmdstanr",
+  threads = threading(4),
+  control = list(max_treedepth = 15)
+)
+```
+
+```{r}
+#diff object on osf
+fit_wiener <- read_rds("https://osf.io/hqauz/download")
+#fit_wiener <- read_rds("data/weiner_diff_1.rds")
+```
+
+```{r}
+#| label: tbl-diffexpt1A
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the DDM (Experiment 1A)"
+#| apa-note: "95% CrI for equivalency tests"
+
+# Define contrasts using averages and differences
+a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC / 2)) < 0")
+b <- hypothesis(fit_wiener, "blurLB - blurC =  0")
+
+c <- hypothesis(
+  fit_wiener,
+  "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0",
+  dpar = "ndt"
+)
+d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC >  0", dpar = "ndt")
+
+# Round numeric columns
+round_hypothesis <- function(hyp) {
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
+  hyp
+}
+
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+c <- round_hypothesis(c)
+d <- round_hypothesis(d)
+
+# Combine into a single tidy table
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
+  mutate(
+    Parameter = c("v", "v", "T_er", "T_er"),
+    Hypothesis = c(
+      "High blur > (Low blur + Clear)",
+      "Low blur  = Clear",
+      "High blur > (Low blur + Clear)",
+      "Low blur = Clear"
+    ),
+    `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")
+  ) |>
+  rename(
+    Mean = Estimate,
+    SE = Est.Error,
+    ER = Evid.Ratio,
+    `Posterior Prob` = Post.Prob
+  ) |>
+  select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, `Posterior Prob`)
+
+# Generate flextable
+flextable(tab) |>
+  theme_apa() |>
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
+  set_table_properties(layout = "autofit")
+```
+
+**A summary of the diffusion model results can be found in @tbl-diffexpt1A. There was strong evidence that high blurred words were associated with a lower drift rate than both clear and low blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high blurred words compared to both clear and low blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.**
+
+### Experiment 1B - DDM Results
+
+```{r}
+blur_rt_diff <- rts |>
+  group_by(participant) |>
+  dplyr::filter(rt >= .2 & rt <= 2.5) |>
+  dplyr::filter(lex == "m")
+```
+
+```{r}
+formula <- bf(
+  rt | dec(corr) ~
+    0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  ndt ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  bias = .5
+)
+
+bprior <- prior(normal(0, 1), class = b) +
+  prior(normal(0, 1), class = b, dpar = ndt) +
+  prior(normal(0, 1), class = sd) +
+  prior(normal(0, 1), class = sd, dpar = ndt) +
+  prior("normal(0, 0.3)", class = "sd", group = "participant") +
+  prior("normal(0, 0.3)", class = "sd", group = "string")
+```
+
+```{r}
+#| eval: false
+
+make_stancode(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
+
+tmp_dat <- make_standata(
+  formula,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  data = blur_rt_diff,
+  prior = bprior
+)
+str(tmp_dat, 1, give.attr = FALSE)
+
+initfun <- function() {
+  list(
+    b = rnorm(tmp_dat$K),
+    bs = .5,
+    b_ndt = runif(tmp_dat$K_ndt, 0.1, 0.15),
+    sd_1 = runif(tmp_dat$M_1, 0.5, 1),
+    sd_2 = runif(tmp_dat$M_2, 0.5, 1),
+    z_1 = matrix(
+      rnorm(tmp_dat$M_1 * tmp_dat$N_1, 0, 0.01),
+      tmp_dat$M_1,
+      tmp_dat$N_1
+    ),
+    z_2 = matrix(
+      rnorm(tmp_dat$M_2 * tmp_dat$N_2, 0, 0.01),
+      tmp_dat$M_2,
+      tmp_dat$N_2
+    ),
+    L_1 = diag(tmp_dat$M_1),
+    L_2 = diag(tmp_dat$M_2)
+  )
+}
+```
+
+```{r}
+#| eval: false
+#|
+
+fit_wiener1 <- brm(
+  formula,
+  data = blur_rt_diff,
+  family = wiener(
+    link_bs = "identity",
+    link_ndt = "identity",
+    link_bias = "identity"
+  ),
+  prior = bprior,
+  init = initfun,
+  iter = 2000,
+  warmup = 500,
+  chains = 4,
+  cores = 4,
+  file = "weiner_diff_1",
+  backend = "cmdstanr",
+  threads = threading(4),
+  control = list(max_treedepth = 15)
+)
+```
+
+```{r}
+fit_wiener <- read_rds("https://osf.io/gy5ab/download")
+#fit_wiener <- read_rds("data/weiner_diff_noc (1).rds")
+```
+
+```{r}
+#| label: tbl-diffexpt1B
+#| tbl-cap: "Summary of posterior distributions for fixed effects in the DDM (Experiment 1B)"
+#| apa-note:  "95% CrI for equivalency tests. Posterior probability indicates the proportion of the posterior distribution that falls on one side of zero (either positive or negative), representing the probability that the effect is greater than or less than zero."
+
+# Define contrasts using averages and differences
+a <- hypothesis(fit_wiener, "blurHB - ((blurLB + blurC)/2) < 0")
+b <- hypothesis(fit_wiener, "blurLB - blurC = 0")
+
+c <- hypothesis(
+  fit_wiener,
+  "ndt_blurHB - ((ndt_blurLB + ndt_blurC)/2) > 0",
+  dpar = "ndt"
+)
+d <- hypothesis(fit_wiener, "ndt_blurLB - ndt_blurC > 0", dpar = "ndt")
+
+# Round numeric columns
+round_hypothesis <- function(hyp) {
+  hyp$hypothesis <- hyp$hypothesis |>
+    mutate(across(where(is.numeric), round, 3))
+  hyp
+}
+
+a <- round_hypothesis(a)
+b <- round_hypothesis(b)
+c <- round_hypothesis(c)
+d <- round_hypothesis(d)
+
+# Combine into a single tidy table
+tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
+  mutate(
+    Parameter = c("v", "v", "T_er", "T_er"),
+    Hypothesis = c(
+      "High blur < (Low blur + Clear)",
+      "Low blur = Clear",
+      "High blur > (Low blur + Clear)",
+      "Low blur = Clear"
+    ),
+    `90% CrI` = str_glue("[{CI.Lower}, {CI.Upper}]")
+  ) |>
+  rename(
+    Mean = Estimate,
+    SE = Est.Error,
+    ER = Evid.Ratio,
+    `Posterior Prob` = Post.Prob
+  ) |>
+  select(Hypothesis, Parameter, Mean, SE, `90% CrI`, ER, `Posterior Prob`)
+
+# Generate flextable
+flextable(tab) |>
+  theme_apa() |>
+  width(j = 1, width = 2.5) |> # widen the Hypothesis column
+  set_table_properties(layout = "autofit")
+```
+
+**A summary of the diffusion model results is presented in @tbl-diffexpt1B. There was strong evidence that high blurred words were associated with a lower drift rate than both clear and low blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high blurred words compared to both clear and low blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.**
