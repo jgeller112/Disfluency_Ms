@@ -8,7 +8,7 @@ csl: apa.csl
 
 Thank you for giving us the opportunity to revise and resubmit our manuscript, “The Perceptual Disfluency Effect: A Drift Diffusion and Ex-Gaussian Analysis” (Manuscript ID: JOC-2025-0043). We greatly appreciate the insightful and constructive comments provided by the Editor and Reviewers. These suggestions were extremely helpful in guiding our revisions, and we have used them to substantially improve the clarity, structure, and presentation of the manuscript.
 
-Some of the general changes include restructuring the paper to make it more streamlined by trimming its overall length per the reccomendation of Reviewer 2, moving the discussion of drift-diffusion modeling (DDM) mostly to the appendix, and updating the title.
+Some of the general changes include restructuring the paper to make it more streamlined by trimming its overall length per the reccomendation of Reviewer 2, moving the discussion of drift-diffusion modeling (DDM) mostly to the appendix, and updating the title. We also noticed that some of the raw data for Experiment 2 was not uploaded to our OSF page so we added that data. 
 
 Below, we describe in detail how we have revised the paper in response to the Editor’s and Reviewers’ comments. The Editor’s and Reviewers’ comments are cited or summarized in [red italicized text]{.memo-reviewer-inline}, and our responses are provided in standard black Roman text. We also include excerpts from the revised manuscript in [blue text]{.memo-excerpt-inline}.
 
