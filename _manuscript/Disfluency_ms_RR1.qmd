@@ -69,7 +69,7 @@ author-note:
     deceased: ~
   disclosures:
     # Example: This study was registered at X (Identifier Y).
-    study-registration: "Experiment 1A and 2 were preregisted: https://osf.io/q3fjn; https://osf.io/kjq3t."
+    study-registration: "Experiment 1A and 2 were preregistered: https://osf.io/q3fjn; https://osf.io/kjq3t."
     # Acknowledge and cite data/materials to be shared.
     data-sharing: Data, code, and materials for this manuscript can be found at  https://osf.io/6sy7k/. 
     related-report: ~
@@ -107,15 +107,14 @@ execute:
   echo: false
   warning: false
   message: false
-  fig-align: center
-  tbl-align: center
+  fig-align: "center"
+  tbl-align: "center"
   keep-with-next: true
   code-overflow: wrap
   cache: true
-  ft-align: center
+  ft-align: "center"
   out-width: 50%
-  fig-dpi: 300
-
+  fig-dpi: 500
 
 knitr:
   opts_chunk: 
@@ -332,7 +331,7 @@ pwalk(data_files, function(filename, url) {
 
 ## Theoretical Accounts of the Disfluency Effect
 
-**To apply perceptual disfluency effectively in real-world settings, its underlying mechanisms must be better understood. Several theories have been proposed, with @geller2018 reviewing two major accounts.** **The metacognitive account [@alter2013; @pieger2016] views disfluency as a cue that prompts greater cognitive control and regulatory processing. Here, disfluency is detected after stimulus identification, and the specific type of disfluency is less important than the learner’s perception that material is difficult, which triggers regulatory processes. The compensatory processing account [@mulligan1996], rooted in the interactive activation model of word recognition [@mcclelland1981], argues that disfluency enhances memory by recruiting top-down support from lexical and semantic representations. When input is noisy (e.g., masked or blurred), higher-level knowledge feeds back to aid recognition, and this deeper processing strengthens memory.**
+**To apply perceptual disfluency effectively in real-world settings, its underlying mechanisms must be better understood. Several theories have been proposed, with @geller2018 reviewing two major accounts.** **The metacognitive account [@alter2007; @pieger2016] views disfluency as a cue that prompts greater cognitive control and regulatory processing. Here, disfluency is detected after stimulus identification, and the specific type of disfluency is less important than the learner’s perception that material is difficult, which triggers regulatory processes. The compensatory processing account [@mulligan1996], rooted in the interactive activation model of word recognition [@mcclelland1981], argues that disfluency enhances memory by recruiting top-down support from lexical and semantic representations. When input is noisy (e.g., masked or blurred), higher-level knowledge feeds back to aid recognition, and this deeper processing strengthens memory.**
 
 More recently, Ptok and colleagues proposed a limited-capacity, stage-specific model [@ptok2019; @ptok2020]. They showed that memory benefits from encoding conflict depend on (1) the processing level engaged by the task and (2) metacognitive monitoring and control. Across six experiments, they found improved recognition when target words were paired with incongruent semantic distractors (e.g., *Chair – Alive* vs. *Chair – Inanimate*), but not with incongruent response distractors (e.g., *Lisa – left/right*). Both conditions slowed responses, but only semantic conflict boosted memory, suggesting the effect arises when tasks emphasize meaning. Pupillometry--a measure of conitve effort [see @mathot2018; @vanderwel2018 for reviews] confirmed that both types of conflict increase effort, yet only semantic conflict translated into memory benefits. Importantly, the effect vanished when endogenous attention was constrained (e.g., by using a chin-rest), mirroring perceptual disfluency findings: disfluency benefits are eliminated by test expectancy [@geller2021] or judgments of learning (JOLs; ) [@rosner2015; @besken2013].\*\*
 
@@ -366,7 +365,7 @@ I**n the present experiments, we pursued two aims related to perceptual disfluen
 
 **The ex-Gaussian model provides a descriptive framework for assessing how disfluency manipulations affect encoding. Each account makes specific predictions about the loci of the perceptual disfluency effect, which can be mapped onto model parameters.**
 
-**If the metacognitive account [e.g., @alter200; @pieger2016] holds, and the effect arises primarily at a post-lexical stage, one would expect a lengthening of the distribution tail (increases in** $\tau$**) for blurred relative to clear words. Importantly, this perspective suggests that memory performance may not differ between high- and low-blurred words, given that perceptual disfluency is assumed to be largely subjective in nature.**
+**If the metacognitive account [e.g., @alter2007; @pieger2016] holds, and the effect arises primarily at a post-lexical stage, one would expect a lengthening of the distribution tail (increases in** $\tau$**) for blurred relative to clear words. Importantly, this perspective suggests that memory performance may not differ between high- and low-blurred words, given that perceptual disfluency is assumed to be largely subjective in nature.**
 
 **In contrast, the compensatory processing account [@mulligan1996] would predict a shift in the distribution (increase in** $\mu$**) for high-blurred words compared to low- and no-blurred words and better memory. Memory effects arising in this account are thought to be purely lexical/semantic. This expectation is in line with findings from \@rosner2015, who reported that highly blurred words are associated with longer latencies, increased error rates, and better recognition memory.**
 
@@ -410,14 +409,6 @@ data <- data.frame(
     "μ: ↑\nτ: ↑",
     "μ: ↑\nτ: ×" # Stage-specific
   ),
-  DDMPredictions = c(
-    "Ter: ×\nv: ↓",
-    "Ter: ×\nv: ↓", # Meta-cognitive
-    "Ter: ↑\nv: ×",
-    "Ter: x\nv: ×", # Compensatory-processing (updated)
-    "Ter: ↑\nv: ↓",
-    "Ter: ×\nv: ×" # Stage-specific
-  ),
   QuantilePlots = c(
     "Late Difference",
     "Late Difference",
@@ -449,7 +440,6 @@ ft <- flextable(data) |>
     Loci = "Loci",
     Contrast = "Contrast",
     ExGaussianPredictions = "Ex-Gaussian Predictions",
-    DDMPredictions = "Drift Diffusion Predictions",
     QuantilePlots = "Quantile Plots",
     RecognitionMemoryPredictions = "Recognition Memory Predictions"
   ) |>
@@ -462,7 +452,6 @@ ft <- flextable(data) |>
   align(
     j = c(
       "ExGaussianPredictions",
-      "DDMPredictions",
       "QuantilePlots",
       "RecognitionMemoryPredictions"
     ),
@@ -474,7 +463,6 @@ ft <- flextable(data) |>
   width(j = "Loci", width = 1) |>
   width(j = "Contrast", width = 1) |>
   width(j = "ExGaussianPredictions", width = 1.5) |>
-  width(j = "DDMPredictions", width = 1.5) |>
   width(j = "QuantilePlots", width = 1.5) |>
   width(j = "RecognitionMemoryPredictions", width = 1.5) |>
   bold(part = "header")
@@ -491,7 +479,7 @@ In Experiment 1A, we collected RTs from a lexical decision task (LDT) during enc
 
 ### Transparency and Openness
 
-This study complies with transparency and openness guidelines. The preregistered analysis plan for this experiment can be found here: https://osf.io/q3fjn. All raw and summary data, materials, and *R* scripts for pre-processing, analysis, and plotting for Experiments 1 can be found at https://osf.io/6sy7k/. All deviations and changes from the preregistration are noted herein.[^1]
+This study complies with transparency and openness guidelines. The preregistered analysis plan for this experiment can be found here: https://osf.io/q3fjn. All raw and summary data, materials, and *R* scripts for pre-processing, analysis, and plotting can be found at https://osf.io/6sy7k/.[^1] All deviations and changes from the preregistration are noted herein.
 
 [^1]: To promote transparency and reproducibility, this paper was written in I [@R] using Quarto [@Allaire_Quarto_2024], an open-source publishing system that allows for dynamic and static documents. This system allows figures, tables, and text to be programmatically included directly in the manuscript, ensuring that all results are seamlessly integrated into the document. We used the *rix* [@rix] package which harnesses the power of the nix [@nix] ecosystem to help with computational reproducibility. This package captures not only the *R* packages used to generate the manuscript but also the system dependencies at run-time. As a result, others can easily reproduce the environment by installing the Nix package manager and using the included `default.nix` file. The `README` file in the GitHub repository contains detailed information on how to set up and reproduce the contents of the current manuscript. We have also included a video tutorial. We hope these supplemental materials will make it easier for researchers to apply this code to their own research.
 
@@ -1264,7 +1252,7 @@ emm_m1_d2 <- emmeans(fit_mem1, ~ isold + blur) |>
 
 ```{r}
 #| label: fig-dprimeexp1A
-#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences, with 95% CrIs (thin lines)
+#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences, with 95% CrIs
 #| fig-width: 12
 #| fig-height: 8
 
@@ -1341,7 +1329,7 @@ tmp |>
 
 **Experiment 1A successfully replicated the pattern of results found in @rosner2015. Specifically, we found high blurred words had lower accuracy than clear and low blurred words, but had better memory. Adding to these results, we used the ex-Guassin model model to gain further insights into the mechanisms underlying the perceptual disfluency effect. Descriptively, high blurred words induced a more pronounced shift in the RT distribution (**$\mu$**) and exhibited a higher degree of skew (**$\beta$**) compared to clear and low blurred words. However, low blurred words did not differ compared to clear words on** $\mu$ **or** $\beta$**. These patterns can be clearly seen in our quantile delta plots in @fig-deltaquant1A1B.**
 
-**While this pattern suggests that highly blurred words influence both early and late processing, whereas low-blurred words affect only early stages, there has been considerable debate about the use of the ex-Gaussian distribution for making inferences about latent cognitive processes [@fitousi2020; @matzke2009].**
+**This pattern argues against a purely metacognitive account [e.g., @pieger2016] and instead supports explanations that emphasize higher-level, late-stage processing (e.g., stage-specific [@ptok2019] or compensatory accounts [@mulligan1996]). At the same time, considerable debate remains regarding the appropriateness of the ex-Gaussian distribution for drawing inferences about latent cognitive processes [\@fitousi2020; @matzke2009].**
 
 **Unlike the ex-Gaussian distribution, which makes little theoretical assumptions regarding process, the drift diffusion model - DDM [see @ratcliff2016, for a comprehensive introduction] is a process-model, and it's parameters can be linked to latent cognitive constructs [@gomez2013]. The DDM is a popular computational model commonly used in binary speeded decision tasks such as the lexical decision task (LDT). The DDM model assumes a decision is a cumulative process that begins at stimulus onset and ends once a noisy accumulation of evidence has reached a decision threshold.The DDM has led to important insights into cognition in a wide range of choice tasks, including perceptual-, memory-, and value-based decisions [@myers2022].**
 
@@ -1349,11 +1337,11 @@ tmp |>
 
 **The** $T_{er}$ **parameter represents the time taken for processes other than the decision-making itself. This includes early sensory processing (like visual or auditory processing of the stimulus) and late motor processes (like executing the response). The DDM has been shown to be a valuable tool for studying the effects of different experimental manipulations on cognitive processes in visual word recognition. For example, @gomez2014 demonstrated certain manipulations can deferentially affect specific parameters of the model. For instance, manipulating the orientation of words (rotating them by 0, 90, or 180 degrees) affected the** $T_{er}$ **component, but not** $v$ **component. In contrast, word frequency (high-frequency words vs. low-frequency words) primarily influenced both the drift rate and non-decision time. These findings highlight the sensitivity of the DDM in identifying and differentiating the impact of various stimulus manipulations on different cognitive processes involved in decision-making.**
 
-**We preregistered DDM analyses and present the model results in the appendix to enhance readability. Overall, we found high blurred words impacted both an early, non-decision, component evinced by higher** $T_{er}$ **and a later more analytic, component evinced by a lower** $v$ **than clear or low blurred words. On the other hand, low blurred words only affected** $T_{er}$**.**
+**We preregistered DDM analyses and present the model results in the Appendix to enhance readability. Overall, we found high blurred words impacted both an early, non-decision, component evinced by higher** $T_{er}$ **and a later more analytic, component evinced by a lower** $v$ **than clear or low blurred words. On the other hand, low blurred words only affected** $T_{er}$**.**
 
-**We present evidence that different levels of disfluency can influence distinct stages of encoding, potentially contributing to the presence or absence of a mnemonic effect for perceptually blurred stimuli. Unlike most studies that commonly employ a single level of disfluency, our study incorporated two levels of disfluency. The results indicate that a subtle manipulation such as low blur primarily affects early processing stages, whereas a more pronounced perceptual manipulation (i.e., high blur) impacts both early and late processing stages. Regarding recognition memory, high blurred stimuli were better recognized compared to low blurred and clear words. This suggests that in order to observe a perceptual disfluency effect, the perceptual manipulation must be sufficiently disfluent to do so and tap later stages of encoding.**
+**Herein, we present evidence that different levels of disfluency can influence distinct stages of encoding, potentially contributing to the presence or absence of a mnemonic effect for perceptually blurred stimuli. Unlike most studies that commonly employ a single level of disfluency, our study incorporated two levels of disfluency. The results indicate that a subtle manipulation such as low blur primarily affects early processing stages, whereas a more pronounced perceptual manipulation (i.e., high blur) impacts both early and late processing stages. Regarding recognition memory, high blurred stimuli were better recognized compared to low blurred and clear words. This suggests that in order to observe a perceptual disfluency effect, the perceptual manipulation must be sufficiently disfluent to do so and tap later stages of encoding.**
 
-**Given the important theoretical implications of these findings, Experiment 1B served as a conceptual replication. Due to the bias observed in the recognition memory test (i.e., low blurred words were responded to more liberally), we will not present old and new items as blurred, instead all of the words will be presented in a clear, different, font at test.**
+**Given the important theoretical implications of these findings, Experiment 1B served as a conceptual replication. Due to the bias observed in the recognition memory test (i.e., low blurred words were responded to more liberally), we do not present old and new items as blurred at test, instead all of the words were presented in a clear, different, font at test.**
 
 # Experiment 1B: No Context Reinstatement
 
@@ -1902,7 +1890,7 @@ emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
 
 ```{r}
 #| label: fig-dprimeexp1B
-#| fig-cap: Estimated posterior distributions (mean) for d-prime and criterion, and differences, with 95%  CrIs (thin lines)
+#| fig-cap: Estimated posterior distributions (mean) for d-prime and criterion, and differences, with 95%  CrIs
 #| fig-width: 12
 #| fig-height: 8
 
@@ -1977,7 +1965,7 @@ tmp |>
 
 ## Discussion
 
-**We replicated all the findings of Experiment 1A in a design where levels of blurring were not reinstated at test. In the appendix we present the results from our DDM analysis and it largely corresponds to Experiment 1A.**
+**We replicated all findings of Experiment 1A in a design where blurring was not reinstated at test. In addition, DDM fits to both RTs and accuracy produced similar results (see Appendix).**
 
 # Experiment 2
 
@@ -2405,7 +2393,6 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
   ) +
   geom_line(size = 1) +
   geom_point(size = 3) +
-  theme_minimal(base_size = 16) +
   theme(
     axis.title = element_text(size = 16, face = "bold"),
     axis.text = element_text(size = 16),
@@ -2422,11 +2409,13 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
     seed = 42,
     box.padding = 0.5
   ) +
-  ggokabeito::scale_colour_okabe_ito(
+  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + 
+ theme_minimal(base_size = 16) +
+  theme(legend.position = "bottom") +
+ggokabeito::scale_colour_okabe_ito(
     name = "Blur Condition",
     labels = c("C" = "Clear", "HB" = "High blur", "LB" = "Low blur")
-  ) +
-  labs(x = "Quantiles", y = "Response latencies in ms", tag = "A")
+  ) 
 ```
 
 ```{r}
@@ -2478,9 +2467,7 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     color = "black",
     min.segment.length = 0,
     seed = 42,
-    box.padding = 0.5,
-    label.size = 0, # removes box border
-    fill = NA # removes box fill
+    box.padding = 0.5
   ) +
   labs(
     title = "High blur vs. Clear",
@@ -2576,7 +2563,7 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 #| label: fig-quantiledeltaexp2
 #| fig-cap: "Group RT distributions in the blurring and word frequency manipulations in word stimuli. A. Quantile plots with each point represents the average RT quantiles (.1, .3, .5, .7,and .9) in each condition. B. Delta plots obatined by computing the quantiles for each participant and subsequently averaging the obtained values for each quantile over the participants and subtracting the values from each condition."
 #| fig-width: 20
-#| fig-height: 14
+#| fig-height: 12
 
 # Create bottom row with p1, p2, p3
 bottom_row <- plot_grid(p1, p2, p3, ncol = 3, label_size = 16)
@@ -2712,7 +2699,7 @@ emm_m2_c2 <- emmeans(fit_sc_mem, ~ blur | frequency) |>
 
 ```{r}
 #| label: fig-m2-emmeans
-#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences between all conditions with 95% CrIs (thin lines)
+#| fig-cap: Estimated posterior distributions for d-prime and criterion, and differences between all conditions with 95% CrIs
 #| fig-width: 12
 #| fig-height: 10
 
@@ -2877,9 +2864,9 @@ These findings have several implications. At a theoretical level, the current da
 
 **Evidence for this capacity-limited view comes from several sources. For example, @geller2018 showed that both easy-to-read and hard-to-read cursive words were remembered better than computer-print words, though the advantage was substantially larger for easier cursive words. Similarly, participants with lower working memory capacity benefit less from perceptual disfluency than those with higher capacity [@lehmann2015]. At a broader level, @wenzel2019 suggested that intelligence may moderate when desirable difficulties enhance learning.**
 
-**Complementing this stage-specific perspective, \@gagl2020 proposed a more stage-agnostic framework: the orthographic prediction error (OPE) model. Drawing on fMRI and EEG data, this model holds that reading involves generating visual–orthographic predictions and comparing them to incoming input. Visual degradation increases OPE—the mismatch between expected and observed letter input—and when predictions are impaired or suspended due to unpredictability, the benefits of top-down facilitation are reduced. Processing then relies more heavily on bottom-up input, which can slow responses and alter encoding quality. This framework helps clarify how perceptual disfluency influences both response-time distributions and memory outcomes, while situating the stage-specific account within a broader predictive-processing view. Future research may further elucidate how these perspectives converge.**
+**Complementing this stage-specific perspective, @gagl2020 proposed a more stage-agnostic framework: the orthographic prediction error (OPE) model. Drawing on fMRI and EEG data, this model holds that reading involves generating visual–orthographic predictions and comparing them to incoming input. Visual degradation increases OPE—the mismatch between expected and observed letter input—and when predictions are impaired or suspended due to unpredictability, the benefits of top-down facilitation are reduced. Processing then relies more heavily on bottom-up input, which can slow responses and alter encoding quality. This framework helps clarify how perceptual disfluency influences both response-time distributions and memory outcomes, while situating the stage-specific account within a broader predictive-processing view. Future research may further elucidate how these perspectives converge.**
 
-At a methodological level, our experiments demonstrate that a straightforward blurring manipulation can benefit memory, which we observed whether or not we reinstated the context during testing. However, blurring has to be sufficiently difficult do so. If the secondary task requires too much attentional control the effect might not be observed or attenuated.
+At a methodological level, our experiments demonstrate that a straightforward blurring manipulation can benefit memory, which we observed whether or not we reinstated the context during testing. However, blurring has to be sufficiently difficult to do so. If the secondary task requires too much attentional control the effect might not be observed or attenuated.
 
 More significantly, our current experiments underscore the benefits of using mathematical and computational models to examine stages or levels of processing during encoding. A frequent critique of the ex-Gaussian model is that it lacks a clear correspondence to specific cognitive constructs [@fitousi2020]. To address this limitation, we also fit a drift diffusion model (DDM) to the encoding data from Experiments 1A and 1B (see Appendix A). Both models converged on similar findings: response time distributions were differentially affected by the degree of visual blur. Words with low blur primarily influenced early or non-decision stages of processing whereas highly blurred words impacted both early and later stages. These findings suggest that both the ex-Gaussian and DDM are sensitive to perceptual disfluency and can help uncover underlying cognitive mechanisms during encoding [but see @hu2022 for a DDM account of perceptual disfluency at retreival]. Although the models converged on similar patterns, it remains an open question whether one should be favored over the other.
 
@@ -3207,7 +3194,7 @@ d <- round_hypothesis(d)
 # Combine into a single tidy table
 tab <- bind_rows(a$hypothesis, b$hypothesis, c$hypothesis, d$hypothesis) |>
   mutate(
-    Parameter = c("v", "v", " \T_er", "\T_er"),
+    Parameter = c("v", "v", " T_er", "T_er"),
     Hypothesis = c(
       "High blur < (Low blur + Clear)",
       "Low blur = Clear",
