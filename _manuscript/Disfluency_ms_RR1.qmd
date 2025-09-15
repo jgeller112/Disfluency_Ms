@@ -333,11 +333,11 @@ pwalk(data_files, function(filename, url) {
 
 **To apply perceptual disfluency effectively in real-world settings, its underlying mechanisms must be better understood. Several theories have been proposed, with @geller2018 reviewing two major accounts.** **The metacognitive account [@alter2007; @pieger2016] views disfluency as a cue that prompts greater cognitive control and regulatory processing. Here, disfluency is detected after stimulus identification, and the specific type of disfluency is less important than the learner’s perception that material is difficult, which triggers regulatory processes. The compensatory processing account [@mulligan1996], rooted in the interactive activation model of word recognition [@mcclelland1981], argues that disfluency enhances memory by recruiting top-down support from lexical and semantic representations. When input is noisy (e.g., masked or blurred), higher-level knowledge feeds back to aid recognition, and this deeper processing strengthens memory.**
 
-More recently, Ptok and colleagues proposed a limited-capacity, stage-specific model [@ptok2019; @ptok2020]. They showed that memory benefits from encoding conflict depend on (1) the processing level engaged by the task and (2) metacognitive monitoring and control. Across six experiments, they found improved recognition when target words were paired with incongruent semantic distractors (e.g., *Chair – Alive* vs. *Chair – Inanimate*), but not with incongruent response distractors (e.g., *Lisa – left/right*). Both conditions slowed responses, but only semantic conflict boosted memory, suggesting the effect arises when tasks emphasize meaning. Pupillometry--a measure of conitve effort [see @mathot2018; @vanderwel2018 for reviews] confirmed that both types of conflict increase effort, yet only semantic conflict translated into memory benefits. Importantly, the effect vanished when endogenous attention was constrained (e.g., by using a chin-rest), mirroring perceptual disfluency findings: disfluency benefits are eliminated by test expectancy [@geller2021] or judgments of learning (JOLs; ) [@rosner2015; @besken2013].\*\*
+More recently, Ptok and colleagues proposed a limited-capacity, stage-specific model [@ptok2019; @ptok2020]. They showed that memory benefits from encoding conflict depend on (1) the processing level engaged by the task and (2) metacognitive monitoring and control. Across six experiments, they found improved recognition when target words were paired with incongruent semantic distractors (e.g., *Chair – Alive* vs. *Chair – Inanimate*), but not with incongruent response distractors (e.g., *Lisa – left/right*). Both conditions slowed responses, but only semantic conflict boosted memory, suggesting the effect arises when tasks emphasize meaning. Pupillometry--a measure of cognitive effort [see @mathot2018; @vanderwel2018 for reviews] confirmed that both types of conflict increase effort, yet only semantic conflict translated into memory benefits. Importantly, the effect vanished when endogenous attention was constrained (e.g., by using a chin-rest), mirroring perceptual disfluency findings: disfluency benefits are eliminated by test expectancy [@geller2021] or judgments of learning (JOLs; ) [@rosner2015; @besken2013].\*\*
 
 **Together, these accounts highlight different loci for the disfluency effect. The metacognitive account situates it post-lexically, after word recognition. The compensatory account links it directly to recognition, with disfluent words receiving more top-down support. The stage-specific model associates it with semantic-level processing, while also incorporating attentional and control processes that modulate when disfluency effects appear.**
 
-## Moving Beyond the Mean: Modeling Reaction Tiime (RT) Distributions
+## Moving Beyond the Mean: Modeling Reaction Time (RT) Distributions
 
 ### Ex-Gaussian Distribution
 
@@ -566,14 +566,14 @@ All models presented no divergences, and all chains mixed well and produced comp
 #The data file is cleaned (participants >=.8, no duplicate participants, no participants < 17. )
 # get data from osf
 
-blur_acc <- read_csv("https://osf.io/xv5bd/download")
+blur_acc <- read_csv("https://osf.io/xv5bd/download") |>
+dplyr::filter(lex == "m")
 
-blur_acc_new <- read_csv("https://osf.io/xv5bd/download") |>
-  dplyr::filter(lex == "m") |>
+blur_acc_new <- blur_acc  |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
 
-The analysis of accuracy is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs, we were left with `r dim(blur_acc_new)[1]` data point points (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`).
+The analysis of accuracy is based on `r dim(blur_acc)[1]` data points. After removing fast (\< .2 s) and slow (\> 2.5 s) RTs (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`) we were left with `r dim(blur_acc_new)[1]` data point points
 
 ```{r}
 #| echo: false
@@ -1058,7 +1058,7 @@ p1_dp <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Clear - High blur",
+    title = "Clear vs. High blur",
     x = "",
     y = "Group differences",
     tag = "B"
@@ -1094,7 +1094,7 @@ p2_dp <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Low blur - Clear",
+    title = "Low blur vs. Clear",
     x = "Mean RT per quantile",
     y = ""
   )
@@ -1128,7 +1128,7 @@ p3_dp <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
     box.padding = 0.5,
     size = 10
   ) +
-  labs(title = "High blur - Low blur", x = "", y = "")
+  labs(title = "High blur vs.  Low blur", x = "", y = "")
 ```
 
 ### Recognition Memory
@@ -1378,7 +1378,7 @@ blur_acc_new <- blur_acc |>
   dplyr::filter(rt >= .2 & rt <= 2.5)
 ```
 
-The analysis of accuracy is is based on `r dim(blur_acc)[1]` data points. After removing fast and slow RTs we were left with `r dim(blur_acc_new)[1]` data point (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 3)`)
+The analysis of accuracy is based on `r dim(blur_acc)[1]` data points. After removing fast (\< .2 s) and slow (\> 2.5 s) RTs (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 2)`) we were left with `r dim(blur_acc_new)[1]` data point points.
 
 ```{r}
 # Create custom contrast matrix manually
@@ -1493,7 +1493,7 @@ blur_rt_new <- blur_rt |>
   mutate(rt_ms = rt * 1000)
 ```
 
-The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast and slow RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
+The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast (\< .2 s) and slow (\> 2.5 s) RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
 
 ```{r}
 #hypothesis
@@ -1688,7 +1688,7 @@ p1_dp2 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Clear - High blur",
+    title = "High blur vs. Clear",
     x = "",
     y = "Group differences",
     tag = "C"
@@ -1724,7 +1724,7 @@ p2_dp2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
     size = 10
   ) +
   labs(
-    title = "Low blur - Clear",
+    title = "Low blur vs. Clear",
     x = "Mean RT per quantile",
     y = ""
   )
@@ -1758,13 +1758,13 @@ p3_dp2 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
     box.padding = 0.5,
     size = 10
   ) +
-  labs(title = "High blur - Low blur", x = "", y = "")
+  labs(title = "High blur vs. Low blur", x = "", y = "")
 ```
 
 ```{r}
 #| label: fig-deltaquant1A1B
 #| fig-cap: "Quantile plots for each condition in Exeriment 1A and 1B (A) and Delta plots depicting the magnitude of the effect for hypotheses of interest over time in for Experiments 1A (B) and 1B (C). Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
-#| fig-width: 15
+#| fig-width: 20
 #| fig-height: 12
 
 delta_comb1a = (p1_dp + p2_dp + p3_dp)
@@ -2026,7 +2026,7 @@ blur_acc_wf <- rts_wf |>
   dplyr::filter(category == "NONAN")
 ```
 
-We started with `r dim(rts_dim)[1]`. After we removed RTs below .2 s and above 2.5 s (`r round(1-dim(blur_acc_wf)[1]/dim(rts_dim)[1], 3)`), we were left with `r dim(blur_acc_wf)[1]` data points.
+The analysis of accuracy is based on `r dim(rts_dim)[1]` data points. After removing fast (\> 2.5 s) and slow ( \< .2 s) RTs (`r round(1-dim(blur_acc_wf)[1]/dim(rts_dim)[1], 3)`), we were left with `r dim(blur_acc_wf)[1]` data points.
 
 ```{r}
 # Create custom contrast matrix manually
@@ -2393,11 +2393,6 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
   ) +
   geom_line(size = 1) +
   geom_point(size = 3) +
-  theme(
-    axis.title = element_text(size = 16, face = "bold"),
-    axis.text = element_text(size = 16),
-    plot.title = element_text(face = "bold", size = 16)
-  ) +
   scale_y_continuous(breaks = seq(500, 1600, 100)) +
   coord_cartesian(ylim = c(500, 1600)) +
   scale_x_continuous(breaks = seq(.1, .9, .2)) +
@@ -2407,7 +2402,8 @@ p <- ggplot(v, aes(x = q, y = MRT, colour = blur)) +
     color = "black",
     min.segment.length = 0,
     seed = 42,
-    box.padding = 0.5
+    box.padding = 0.5, 
+     size=10
   ) +
   labs(x = "Quantiles", y = "Response latencies in ms", tag = "A") + 
  theme_minimal(base_size = 16) +
@@ -2467,7 +2463,8 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
     color = "black",
     min.segment.length = 0,
     seed = 42,
-    box.padding = 0.5
+    box.padding = 0.5, 
+      size=10
   ) +
   labs(
     title = "High blur vs. Clear",
@@ -2511,10 +2508,11 @@ p2 <- ggplot(v_clb, aes(x = mean_rt, y = diff)) +
     color = "black",
     min.segment.length = 0,
     seed = 42,
-    box.padding = 0.5
+    box.padding = 0.5, 
+      size=10
   ) +
   labs(
-    title = "Clear - Low blur",
+    title = "Clear vs. Low blur",
     x = "Mean RT per quantile",
     y = ""
   )
@@ -2554,19 +2552,20 @@ p3 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
     color = "black",
     min.segment.length = 0,
     seed = 42,
-    box.padding = 0.5
+    box.padding = 0.5, 
+      size=10
   ) +
-  labs(title = "High blur - Low blur", x = "", y = "")
+  labs(title = "High blur vs. Low blur", x = "", y = "")
 ```
 
 ```{r}
 #| label: fig-quantiledeltaexp2
-#| fig-cap: "Group RT distributions in the blurring and word frequency manipulations in word stimuli. A. Quantile plots with each point represents the average RT quantiles (.1, .3, .5, .7,and .9) in each condition. B. Delta plots obatined by computing the quantiles for each participant and subsequently averaging the obtained values for each quantile over the participants and subtracting the values from each condition."
-#| fig-width: 20
-#| fig-height: 12
+#| fig-cap: "Group RT distributions in the blurring and word frequency manipulations in word stimuli. A. Quantile plots with each point represents the average RT quantiles (.1, .3, .5, .7,and .9) in each condition. B. Delta plots obtained by computing the quantiles for each participant and subsequently averaging the obtained values for each quantile over the participants and subtracting the values from each condition."
+#| fig-width: 24
+#| fig-height: 10
 
 # Create bottom row with p1, p2, p3
-bottom_row <- plot_grid(p1, p2, p3, ncol = 3, label_size = 16)
+bottom_row <- plot_grid(p1, p2, p3, ncol = 3)
 
 # Stack p on top of the bottom_row
 final_plot <- plot_grid(p, bottom_row, ncol = 1)
