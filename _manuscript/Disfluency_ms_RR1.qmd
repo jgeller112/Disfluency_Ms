@@ -76,7 +76,7 @@ author-note:
     conflict-of-interest: The authors have no conflicts of interest to disclose.
     financial-support: This work was supported by research start-up funds to JG.
     authorship-agreements: ~
-abstract: "Perceptual disfluency, induced by blurring or difficult-to-read typefaces, can sometimes enhance memory retention, but the underlying mechanisms remain unclear. To investigate this effect, we manipulated blurring levels (clear, low blur, high blur) during encoding and assessed recognition performance in a surprise memory test. In Experiments 1A and 1B, response latencies from a lexical decision task were analyzed using ex-Gaussian distribution modeling and supplmented by drift diffusion modeling. Results showed that blurring differentially influenced parameters of the model, with high blur affecting both early and late-stage processes, while low blur primarily influenced early-stage processes. Recognition test results further revealed that high blur words were remembered better than both clear and low blurred words. Experiment 2 employed a semantic categorization task with a word frequency manipulation to further examine the locus of the perceptual disfluency effect. Similar to Experiments 1A and 1B, high blur influenced both early and late-stage processes, while low blur primarily affected early-stage processes. Low-frequency words exhibited greater shifting and skewing in distributional parameters, yet only high-frequency, highly blurred words demonstrated an enhanced memory effect. These findings suggest that both early and late cognitive processes contribute to the mnemonic benefits associated with perceptual disfluency. Overall, this study demonstrates that distributional and computational analyses provide powerful tools for dissecting encoding mechanisms and their effects on memory, offering valuable insights into models of perceptual disfluency."
+abstract: "Perceptual disfluency, induced by blurring or difficult-to-read typefaces, can sometimes enhance memory retention, but the underlying mechanisms remain unclear. To investigate this effect, we manipulated blurring levels (clear, low blur, high blur) during encoding and assessed recognition performance in a surprise memory test. In Experiments 1A and 1B, response latencies from a lexical decision task were analyzed using ex-Gaussian distribution modeling and supplemented by drift diffusion modeling. Results showed that blurring differentially influenced parameters of the model, with high blur affecting both early and late-stage processes, while low blur primarily influenced early-stage processes. Recognition test results further revealed that high blur words were remembered better than both clear and low blurred words. Experiment 2 employed a semantic categorization task with a word frequency manipulation to further examine the locus of the perceptual disfluency effect. Similar to Experiments 1A and 1B, high blur influenced both early and late-stage processes, while low blur primarily affected early-stage processes. Low-frequency words exhibited greater shifting and skewing in distributional parameters, yet only high-frequency, highly blurred words demonstrated an enhanced memory effect. These findings suggest that both early and late cognitive processes contribute to the mnemonic benefits associated with perceptual disfluency. Overall, this study demonstrates that distributional and computational analyses provide powerful tools for dissecting encoding mechanisms and their effects on memory, offering valuable insights into models of perceptual disfluency."
 
 keywords: [disfluency, LDT, DDM, ex-Gaussian, distributional analyses, word recognition]
 floatsintext: true
@@ -99,9 +99,9 @@ language:
   title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"
 word-count: true
 format:
- apaquarto-docx: default
+ #apaquarto-docx: default
  #apaquarto-html: default
- #apaquarto-typst: default
+ apaquarto-typst: default
   
 execute: 
   echo: false
@@ -315,7 +315,7 @@ pwalk(data_files, function(filename, url) {
 
 **We live in a world that is, even for adults, “blooming and buzzing with confusion” [@james1890, p.488]. Yet we can still decipher cursive writing or follow conversations in noisy bars. This ability to cope with a noisy, confusing environment has long been studied at the intersection of education and cognitive psychology. Decades of work show that encoding difficulty can enhance long-term memory. Although people often assume that easier learning is better, many findings demonstrate the opposite: under certain conditions, making learning more effortful can improve retention. This phenomenon, known as the *desirable difficulties* principle [@bjork_making_2011], includes robust effects such as spacing study sessions [@carpenter2022], interleaving concepts rather than blocking them [@rohrer2007], and generating or retrieving information instead of simply re-reading it [@roediger2006; @slamecka1978].**
 
-**One straightforward example involves altering the perceptual characteristics of study materials to make them harder to process. A growing literature shows that such manipulations can improve memory [e.g., @geller2018; @geller2021; @halamish2018; @rosner2015], a benefit referred to as the *perceptual disfluency effect*[see @geller2018].**
+**One straightforward example involves altering the perceptual characteristics of study materials to make them harder to process. A growing literature shows that such manipulations can improve memory [e.g., @geller2018; @geller2021; @halamish2018; @rosner2015], a benefit referred to as the *perceptual disfluency effect* [see @geller2018].**
 
 ## The Perceptual Disfluency Effect
 
@@ -351,7 +351,7 @@ More recently, Ptok and colleagues proposed a limited-capacity, stage-specific m
 
 **Exploring effects from a distributional perspective has provided a richer understanding of how different experimental manipulations affect word recognition. Experimental manipulations can produce several distinct patterns. One pattern involves a shift of the entire RT distribution to the right, without increasing the tail or skew. A pattern such as this would suggest a general effect and would manifest as an effect on** $\mu$**, but not** $\tau$**. As an example, semantic priming effects--where responses are faster to targets when preceded by a semantically related prime compared to an unrelated prime--can be nicely explained by a simple shift in the RT distribution [@balota2008]. Alternatively, an experimental manipulation could produce a pattern where the RT distribution is skewed or stretched in the slower condition. This suggests that the manipulation only impacts a subset of trials, and is visible as an increase in** $\tau$**. An example of an effect that only impacts** $\tau$ **is the transposed letter effect in visual word recognition [@johnson2012]. The transposed letter (TL) effect involves misidentification of orthographically similar stimuli that with transposed internal like, like mistaking "JUGDE" for "JUDGE" [@perea2003]. Finally, you could observe a pattern wherein an experimental manipulation results in both changes in** $\mu$ **and** $\tau$**, which would shift and stretch the RT distribution. Recognizing low frequency words have been shown to not only shift the RT distribution, but also stretch the RT distributions [@andrews2001; @balota1999; @staub2010].**
 
-**Although largely descriptive, the model has been used to link parameters to processing stages. μ and σ have been tied to early, automatic processes such as spreading activation in semantic priming [@balota2008; @dewit2015], whereas τ has been linked to later, controlled processes involving attention and working memory [@balota1999; @kane2003; @Fitousi2020]. For example, τ differences in the transposed-letter effect have been attributed to post-lexical checking on a subset of trials [@johnson2012]. Still, mapping distributional parameters onto cognitive processes remains debated and should be interpreted carefully [@matzke2009; @heathcote1991].**
+**Although largely descriptive, the model has been used to link parameters to processing stages. For instance,** $\mu$ **and** $\sigma$ **have been tied to early, automatic processes such as spreading activation in semantic priming [@balota2008; @dewit2015]. Conversely,** $\tau$ **has been linked to later, controlled processes involving attention and working memory [@balota1999; @kane2003; @Fitousi2020]. For example,** $\tau$ **differences in the transposed-letter effect have been attributed to post-lexical checking on a subset of trials [@johnson2012]. Still, mapping distributional parameters onto cognitive processes remains debated and should be interpreted carefully [@matzke2009; @heathcote1991].**
 
 ## Goals of the Present Experiments
 
@@ -497,7 +497,7 @@ We used 84 words and 84 nonwords for the LDT. Words were obtained from the *LexO
 
 #### Blurring
 
-Blurred stimuli were processed through the *imager* package [@imager] and a personal script (https://osf.io/gr5qv). Each image was processed through a high blur filter (Gaussian blur of 15) and low blur filter (Gaussian blur of 10). These pictures were then imported into PsychoPy as picture files. See @fig-blur for examples how clear, low blurred, and high blurred words appeared in the experiment.
+Blurred stimuli were processed through the {*imager}* package [@imager] and a personal script (https://osf.io/gr5qv). Each image was processed through a high blur filter (Gaussian blur of 15) and low blur filter (Gaussian blur of 10). These pictures were then imported into PsychoPy as picture files. See @fig-blur for examples how clear, low blurred, and high blurred words appeared in the experiment.
 
 ```{r}
 #| label: fig-blur
@@ -516,11 +516,11 @@ The experiment consisted of two phases: an encoding phase (LDT) and a test phase
 
 ### Data Analysis Plan
 
-All models were fit in *R* (v.4.5.0) [@R] using the Stan modeling language [@grant2017] via the *brms* package [@brms]. We used maximal random-effects structures justified by the design [@barr2013].
+All models were fit in *R* [@R] using the Stan modeling language [@grant2017] via the {*brms}* package [@brms]. We used maximal random-effects structures justified by the design [@barr2013].
 
 We ran four chains of 5,000 MCMC iterations (1,000 warm-up), totaling 16,000 post-warm-up samples. Model quality was checked via prior/posterior predictive checks, $\hat{R}$, and effective sample size [ESS; @vehtari2021]. Convergence was assessed using $\hat{R}$ (target ≤ 1.01) and effective sample size (ESS ≥ 1000) [@brms]. Default (non-informative) priors were used for most parameters. Weakly informative priors were used for population-level parameters to enable Bayes factor (Evidence Ratio; ER) calculations for two sided-hypotheses against a point null. Full prior specifications are available in the Quarto source file on OSF: <https://osf.io/6vew2>.
 
-We report posterior means and 90% credible intervals (CrIs) for one-sided hypotheses (preregistered differences), and 95% CrIs for two-sided hypotheses (against zero). Estimated marginal means were extracted using a combination of *emmeans* [@emmeans] and *brms* [@brms]. Additionally, we report the posterior probability that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses[^2]. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, The posterior probability approached 1, and ER was \> 3.
+We report posterior means and 90% credible intervals (CrIs) for one-sided hypotheses (preregistered differences), and 95% CrIs for two-sided hypotheses (against zero). Estimated marginal means were extracted using a combination of *emmeans* [@emmeans] and {*brms*}[@brms]. Additionally, we report the posterior probability that an effect lies in a particular direction and ER, which is a generalization of the Bayes factor for directional hypotheses[^2]. An ER \> 3 indicates moderate to strong evidence for the hypothesis; ER \< 0.3 indicates support for the alternative; and ER values between 0.3 and 3 are considered inconclusive. ERs were also used to assess point-null hypotheses ($\delta = 0$). Hypotheses were considered supported if zero was excluded from the CrI, The posterior probability approached 1, and ER was \> 3.
 
 [^2]: **This is supported by the creator of `brms`Paul Buerkner in this Github post: <https://github.com/paul-buerkner/brms/issues/311>. However, there is much debate on the use of BFs.**
 
@@ -550,7 +550,7 @@ In addition to ex-Gaussian analyses, we provide a graphical description of chang
 
 Typically, there are four observable patterns in the graphical depiction. No observable difference occurs when the conditions do not show any noticeable distinction. Late differences emerge when increasing differences appear later in the sequence, suggesting that the conditions diverge over time. A complete shift indicates a consistent difference across all quantiles, signaling an overall shift in the distribution. Finally, early differences reveal distinctions early in the reaction time distribution, suggesting an initial divergence between conditions.
 
-#### Recognition memory
+#### Recognition Memory
 
 Following recent trends [see @zloteanu2024], recognition memory data were analyzed using a Bayesian generalized linear multilevel model (GLMM; a Bernoulli distribution with a probit link). Here the response of the participant ("say old" vs. "say new") are modeled as function of item status ("is old" vs. "is new") and condition.
 
@@ -743,6 +743,7 @@ tab_acc1 <- bind_rows(a$hypothesis, b$hypothesis) |>
 # Create the flextable
 
 tabs1a1b <- rbind(tab_acc1, tab_acc2)
+
 
 acc_summary1A1B <- flextable(tabs1a1b) |>
   theme_apa() |>
@@ -938,6 +939,7 @@ ft <- flextable(tabs) |>
 
 ft
 
+
 ```
 
 ```{r}
@@ -976,7 +978,7 @@ tab <- bind_rows(
 )
 ```
 
-A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in A summary of the ex-Gaussion model can be found in @tbl-ex1A1B. Beginning with the μ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred compared to clear words showed greater shifting, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+A visualization of how blurring affected processing during word recognition can be seen in the quantile and delta plots in A summary of the ex-Gaussion model can be found in @tbl-ex1A1B. Beginning with the $\mu$ parameter, there was greater shifting for high blurred words compared to clear and low blurred words, *b* = `r round(a$hypothesis$Estimate, 3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower, 3)`, `r round(a$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. Low blurred compared to clear words showed greater shifting, *b* = `r round(b$hypothesis$Estimate, 3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower, 3)`, `r round(b$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
 
 Analyses of the $\sigma$ and $\tau$ parameters yielded a similar pattern. Variance was higher for high blurred words compared to clear and low blurred words, *b* = `r round(c$hypothesis$Estimate, 3)`, 90% CrI \[`r round(c$hypothesis$CI.Lower, 3)`, `r round(c$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. There was strong evidence for no difference between low blurred and clear words, *b* = `r round(d$hypothesis$Estimate, 3)`, 90% CrI \[`r round(d$hypothesis$CI.Lower, 3)`, `r round(d$hypothesis$CI.Upper, 3)`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.
 
@@ -1763,7 +1765,7 @@ p3_dp2 <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 
 ```{r}
 #| label: fig-deltaquant1A1B
-#| fig-cap: "Quantile plots for each condition in Exeriment 1A and 1B (A) and Delta plots depicting the magnitude of the effect for hypotheses of interest over time in for Experiments 1A (B) and 1B (C). Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
+#| fig-cap: "Quantile plots for each blur condition in Experiment 1A and 1B (A) and Delta plots depicting the magnitude of the effect for hypotheses of interest over time in Experiments 1A (B) and 1B (C). Each dot represents the mean RT at the .1, .3, .5, .7 and .9 quantiles."
 #| fig-width: 20
 #| fig-height: 12
 
@@ -1993,13 +1995,13 @@ This study was preregistered https://osf.io/kjq3t. All raw and summary data, mat
 
 ### Participants
 
-**Participants were recruited via Prolific and compensated \$12 per hour. Using Prolific’s built-in filters, we restricted eligibility to monolingual, native English–speaking Americans residing in the United States, with normal or corrected-to-normal vision. A total of 465 participants completed the study. Three were excluded for completing the experiment more than once, and 13 were excluded for accuracy below .80; no participants were excluded for being under 18 years of age. This left 444 participants. Consistent with Experiments 1A and 1B, we randomly sampled participants to reach our preregistered sample size of 432. As noted by Brysbaert (2019), approximately 210 participants are required to detect a fully attenuated interaction with 80% power. To be conservative and ensure adequate sensitivity, we doubled the sample size of Experiments 1A and 1B and preregistered a target of 432 participants.**
+**Participants were recruited via Prolific and compensated \$12 per hour. Using Prolific’s built-in filters, we restricted eligibility to monolingual, native English–speaking Americans residing in the United States, with normal or corrected-to-normal vision. A total of 465 participants completed the study. Three were excluded for completing the experiment more than once, and 13 were excluded for accuracy below .80; no participants were excluded for being under 18 years of age. This left 444 participants. Consistent with Experiments 1A and 1B, we randomly sampled participants to reach our preregistered sample size of 432 and to have an equal number of participants per list.  To be conservative and ensure adequate sensitivity to detect an attenuated interaction, we doubled the sample size of Experiments 1A and 1B and preregistered a target of 432 participants. As noted by @brysbaert2019, approximately 210 participants are required to detect a fully attenuated interaction with 80% power.**
 
 **The study protocol was reviewed and approved by the Princeton University Institutional Review Board.**
 
 ### Materials
 
-One hundred and eighty words (half low-frequency and half high-frequency) were adapted from @fernández-lópez2022. We further selected an additional 45 animal words from their stimuli. To make the experiment more feasible for online participants and to balance our conditions, we split the remaining non-animal words and presented 90 (half high-frequency, half low-frequency) non-animal words along with the 45 animal words during the study phase. This split maintained the 2:1 ratio of non-animal to animal words used in previous experiments (e.g., @fernández-lópez2022; @perea2018).
+One hundred and eighty words (half low-frequency and half high-frequency) were adapted from @fernández-lópez2022. We further selected an additional 45 animal words from their stimuli. To make the experiment more feasible for online participants and to balance our conditions, we split the remaining non-animal words and presented 90 (half high-frequency, half low-frequency) non-animal words along with the 45 animal words during the study phase. This split maintained the 2:1 ratio of non-animal to animal words used in previous experiments [e.g., @fernández-lópez2022; @perea2018].
 
 At test, an additional 90 non-animal words not shown during the study phase served as “new” items in the recognition task. We created six counterbalanced lists to ensure that each word appeared as both “old” and “new,” and under each of the three blurring conditions (clear, high blur, low blur) across participants. Similar to nonwords in Experiments 1A and 1B, animal words were excluded from the final analysis. The animal word stimuli used by @fernández-lópez2022 varied in length (*M* = 5.3 letters; range: 3–9), but their average length closely matched that of the non-animal words (high-frequency: *M* = 5.3, range: 3–8; low-frequency: *M* = 5.3, range: 3–9). Animal words also covered a wide range of frequencies in the SUBTLEX database (*M* = 11.84 per million; range: 0.61–192.84).
 
@@ -2474,6 +2476,7 @@ p1 <- ggplot(v_chb, aes(x = mean_rt, y = diff)) +
   ) +
   base_theme
 
+
 ```
 
 ```{r}
@@ -2733,7 +2736,7 @@ tmp <- bind_rows(
   .id = "Parameter"
 ) |>
   ungroup() |>
-  mutate(Parameter = factor(Parameter, labels = c("dprime", "Criterion"))) |>
+  mutate(Parameter = factor(Parameter, labels = c("d-prime", "Criterion"))) |>
   mutate(
     t = if_else(str_detect(blur, " - "), "Differences", "Group means") |>
       fct_inorder(),
@@ -2851,9 +2854,9 @@ Sensitivity was higher for low-frequency words compared to high-frequency words,
 
 # General Discussion
 
-Interfering with stimulus perception during encoding can sometimes improve later explicit memory. The mixed data on perceptual disfluency has called into question the utility of such manipulations in the learning domain. One of the main aims of the current set of experiments was to examine the underlying mechanisms of the perceptual disfluency effect to better understand when perceptual disfluency aids memory and when it does not. To this end, our study delved into the impact of one type of perceptual disfluency--blurring (i.e., low blurring and high blurring)--on the process of encoding, as assessed through a LDT (Experiments 1A and 1B), and a semantic categorization task (Experiment 2). RT distributions were analyzed with an ex-Gaussian model (Experiments 1A, 1B, 2). Application of this model offered a comprehensive descriptive and theoretical framework through which to examine the perceptual disfluency effect.
+Interfering with stimulus perception during encoding can sometimes improve later explicit memory. The mixed data on perceptual disfluency has called into question the utility of such manipulations in the learning domain. One of the main aims of the current set of experiments was to examine the underlying mechanisms of the perceptual disfluency effect to better understand when perceptual disfluency aids memory and when it does not. To this end, our study delved into the impact of one type of perceptual disfluency--blurring (i.e., low blurring and high blurring)--on the process of encoding, as assessed through a LDT (Experiments 1A and 1B), and a semantic categorization task (Experiment 2). RT distributions were analyzed with an ex-Gaussian model (Experiments 1A, 1B, 2) and DDM (Experiments 1A and 1B). Application of this model offered a comprehensive descriptive and theoretical framework through which to examine the perceptual disfluency effect.
 
-To recapitulate our findings, during encoding, high blurred words showed greater distributional shifting and skewing compared to clear and low blurred words. Conversely, low blurred words compared to clear words showed greater distributional shifting, but there was no difference in skewing. Turning to recognition memory, high blurred words were more likely to be recognized at test compared to clear words and low blurred words. This pattern arose regardless if context was reinstated at test (Experiment 1B). This pattern replicates the results from @rosner2015. In addition, we showed word frequency (Experiment 2) also modulates the disfluency effect. Namely, low frequency words did not show a disfluency effect.
+To recapitulate our findings, during encoding, high blurred words showed greater distributional shifting and skewing compared to clear and low blurred words. Conversely, low blurred words compared to clear words showed greater distributional shifting, but there was no difference in skewing. Turning to recognition memory, high blurred words were more likely to be recognized at test compared to clear words and low blurred words. This pattern arose regardless if context was reinstated at test (Experiment 1B). This pattern replicates the results from @rosner2015. In addition, we showed word frequency (Experiment 2) also modulates the disfluency effect. Namely, **high blurred-low frequency words** did not show a disfluency effect.
 
 These findings have several implications. At a theoretical level, the current data suggests that in order for perceptual disfluency to benefit memory it has to be disfluent enough to affect both early and late stages of processing. A manipulation that only produces a general slowing of responses is not sufficient to enact an mnemonic effect. However, an important caveat to this result is that processes during encoding of the word itself are not enough to produce an mnemonic benefit. In Experiment 2, we did not observe better memory for low frequency-high blurred words which are the hardest and presumably receive the most top-down processing. We only observed a disfluency effect for high frequency-high blurred words. This points to the importance of control processes and processing limitations in producing the disfluency effect.
 
@@ -2892,7 +2895,7 @@ Our paper contributes nuanced insights to the intricate relationship between per
 
 ## DDM Results
 
-We fit a hierarchical Bayesian Wiener diffusion model in `brms` [@vandekerckhove2011] with accuracy coding, estimating drift rate ($v$), boundary separation (response caution; fixed at 0.5), and non-decision time ($T\_{er}$).
+We fit a hierarchical Bayesian Wiener diffusion model in `{brms}` [@vandekerckhove2011] with accuracy coding, estimating drift rate ($v$), boundary separation (response caution; fixed at 0.5), and non-decision time ($T\_{er}$).
 
 ### Experiment 1A - DDM Results
 
