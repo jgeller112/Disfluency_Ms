@@ -86,20 +86,12 @@ _manuscript/
         ├── hypothesis_sigma_blur2_frequency1.csv
         ├── hypothesis_sigma_blur2.csv
         └── hypothesis_sigma_frequency1.csv
-    ├── figures/
-        ├── ARROW.png
-        ├── ARROWHB.png
-        ├── ARROWLB.png
-        ├── blur.jpg
-        ├── dprime_expt2.png
-        ├── expt1A-dprime.png
-        ├── expt1B-dprime.png
-        ├── figure_kde.png
-        ├── figure_kde2.png
-        └── figure_kde3.png
+    ├── figures/ # manuscript figures
     ├── Disfluency_ms_RR1.pdf # resubmission file
     ├── Disfluency_ms_RR1.qmd # resubmission file
     └── references.bib
+    └── disfluency_revision_response.qmd # response to reviewers RR1
+
 .gitignore
 .Rprofile
 create_env_dev.R
