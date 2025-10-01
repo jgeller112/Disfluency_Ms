@@ -97,8 +97,8 @@ _manuscript/
         ├── figure_kde.png
         ├── figure_kde2.png
         └── figure_kde3.png
-    ├── Disfluency_ms_1.pdf
-    ├── Disfluency_ms_1.qmd
+    ├── Disfluency_ms_RR1.pdf # resubmission file
+    ├── Disfluency_ms_RR1.qmd # resubmission file
     └── references.bib
 .gitignore
 .Rprofile
