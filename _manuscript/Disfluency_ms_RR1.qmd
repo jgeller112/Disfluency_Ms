@@ -271,6 +271,7 @@ check_and_download <- function(filename, url, data_dir = "data") {
 data_files <- tribble(
   ~filename,
   ~url,
+   ""
   "cleaned_context_rt.csv",
   "https://osf.io/xv5bd/download",
   "weiner_diff_1.rds",
@@ -362,11 +363,11 @@ The second, more pivotal aim was to expand the methodological toolkit for invest
 
 @tbl-predictions summarizes each theoretical account of perceptual disfluency and their predicted outcomes. Some of these accounts are articulated verbally and can be formalized in different ways. We made a good-faith effort to translate these verbal descriptions into models, while recognizing that reasonable researchers may make alternative modeling choices—an unavoidable reality of scientific inference [see @mcelreath2020statistical].
 
-The ex-Gaussian distribution provides a descriptive framework for assessing how disfluency manipulations affect encoding. Each account makes specific predictions about the loci of the perceptual disfluency effect, which can be mapped onto model parameters.
+The ex-Gaussian distribution provides a descriptive framework for assessing how disfluency manipulations affect encoding. Each account makes specific predictions about the loci of the perceptual disfluency effect, which can be mapped onto model parameters:
 
-1.   If the metacognitive account [e.g., @alter2007; @pieger2016] holds, and the effect arises primarily at a post-lexical stage, one would expect a lengthening of the distribution tail (increases in \$\\beta/\\tau\$) for blurred relative to clear words. Importantly, this perspective suggests that memory performance may not differ between high- and low-blurred words, given that perceptual disfluency is assumed to be largely subjective in nature.
-2.   In contrast, the compensatory processing account [@mulligan1996] would predict a shift in the distribution (increase in $\mu$) for high-blurred words compared to low- and no-blurred words and better memory. Memory effects arising in this account are thought to be purely lexical/semantic. This expectation is in line with findings from @rosner2015, who reported that highly blurred words are associated with longer latencies, increased error rates, and better recognition memory.
-3.   If the disfluency effect reflects both early and late processing, the stage-specific account [@ptok2019; @ptok2020] predicts that high-blur (vs. clear/low-blur ) will increase both \$\\mu\$ (overall rightward shift) and \$\\beta/\\tau\$ (heavier tail). Similar encoding patterns have been observed with hard-to-read handwriting [e.g., @perea2016; @vergara-martínez2021]. Because low-blur is unlikely to recruit substantial post-lexical control, the account predicts no reliable change in either parameter for low-blur items.
+1.  If the metacognitive account [e.g., @alter2007; @pieger2016] holds, and the effect arises primarily at a post-lexical stage, one would expect a lengthening of the distribution tail (increases in \$\\beta/\\tau\$) for blurred relative to clear words. Importantly, this perspective suggests that memory performance may not differ between high- and low-blurred words, given that perceptual disfluency is assumed to be largely subjective in nature.
+2.  In contrast, the compensatory processing account [@mulligan1996] would predict a shift in the distribution (increase in $\mu$) for high-blurred words compared to low- and no-blurred words and better memory. Memory effects arising in this account are thought to be purely lexical/semantic. This expectation is in line with findings from @rosner2015, who reported that highly blurred words are associated with longer latencies, increased error rates, and better recognition memory.
+3.  If the disfluency effect reflects both early and late processing, the stage-specific account [@ptok2019; @ptok2020] predicts that high-blur (vs. clear/low-blur ) will increase both \$\\mu\$ (overall rightward shift) and \$\\beta/\\tau\$ (heavier tail). Similar encoding patterns have been observed with hard-to-read handwriting [e.g., @perea2016; @vergara-martínez2021]. Because low-blur is unlikely to recruit substantial post-lexical control, the account predicts no reliable change in either parameter for low-blur items.
 
 ```{r}
 #| label: tbl-predictions
@@ -573,27 +574,16 @@ The analysis of accuracy is based on `r dim(blur_acc_new)[1]` data points, after
 ```{r}
 #| echo: false
 
-## Contrasts
-#hypothesis
-
-# Create custom contrast matrix manually
-contrast_matrix <- matrix(
-  c(
-    -.5,
-    -.5, # C
-    .5,
-    0, # HB
-    -.5,
-    .5
-  ), # LB
-  ncol = 2,
-  byrow = TRUE
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
 )
 
-blur_acc_new$blur <- as.factor(blur_acc_new$blur)
-
 # Assign to factor
-contrasts(blur_acc_new$blur) <- contrast_matrix
+blur_acc_new$blur <- factor(blur_acc_new$blur, levels = c("C","HB","LB"))
+contrasts(blur_acc_new$blur) <- helm.matrix3
 ```
 
 ```{r}
@@ -620,7 +610,7 @@ fit_acc_weak <- brm(
   sample_prior = T,
   seed = 666,
   threads = threading(4),
-  file = "fit_acc_context"
+  file = "fit_acc_context_helmert"
 )
 ```
 
@@ -772,7 +762,22 @@ The analysis of RTs (correct trials and words) is based on `r dim(blur_rt_new)[1
 
 ```{r}
 #| eval: false
-bform_exg1 <- bf(
+
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
+)
+
+# Apply to factor
+blur_rt_new$blur <- factor(blur_rt_new$blur, levels = c("C", "HB", "LB"))
+contrasts(blur_rt_new$blur) <- helm.matrix3
+```
+
+```{r}
+#| eval: false
+bform_exg1a <- bf(
   rt ~ blur + (1 + blur | p | participant) + (1 + blur | i | string),
   sigma ~ blur + (1 + blur | p | participant) + (1 + blur | i | string),
   beta ~ blur + (1 + blur | p | participant) + (1 + blur | i | string)
@@ -784,7 +789,7 @@ bform_exg1 <- bf(
 prior_exp1 <- c(prior("normal(0,10)", class = "b", coef = ""))
 
 fit_exg1A <- brm(
-  bform_exg1,
+  bform_exg1a,
   data = blur_rt_new,
   warmup = 1000,
   iter = 5000,
@@ -793,7 +798,7 @@ fit_exg1A <- brm(
   stanvars = three_param_exg_stanvars,
   init = 0,
   cores = 4,
-  file = "mod_exgauss_1B",
+  file = "mod_exgauss_1A_helm",
   chains = 4,
   seed = 666,
   sample_prior = T,
@@ -933,7 +938,6 @@ ft <- flextable(tabs) |>
   set_table_properties(layout = "autofit")
 
 ft
-
 
 ```
 
@@ -1136,27 +1140,20 @@ mem_c <- read_csv("https://osf.io/xjvc7/download")
 ```
 
 ```{r}
-## Contrasts
-#hypothesis
-contrast_matrix <- matrix(
-  c(
-    -.5,
-    -.5, # C
-    .5,
-    0, # HB
-    -.5,
-    .5
-  ), # LB
-  ncol = 2,
-  byrow = TRUE
+
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
 )
 
-colnames(contrast_matrix) <- c("blur1", "blur2")
-rownames(contrast_matrix) <- c("C", "HB", "LB")
+rownames(helm.matrix3) <- c("C","HB","LB")
+colnames(helm.matrix3) <- c("blur1","blur2")
 
-# Apply to factor
-mem_c$blur <- factor(mem_c$blur, levels = c("C", "HB", "LB"))
-contrasts(mem_c$blur) <- contrast_matrix
+# Assign to factor
+mem_c$blur <- factor(mem_c$blur, levels = c("C","HB","LB"))
+contrasts(mem_c$blur) <- helm.matrix3
 ```
 
 ```{r}
@@ -1186,7 +1183,7 @@ fit_mem_c <- brm(
   prior = sdt_priors,
   sample_prior = T,
   seed = 666,
-  file = "blmm_sdt_expt1",
+  file = "blmm_sdt_expt1_helmert",
   save_pars = save_pars(all = T),
   backend = "cmdstanr",
   threads = threading(2)
@@ -1225,7 +1222,7 @@ b$hypothesis <- b$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 ```
 
-Low blurred words had a bias towards more "old" responses compared to clear words, $\beta$ = `r round(b$hypothesis$Estimate,3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower,3)`, `r round(b$hypothesis$CI.Upper,3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. High-blurred words showed a more liberal bias compared to clear and low-blurred words, $\beta$ = `r round(b$hypothesis$Estimate,3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower,3)`, `r round(b$hypothesis$CI.Upper,3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`.
+Low blurred words had a bias towards more "old" responses compared to clear words, $\beta$ = `r round(b$hypothesis$Estimate,3)`, 90% CrI \[`r round(b$hypothesis$CI.Lower,3)`, `r round(b$hypothesis$CI.Upper,3)`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. High-blurred words showed a more liberal bias compared to clear and low-blurred words, $\beta$ = `r round(a$hypothesis$Estimate,3)`, 90% CrI \[`r round(a$hypothesis$CI.Lower,3)`, `r round(a$hypothesis$CI.Upper,3)`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`.
 
 ```{r}
 # (Negative) criteria
@@ -1327,6 +1324,8 @@ Experiment 1A successfully replicated the pattern of results found in @rosner201
 
 This pattern argues against a purely metacognitive account [e.g., @pieger2016] and instead supports explanations that emphasize a combination of early and higher-level processing [e.g., stage-specific; @ptok2019], or compensatory processing [@mulligan1996]. At the same time, considerable debate remains regarding the appropriateness of the ex-Gaussian distribution for drawing inferences about latent cognitive processes [@fitousi2020; @matzke2009].
 
+### DDM Modeling
+
 Unlike the ex-Gaussian distribution, which makes little theoretical assumptions regarding process, the drift diffusion model - DDM [see @ratcliff2016, for a comprehensive introduction] is a process-model, and it's parameters can be linked to latent cognitive constructs [@gomez2013]. The DDM is a popular computational model commonly used in binary speeded decision tasks such as the lexical decision task (LDT). The DDM assumes a decision is a cumulative process that begins at stimulus onset and ends once a noisy accumulation of evidence has reached a decision threshold.The DDM has led to important insights into cognition in a wide range of choice tasks, including perceptual-, memory-, and value-based decisions [@myers2022].
 
 In the DDM, RTs are decomposed into several parameters that represent distinct cognitive processes. The most relevant to our purposes here are the drift rate ($v$) and non-decision time (ndt; $T_{er}$) parameters. Drift rate ($v$) represents the rate at which evidence is accumulated towards a decision boundary. In essence, it is a measure of how quickly information is processed to make a decision. A higher (more positive) $v$ indicates a steeper slope, meaning that evidence is accumulated more quickly, leading to faster decisions. Conversely, a lower $v$ indicates a shallower slope, meaning that evidence is accumulated more slowly. Drift rate is closely linked to the decision-making process itself and serves as an index of global processing demands imposed by factors such as task difficulty, memory load, or other concurrent cognitive demands—particularly when these processes compete for the same cognitive resources [@boag2019]. Additionally, drift rates have been implicated as a key mechanism of reactive inhibitory control [@braver2012], where critical events (e.g., working memory updates or task switches) trigger inhibition of prepotent response drift rates [@boag2019; @boag2019a].
@@ -1334,6 +1333,8 @@ In the DDM, RTs are decomposed into several parameters that represent distinct c
 The $T_{er}$ parameter represents the time taken for processes other than the decision-making itself. This includes early sensory processing (like visual or auditory processing of the stimulus) and late motor processes (like executing the response). The DDM has been shown to be a valuable tool for studying the effects of different experimental manipulations on cognitive processes in visual word recognition. For example, @gomez2014 demonstrated certain manipulations can deferentially affect specific parameters of the model. For instance, manipulating the orientation of words (rotating them by 0, 90, or 180 degrees) affected the $T_{er}$ component, but not $v$ component. In contrast, word frequency (high-frequency words vs. low-frequency words) primarily influenced both the drift rate and non-decision time. These findings highlight the sensitivity of the DDM in identifying and differentiating the impact of various stimulus manipulations on different cognitive processes involved in decision-making.
 
 We preregistered DDM analyses and present the model results in the Appendix to enhance readability. Overall, we found high-blurred words impacted both an early, non-decision, component evinced by higher $T_{er}$ and a later more analytic, component evinced by a lower $v$ than clear or low-blurred words. On the other hand, low-blurred words only affected $T_{er}$.
+
+### Conclusion
 
 Herein, we present evidence that different levels of disfluency can influence distinct stages of encoding, potentially contributing to the presence or absence of a mnemonic effect for perceptually blurred stimuli. Unlike most studies that commonly employ a single level of disfluency, our study incorporated two levels of disfluency. The results indicate that a subtle manipulation such as low-blur primarily affects early processing stages, whereas a more pronounced perceptual manipulation (i.e., high-blur ) impacts both early and late processing stages. Regarding recognition memory, high-blurred stimuli were better recognized compared to low-blurred and clear words. This suggests that in order to observe a perceptual disfluency effect, the perceptual manipulation must be sufficiently disfluent to do so and tap later stages of encoding.
 
@@ -1362,7 +1363,7 @@ We used the same stimuli from Experiment 1A. The main difference between Experim
 ### Accuracy
 
 ```{r}
-#| label: acc_expt1b
+#| label: acc_expt1a
 # get data from osf
 # https://osf.io/excgd/download
 blur_acc <- read_csv("https://osf.io/excgd/download") |>
@@ -1375,24 +1376,20 @@ blur_acc_new <- blur_acc |>
 The analysis of accuracy is based on `r dim(blur_acc_new)[1]` data points. after removing fast (\< .2 s) and slow (\> 2.5 s) RTs (`r round(1-dim(blur_acc_new)[1]/dim(blur_acc)[1], 2)`).
 
 ```{r}
-# Create custom contrast matrix manually
-contrast_matrix <- matrix(
-  c(
-    -.5,
-    -.5, # C
-    .5,
-    0, # HB
-    -.5,
-    .5
-  ), # LB
-  ncol = 2,
-  byrow = TRUE
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
 )
 
-blur_acc_new$blur <- as.factor(blur_acc_new$blur)
+rownames(helm.matrix3) <- c("C","HB","LB")
+
+helm.matrix3
 
 # Assign to factor
-contrasts(blur_acc_new$blur) <- contrast_matrix
+blur_acc_new$blur <- factor(blur_acc_new$blur, levels = c("C","HB","LB"))
+contrasts(blur_acc_new$blur) <- helm.matrix3
 ```
 
 ```{r}
@@ -1417,7 +1414,7 @@ fit_acc_weak <- brm(
   save_pars = save_pars(all = T),
   sample_prior = T,
   threads = threading(4),
-  file = "fit_acc_weak_nocontext"
+  file = "fit_acc_weak_nocontext_helmert"
 )
 ```
 
@@ -1490,22 +1487,27 @@ blur_rt_new <- blur_rt |>
 The analysis of RTs (correct trials and word stimuli) is based on `r dim(blur_rt_new)[1]` data points, after removing fast (\< .2 s) and slow (\> 2.5 s) RTs (`r round(1-dim(blur_rt_new)[1]/dim(blur_rt)[1], 3)`)
 
 ```{r}
-#hypothesis
-blurC <- hypr(HB ~ C, HB ~ LB, levels = c("C", "HB", "LB"))
 
-#set contrasts in df
-blur_rt$blur <- as.factor(blur_rt$blur)
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
+)
 
-contrasts(blur_rt$blur) <- contr.hypothesis(blurC)
+# Apply to factor
+blur_rt_new$blur <- factor(blur_rt_new$blur, levels = c("C", "HB", "LB"))
+contrasts(blur_rt_new$blur) <- helm.matrix3
+
 ```
 
 ```{r}
 #| eval: false
 
 bform_exg1B <- bf(
-  rt ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
-  sigma ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string),
-  beta ~ 0 + blur + (1 + blur | p | participant) + (1 + blur | i | string)
+  rt ~ blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  sigma ~  blur + (1 + blur | p | participant) + (1 + blur | i | string),
+  beta ~  blur + (1 + blur | p | participant) + (1 + blur | i | string)
 )
 ```
 
@@ -1514,7 +1516,7 @@ bform_exg1B <- bf(
 #|
 prior1B <- c(prior("normal(0,10)", class = "b", coef = ""))
 
-fit_exg1B <- brm(
+fit_exg1A <- brm(
   bform_exg1B,
   data = blur_rt_new,
   warmup = 1000,
@@ -1524,7 +1526,7 @@ fit_exg1B <- brm(
   stanvars = three_param_exg_stanvars,
   init = 0,
   cores = 4,
-  file = "mod_exgauss_1B",
+  file = "mod_exgauss_1B_helmert",
   chains = 4,
   seed = 666,
   sample_prior = T,
@@ -1783,32 +1785,17 @@ mem_nc <- read_csv("https://osf.io/jw2gx/download")
 ## Contrasts
 #hypothesis
 
-contrast_matrix <- matrix(
-  c(
-    -0.5,
-    -.5, # C
-    0.5,
-    0, # HB
-    -0.5,
-    0.5
-  ), # LB
-  ncol = 2,
-  byrow = TRUE
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
 )
 
-# Apply to factor
-mem_nc$blur <- factor(mem_nc$blur, levels = c("C", "HB", "LB"))
-contrasts(mem_nc$blur) <- contrast_matrix
+# Assign to factor
+mem_nc$blur <- factor(mem_nc$blur, levels = c("C","HB","LB"))
+contrasts(mem_nc$blur) <- helm.matrix3
 
-mem_nc$isold <- factor(mem_nc$isold, levels = c(0, 1)) # ensure proper level order
-contrasts(mem_nc$isold) <- matrix(c(-0.5, 0.5), ncol = 1)
-
-# Apply to factor
-mem_nc$blur <- factor(mem_nc$blur, levels = c("C", "HB", "LB"))
-contrasts(mem_nc$blur) <- contrast_matrix
-
-mem_nc$isold <- factor(mem_nc$isold, levels = c(0, 1)) # ensure proper level order
-contrasts(mem_nc$isold) <- matrix(c(-0.5, 0.5), ncol = 1)
 ```
 
 ```{r}
@@ -1856,8 +1843,6 @@ a$hypothesis <- a$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
 b$hypothesis <- b$hypothesis |>
   mutate(across(where(is.numeric), ~ round(.x, 3)))
-c$hypothesis <- c$hypothesis |>
-  mutate(across(where(is.numeric), ~ round(.x, 3)))
 ```
 
 #### Sensitivity
@@ -1889,16 +1874,16 @@ emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
 #| fig-width: 12
 #| fig-height: 8
 
-emm_m1_c1 <- emmeans(fit_mem_noc, ~blur)
+emm_m1_c1 <- emmeans(fit_mem_nc, ~blur)
 
-emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |>
+emm_m1_c2 <- emmeans(fit_mem_nc, ~blur) |>
   contrast("pairwise")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem_noc, ~ isold + blur) |>
+emm_m1_d1 <- emmeans(fit_mem_nc, ~ isold + blur) |>
   contrast("revpairwise", by = "blur")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
+emm_m1_d2 <- emmeans(fit_mem_nc, ~ isold + blur) |>
   contrast(interaction = c("revpairwise", "pairwise"))
 
 tmp <- bind_rows(
@@ -1998,7 +1983,7 @@ At test, an additional 90 non-animal words not shown during the study phase serv
 
 ### Procedure
 
-We used the same procedure as Experiments 1B. The main difference is that instead of making a word/non-word decision, participants made a semantic categorization judgement (i.e., "is an animal" or "is not an animal"). You can view the task here: https://run.pavlovia.org/Jgeller112/hf_lf_sem_1.
+We used the same procedure as Experiments 1B. The main difference is that instead of making a word/non-word decision, participants made a semantic categorization judgment (i.e., "is an animal" or "is not an animal"). You can view the task here: https://run.pavlovia.org/Jgeller112/hf_lf_sem_1.
 
 ## Results
 
@@ -2628,17 +2613,11 @@ dat_binom <- mem_sc %>%
 ```{r}
 ## Contrasts
 #hypothesis
-contrast_matrix <- matrix(
-  c(
-    -0.5,
-    -0.5, # C
-    0.5,
-    0, # HB
-    -0.5,
-    0.5
-  ), # LB
-  ncol = 2,
-  byrow = TRUE
+# Custom 3-level contrast matrix
+helm.matrix3 <- rbind(
+  c(  -1/3,  1/2),  # C, HB, LB
+  c( 2/3,  0 ),  # G2
+  c( -1/3, -1/2 )   # G3
 )
 
 # Apply to factor
@@ -3051,7 +3030,7 @@ flextable(tab) |>
   set_table_properties(layout = "autofit")
 ```
 
-**A summary of the DDM results can be found in @tbl-diffexpt1A. There was strong evidence that high-blurred words were associated with a lower drift rate than both clear and low-blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low-blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high-blurred words compared to both clear and low-blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low-blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.**
+A summary of the DDM results can be found in @tbl-diffexpt1A. There was strong evidence that high-blurred words were associated with a lower drift rate than both clear and low-blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low-blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high-blurred words compared to both clear and low-blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low-blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.
 
 ### Experiment 1B - DDM Results
 
@@ -3212,4 +3191,4 @@ flextable(tab) |>
   set_table_properties(layout = "autofit")
 ```
 
-**A summary of the DDM results is presented in @tbl-diffexpt1B. There was strong evidence that high-blurred words were associated with a lower drift rate than both clear and low-blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low-blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high-blurred words compared to both clear and low-blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low-blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.**
+A summary of the DDM results is presented in @tbl-diffexpt1B. There was strong evidence that high-blurred words were associated with a lower drift rate than both clear and low-blurred words, *b* = `r a$hypothesis$Estimate`, 90% CrI \[`r a$hypothesis$CI.Lower`, `r a$hypothesis$CI.Upper`\], ER = `r process_ER_column(a$hypothesis$Evid.Ratio)`. In contrast, the evidence supported the absence of a drift rate difference between low-blurred and clear words, *b* = `r b$hypothesis$Estimate`, 90% CrI \[`r b$hypothesis$CI.Lower`, `r b$hypothesis$CI.Upper`\], ER = `r process_ER_column(b$hypothesis$Evid.Ratio)`. There was also substantial evidence that non-decision time was greater for high-blurred words compared to both clear and low-blurred words, *b* = `r c$hypothesis$Estimate`, 90% CrI \[`r c$hypothesis$CI.Lower`, `r c$hypothesis$CI.Upper`\], ER = `r process_ER_column(c$hypothesis$Evid.Ratio)`. Additionally, the posterior distribution indicated that low-blurred words had a longer non-decision time than clear words, *b* = `r d$hypothesis$Estimate`, 90% CrI \[`r d$hypothesis$CI.Lower`, `r d$hypothesis$CI.Upper`\], ER = `r process_ER_column(d$hypothesis$Evid.Ratio)`.
