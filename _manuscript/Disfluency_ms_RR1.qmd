@@ -499,7 +499,7 @@ Blurred stimuli were processed through the {*imager}* package [@imager] and a pe
 #| label: fig-blur
 #| fig-cap: Clear (left), Low  blur (10% blur) (right), and High blur (15% blur) (center) examples.
 # Combine images in one figure
-include_graphics("figures/blur.jpg")
+include_graphics("Figures/blur.jpg")
 ```
 
 ### Design
@@ -744,7 +744,7 @@ Model estimates can be found in @tbl-acc1A1B. High blur words had lower accuracy
 
 ```{r}
 #load data from osf
-rts <- read_csv("https://osf.io/xv5bd/download")
+rts <- read_csv("https://osf.io/download/xv5bd/")
 #rts <- read_csv("data/cleaned_context_rt.csv")
 ```
 
@@ -810,8 +810,8 @@ fit_exg1A <- brm(
 ```
 
 ```{r}
-fit_exg1A <- read_rds("https://osf.io/m4nv5/download") # expt1a ex gauss download
-fit_exg1B <- read_rds("https://osf.io/ajwe4/download") # expt1b ex gauss download
+fit_exg1A <- read_rds("https://osf.io/download/m4nv5") # expt1a ex gauss download
+fit_exg1B <- read_rds("https://osf.io//download/ajwe4") # expt1b ex gauss download
 ```
 
 ```{r}
@@ -1135,7 +1135,7 @@ p3_dp <- ggplot(v_hlb, aes(x = mean_rt, y = diff)) +
 ### Recognition Memory
 
 ```{r}
-mem_c <- read_csv("https://osf.io/xjvc7/download")
+mem_c <- read_csv("https://osf.io/download/xjvc7")
 #mem_c <- read_csv("data/blmm_sdt_context.csv")
 ```
 
@@ -1191,7 +1191,7 @@ fit_mem_c <- brm(
 ```
 
 ```{r}
-fit_mem1 <- read_rds("https://osf.io/dbfwa/download")
+fit_mem1 <- read_rds("https://osf.io/download/dbfwa")
 #fit_mem1 <- read_rds("data/blmm_sdt_expt1a_priors_hblbc2.rds")
 ```
 
@@ -1366,7 +1366,7 @@ We used the same stimuli from Experiment 1A. The main difference between Experim
 #| label: acc_expt1a
 # get data from osf
 # https://osf.io/excgd/download
-blur_acc <- read_csv("https://osf.io/excgd/download") |>
+blur_acc <- read_csv("https://osf.io/download/excgd") |>
   dplyr::filter(lex == "m")
 
 blur_acc_new <- blur_acc |>
@@ -1420,7 +1420,7 @@ fit_acc_weak <- brm(
 
 ```{r}
 # get file from osf
-fit_acc_noc <- read_rds("https://osf.io/p9xat/download")
+fit_acc_noc <- read_rds("https://osf.io/download/p9xat/")
 #fit_acc_noc <- read_rds("data/fit_acc_weak_nocontext.rds")
 ```
 
@@ -1470,7 +1470,7 @@ A summary of posterior estimates are located in @tbl-acc1A1B. High blur words ha
 
 ```{r}
 #load data from osf
-rts <- read_csv("https://osf.io/excgd/download")
+rts <- read_csv("https://osf.io/download/excgd")
 #rts <- read_csv("data/cleaned_nocontext_rt.csv")
 ```
 
@@ -1538,7 +1538,7 @@ fit_exg1A <- brm(
 ```
 
 ```{r}
-fit_exg1B <- read_rds("https://osf.io/ajwe4/download")
+fit_exg1B <- read_rds("https://osf.io/download/ajwe4/")
 ```
 
 ```{r}
@@ -1777,7 +1777,7 @@ combined_plot
 ### Recognition Memory
 
 ```{r}
-mem_nc <- read_csv("https://osf.io/jw2gx/download")
+mem_nc <- read_csv("https://osf.io/download/jw2gx")
 #mem_nc <- read_csv("data/cond_blmm_sdt_contextnot.csv")
 ```
 
@@ -1830,7 +1830,7 @@ fit_mem_nc <- brm(
 ```
 
 ```{r}
-fit_mem_noc <- read_rds("https://osf.io/yfzke/download")
+fit_mem_noc <- read_rds("https://osf.io/download/yfzke")
 #fit_mem_noc <- read_rds("data/blmm_sdt_nc_hblbc.rds")
 ```
 
@@ -1874,16 +1874,16 @@ emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
 #| fig-width: 12
 #| fig-height: 8
 
-emm_m1_c1 <- emmeans(fit_mem_nc, ~blur)
+emm_m1_c1 <- emmeans(fit_mem_noc, ~blur)
 
-emm_m1_c2 <- emmeans(fit_mem_nc, ~blur) |>
+emm_m1_c2 <- emmeans(fit_mem_noc, ~blur) |>
   contrast("pairwise")
 
 # Dprimes for three groups
-emm_m1_d1 <- emmeans(fit_mem_nc, ~ isold + blur) |>
+emm_m1_d1 <- emmeans(fit_mem_noc, ~ isold + blur) |>
   contrast("revpairwise", by = "blur")
 # Differences between groups
-emm_m1_d2 <- emmeans(fit_mem_nc, ~ isold + blur) |>
+emm_m1_d2 <- emmeans(fit_mem_noc, ~ isold + blur) |>
   contrast(interaction = c("revpairwise", "pairwise"))
 
 tmp <- bind_rows(
@@ -1990,7 +1990,7 @@ We used the same procedure as Experiments 1B. The main difference is that instea
 ### Accuracy
 
 ```{r}
-rts_wf <- read_csv("https://osf.io/29hnd/download")
+rts_wf <- read_csv("https://osf.io/download/29hnd")
 #rts_wf <- read_csv("data/SC_rt_cleaned.csv")
 ```
 
@@ -2065,7 +2065,7 @@ fit_acc_wf <- brm(
 
 ```{r}
 # get file from osf
-fit_acc_sc <- read_rds("https://osf.io/2yb7g/download")
+fit_acc_sc <- read_rds("https://osf.io/download/2yb7g")
 #fit_acc_sc <- read_rds("data/acc_blmm_sc_hblbc_moreints.rds")
 ```
 
@@ -2243,7 +2243,7 @@ fit_exg1 <- brm(
 #|
 #highblurvs clear highblur vslowblur
 #long time to load
-fit_sc <- read_rds("http://osf.io/uwcjf/download")
+fit_sc <- read_rds("http://osf.io/download/uwcjf")
 #fit_sc <- read_rds("data/mod_exgauss_HBLBC.rds")
 ```
 
@@ -2590,7 +2590,7 @@ To aid in model convergence, we used a binomial (probit) family rather than a Be
 
 ```{r}
 # mem_sc <- read_csv("https://osf.io/eapu5/download")
-mem_sc <- read_csv("https://osf.io/eapu5/download")
+mem_sc <- read_csv("https://osf.io/download/eapu5")
 ```
 
 ```{r}
@@ -2656,7 +2656,7 @@ fit_sc_sdt <- brm(
 ```{r}
 # read in file from osf
 # fit_sc_mem <- read_rds("https://osf.io/kh43z/download")
-fit_sc_mem <- read_rds("https://osf.io/kh43z/download")
+fit_sc_mem <- read_rds("https://osf.io/download/kh43z")
 ```
 
 ```{r}
@@ -2862,7 +2862,7 @@ Our paper contributes nuanced insights to the intricate relationship between per
 ::: {#refs}
 :::
 
-# DDM Results
+# DDM Results  {.appendix}
 
 The purpose of this appendix is to provide a brief description of how the diffusion model accounts for the data presented in the main article. Although fitting the diffusion model was included in our preregistration plan, we chose to present these analyses here rather than in the main text in order to enhance readability.
 
@@ -2971,7 +2971,7 @@ fit_wiener1 <- brm(
 
 ```{r}
 #diff object on osf
-fit_wiener <- read_rds("https://osf.io/hqauz/download")
+fit_wiener <- read_rds("https://osf.io/download/hqauz")
 #fit_wiener <- read_rds("data/weiner_diff_1.rds")
 ```
 
@@ -3132,7 +3132,7 @@ fit_wiener1 <- brm(
 ```
 
 ```{r}
-fit_wiener <- read_rds("https://osf.io/gy5ab/download")
+fit_wiener <- read_rds("https://osf.io/download/gy5ab/")
 #fit_wiener <- read_rds("data/weiner_diff_noc (1).rds")
 ```
 
