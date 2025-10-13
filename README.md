@@ -2,7 +2,18 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15830866.svg)](https://doi.org/10.5281/zenodo.15830866)
 
+Please cite this paper: 
 
+Geller, J., Gomez, P., Buchanan, E., & Makowski., D. (2025). A Distributional Response Time Analysis of the Perceptual Disfluency Effect. **Journal of Cognition**. 
+
+```
+@article{geller2025_disfluency,
+  author  = {Geller, Jason and Gomez, Pablo and Buchanan, Erin and Makowski, Dominique},
+  title   = {A Distributional Response Time Analysis of the Perceptual Disfluency Effect},
+  journal = {Journal of Cognition},
+  year    = {2025}
+}
+```
 This repository contains  materials and code for our manuscript "Perceptual Disfluency and Recognition Memory: A Response Time Distributional Analysis". The data, materials, and model files can be found here: https://osf.io/6sy7k/. 
 
 # Authors
